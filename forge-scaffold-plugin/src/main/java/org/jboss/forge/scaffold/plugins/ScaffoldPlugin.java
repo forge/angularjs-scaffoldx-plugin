@@ -96,7 +96,7 @@ public class ScaffoldPlugin implements Plugin
       ScaffoldProvider provider = getScaffoldType(scaffoldType);
       targetDir = selectTargetDir(provider, targetDir);
       verifyTemplate(provider, template);
-      List<Resource<?>> generatedResources = provider.setup(targetDir, template, overwrite);
+      List<Resource<?>> generatedResources = provider.setup(targetDir, overwrite, false);
 
       // TODO give plugins a chance to react to generated resources, use event bus?
       if (!generatedResources.isEmpty())
@@ -106,6 +106,7 @@ public class ScaffoldPlugin implements Plugin
    }
 
    @Command("indexes")
+   @Deprecated
    public void generateIndex(
             @Option(name = "targetDir") String targetDir,
             @Option(name = "scaffoldType", required = false, completer = ScaffoldProviderCompleter.class) final String scaffoldType,
@@ -115,7 +116,7 @@ public class ScaffoldPlugin implements Plugin
       ScaffoldProvider provider = getScaffoldType(scaffoldType);
       targetDir = selectTargetDir(provider, targetDir);
       verifyTemplate(provider, template);
-      List<Resource<?>> generatedResources = provider.generateIndex(targetDir, template, overwrite);
+      List<Resource<?>> generatedResources = null; //provider.generateIndex(targetDir, template, overwrite);
 
       // TODO give plugins a chance to react to generated resources, use event bus?
       if (!generatedResources.isEmpty())
@@ -125,6 +126,7 @@ public class ScaffoldPlugin implements Plugin
    }
 
    @Command("templates")
+   @Deprecated
    public void generateTemplates(
             @Option(name = "targetDir") String targetDir,
             @Option(name = "scaffoldType", required = false, completer = ScaffoldProviderCompleter.class) final String scaffoldType,
@@ -133,7 +135,7 @@ public class ScaffoldPlugin implements Plugin
    {
       ScaffoldProvider provider = getScaffoldType(scaffoldType);
       targetDir = selectTargetDir(provider, targetDir);
-      List<Resource<?>> generatedResources = provider.generateTemplates(targetDir, overwrite);
+      List<Resource<?>> generatedResources = null; // provider.generateTemplates(targetDir, overwrite);
 
       // TODO give plugins a chance to react to generated resources, use event bus?
       if (!generatedResources.isEmpty())
@@ -166,20 +168,14 @@ public class ScaffoldPlugin implements Plugin
       targetDir = selectTargetDir(provider, targetDir);
       verifyTemplate(provider, template);
 
-      for (JavaResource jr : javaTargets)
+      List<Resource<?>> generatedResources = provider.generateFrom(javaTargets, overwrite);
+      // TODO give plugins a chance to react to generated resources, use event bus?
+      if (!generatedResources.isEmpty())
       {
-         JavaClass entity = (JavaClass) (jr).getJavaSource();
-         List<Resource<?>> generatedResources = provider.generateFromEntity(targetDir, template, entity, overwrite);
-
-         // TODO give plugins a chance to react to generated resources, use event bus?
-         if (!generatedResources.isEmpty())
-         {
-            generatedEvent.fire(new ScaffoldGeneratedResources(provider, prepareResources(generatedResources)));
-         }
-
-         ShellMessages.success(writer, "Generated UI for [" + entity.getQualifiedName() + "]");
+         generatedEvent.fire(new ScaffoldGeneratedResources(provider, prepareResources(generatedResources)));
       }
 
+      ShellMessages.success(writer, "Generated UI for [" + javaTargets + "]");
    }
 
    private String selectTargetDir(ScaffoldProvider provider, String target)
@@ -395,7 +391,7 @@ public class ScaffoldPlugin implements Plugin
 
    private void verifyTemplate(final ScaffoldProvider provider, final Resource<?> template)
    {
-      if (template != null)
+      /*if (template != null)
       {
          if (!template.exists())
          {
@@ -410,6 +406,6 @@ public class ScaffoldPlugin implements Plugin
                      + "] is not compatible with provider ["
                      + ConstraintInspector.getName(provider.getClass()) + "]");
          }
-      }
+      }*/
    }
 }
