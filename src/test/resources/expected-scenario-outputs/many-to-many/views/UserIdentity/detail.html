@@ -1,0 +1,18 @@
+<form id="UserIdentityForm" name="UserIdentityForm" class="form-horizontal">
+    <div ng-show="displayError" class="alert alert-error">
+        <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
+    </div>
+    <div class="control-group" ng-class="{error: UserIdentityForm.userName.$invalid}">
+        <label for="userName" class="control-label">UserName</label>
+        <div class="controls">
+<input id="userName" name="userName" type="text" ng-model="userIdentity.userName" placeholder="Enter the UserIdentity userName"></input>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <button id="saveUserIdentity" name="saveUserIdentity" class="btn btn-primary" ng-disabled="isClean() || UserIdentityForm.$invalid" ng-click="save()"><i class="icon-ok-sign icon-white"></i> Save</button>
+            <button id="cancel" name="cancel" class="btn" ng-click="cancel()"><i class="icon-remove-sign"></i> Cancel</button>
+            <button id="deleteUserIdentity" name="deleteUserIdentity" class="btn btn-danger" ng-show="userIdentity.id" ng-click="remove()"><i class="icon-trash icon-white"></i> Delete</button>
+        </div>
+    <div>
+</form>

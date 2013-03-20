@@ -1,0 +1,42 @@
+<form id="AddressForm" name="AddressForm" class="form-horizontal">
+    <div ng-show="displayError" class="alert alert-error">
+        <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
+    </div>
+    <div class="control-group" ng-class="{error: AddressForm.street.$invalid}">
+        <label for="street" class="control-label">Street</label>
+        <div class="controls">
+<input id="street" name="street" type="text" ng-model="address.street" placeholder="Enter the Address street"></input>
+        </div>
+    </div>
+    <div class="control-group" ng-class="{error: AddressForm.city.$invalid}">
+        <label for="city" class="control-label">City</label>
+        <div class="controls">
+<input id="city" name="city" type="text" ng-model="address.city" placeholder="Enter the Address city"></input>
+        </div>
+    </div>
+    <div class="control-group" ng-class="{error: AddressForm.state.$invalid}">
+        <label for="state" class="control-label">State</label>
+        <div class="controls">
+<input id="state" name="state" type="text" ng-model="address.state" placeholder="Enter the Address state"></input>
+        </div>
+    </div>
+    <div class="control-group" ng-class="{error: AddressForm.country.$invalid}">
+        <label for="country" class="control-label">Country</label>
+        <div class="controls">
+<input id="country" name="country" type="text" ng-model="address.country" placeholder="Enter the Address country"></input>
+        </div>
+    </div>
+    <div class="control-group" ng-class="{error: AddressForm.postalcode.$invalid}">
+        <label for="postalcode" class="control-label">Postalcode</label>
+        <div class="controls">
+<input id="postalcode" name="postalcode" type="text" ng-model="address.postalcode" placeholder="Enter the Address postalcode"></input>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <button id="saveAddress" name="saveAddress" class="btn btn-primary" ng-disabled="isClean() || AddressForm.$invalid" ng-click="save()"><i class="icon-ok-sign icon-white"></i> Save</button>
+            <button id="cancel" name="cancel" class="btn" ng-click="cancel()"><i class="icon-remove-sign"></i> Cancel</button>
+            <button id="deleteAddress" name="deleteAddress" class="btn btn-danger" ng-show="address.id" ng-click="remove()"><i class="icon-trash icon-white"></i> Delete</button>
+        </div>
+    <div>
+</form>

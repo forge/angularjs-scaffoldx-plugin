@@ -1,0 +1,33 @@
+<form id="StoreOrderForm" name="StoreOrderForm" class="form-horizontal">
+    <div ng-show="displayError" class="alert alert-error">
+        <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
+    </div>
+    <div class="control-group" ng-class="{error: StoreOrderForm.product.$invalid}">
+        <label for="product" class="control-label">Product</label>
+        <div class="controls">
+<input id="product" name="product" type="text" required ng-model="storeOrder.product" placeholder="Enter the StoreOrder product"></input>
+            <span class="help-inline" ng-show="StoreOrderForm.product.$error.required">required</span> 
+        </div>
+    </div>
+    <div class="control-group" ng-class="{error: StoreOrderForm.orderDate.$invalid}">
+        <label for="orderDate" class="control-label">OrderDate</label>
+        <div class="controls">
+<input id="orderDate" name="orderDate" type="date" ng-model="storeOrder.orderDate" placeholder="Enter the StoreOrder orderDate"></input>
+        </div>
+    </div>
+    <div class="control-group" ng-class="{error: StoreOrderForm.customer.$invalid}">
+        <label for="customer" class="control-label">Customer</label>
+        <div class="controls">
+        <select id="customer" name="customer" ng-model="storeOrder.customer" ng-options="c as c.id for c in customerList"  >
+            <option value="">Choose a Customer</option>
+        </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <button id="saveStoreOrder" name="saveStoreOrder" class="btn btn-primary" ng-disabled="isClean() || StoreOrderForm.$invalid" ng-click="save()"><i class="icon-ok-sign icon-white"></i> Save</button>
+            <button id="cancel" name="cancel" class="btn" ng-click="cancel()"><i class="icon-remove-sign"></i> Cancel</button>
+            <button id="deleteStoreOrder" name="deleteStoreOrder" class="btn btn-danger" ng-show="storeOrder.id" ng-click="remove()"><i class="icon-trash icon-white"></i> Delete</button>
+        </div>
+    <div>
+</form>

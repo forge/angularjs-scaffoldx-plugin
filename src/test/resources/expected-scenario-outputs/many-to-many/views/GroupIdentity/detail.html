@@ -1,0 +1,30 @@
+<form id="GroupIdentityForm" name="GroupIdentityForm" class="form-horizontal">
+    <div ng-show="displayError" class="alert alert-error">
+        <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
+    </div>
+    <div class="control-group" ng-class="{error: GroupIdentityForm.groupName.$invalid}">
+        <label for="groupName" class="control-label">GroupName</label>
+        <div class="controls">
+<input id="groupName" name="groupName" type="text" ng-model="groupIdentity.groupName" placeholder="Enter the GroupIdentity groupName"></input>
+        </div>
+    </div>
+    <div class="control-group" ng-class="{error: GroupIdentityForm.users.$invalid}">
+        <label for="users" class="control-label">Users</label>
+        <div class="controls">
+            <div ng-repeat="usersElement in groupIdentity.users">
+                <select id="users{{$index}}" name="users{{$index}}" ng-model="groupIdentity.users[$index]" ng-options="u as u.id for u in usersList">
+                    <option value="">Choose a Users</option>
+                </select> 
+                <button class="btn btn-mini btn-danger" ng-click="removeusers($index)">-</button>
+            </div>
+            <button id="addusers" class="btn btn-mini" ng-click="addusers()">+</button>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <button id="saveGroupIdentity" name="saveGroupIdentity" class="btn btn-primary" ng-disabled="isClean() || GroupIdentityForm.$invalid" ng-click="save()"><i class="icon-ok-sign icon-white"></i> Save</button>
+            <button id="cancel" name="cancel" class="btn" ng-click="cancel()"><i class="icon-remove-sign"></i> Cancel</button>
+            <button id="deleteGroupIdentity" name="deleteGroupIdentity" class="btn btn-danger" ng-show="groupIdentity.id" ng-click="remove()"><i class="icon-trash icon-white"></i> Delete</button>
+        </div>
+    <div>
+</form>

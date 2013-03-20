@@ -1,0 +1,41 @@
+<h2>Search for UserIdentitys</h2>
+<form id="UserIdentitySearch" class="form-horizontal">
+<div class="control-group">
+    <label for="userName" class="control-label">UserName</label>
+    <div class="controls">
+        <input id="userName" name="userName" type="text" ng-model="search.userName" placeholder="Enter the UserIdentity userName"></input>
+    </div>
+</div>
+    <div class="control-group">
+        <div class="controls">
+            <a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()"><i class="icon-search icon-white"></i> Search</a>
+            <a id="Create" name="Create" class="btn" href="#/UserIdentitys/new"><i class="icon-plus-sign"></i> Create New</a>
+        </div>
+    </div>
+</form>
+<div id="search-results">
+<table class="table table-bordered table-striped clearfix">
+    <thead>
+        <tr>
+                    <th>UserName</th>
+        </tr>
+    </thead>
+    <tbody id="search-results-body">
+        <tr ng-repeat="result in searchResults | searchFilter:searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+            <td><a href="#/UserIdentitys/edit/{{result.id}}">{{result.userName}}</a></td>
+        </tr>
+    </tbody>
+</table>
+<div class="pagination pagination-centered">
+    <ul>
+        <li ng-class="{disabled:currentPage == 0}">
+            <a id="prev" href ng-click="previous()">«</a>
+        </li>
+        <li ng-repeat="n in pageRange" ng-class="{active:currentPage == n}" ng-click="setPage(n)">
+            <a href ng-bind="n + 1">1</a>
+        </li>
+        <li ng-class="{disabled: currentPage == (numberOfPages() - 1)}">
+            <a id="next" href ng-click="next()">»</a>
+        </li>
+    </ul>
+</div></div>

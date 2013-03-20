@@ -1,0 +1,33 @@
+<form id="CustomerForm" name="CustomerForm" class="form-horizontal">
+    <div ng-show="displayError" class="alert alert-error">
+        <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
+    </div>
+    <div class="control-group" ng-class="{error: CustomerForm.firstName.$invalid}">
+        <label for="firstName" class="control-label">FirstName</label>
+        <div class="controls">
+<input id="firstName" name="firstName" type="text" required ng-model="customer.firstName" placeholder="Enter the Customer firstName"></input>
+            <span class="help-inline" ng-show="CustomerForm.firstName.$error.required">required</span> 
+        </div>
+    </div>
+    <div class="control-group" ng-class="{error: CustomerForm.dateOfBirth.$invalid}">
+        <label for="dateOfBirth" class="control-label">DateOfBirth</label>
+        <div class="controls">
+<input id="dateOfBirth" name="dateOfBirth" type="date" ng-model="customer.dateOfBirth" placeholder="Enter the Customer dateOfBirth"></input>
+        </div>
+    </div>
+    <div class="control-group" ng-class="{error: CustomerForm.shippingAddress.$invalid}">
+        <label for="shippingAddress" class="control-label">ShippingAddress</label>
+        <div class="controls">
+        <select id="shippingAddress" name="shippingAddress" ng-model="customer.shippingAddress" ng-options="s as s.id for s in shippingAddressList"  >
+            <option value="">Choose a ShippingAddress</option>
+        </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <button id="saveCustomer" name="saveCustomer" class="btn btn-primary" ng-disabled="isClean() || CustomerForm.$invalid" ng-click="save()"><i class="icon-ok-sign icon-white"></i> Save</button>
+            <button id="cancel" name="cancel" class="btn" ng-click="cancel()"><i class="icon-remove-sign"></i> Cancel</button>
+            <button id="deleteCustomer" name="deleteCustomer" class="btn btn-danger" ng-show="customer.id" ng-click="remove()"><i class="icon-trash icon-white"></i> Delete</button>
+        </div>
+    <div>
+</form>
