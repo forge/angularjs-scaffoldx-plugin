@@ -8,7 +8,7 @@
         <version>1.2.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>angularjs-scaffold-plugin</artifactId>
+    <artifactId>angularjs-scaffoldx-plugin</artifactId>
 
     <properties>
         <freemarker.version>2.3.19</freemarker.version>
