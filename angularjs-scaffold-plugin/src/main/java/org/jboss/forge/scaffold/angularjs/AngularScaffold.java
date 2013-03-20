@@ -1,5 +1,6 @@
 package org.jboss.forge.scaffold.angularjs;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.jboss.forge.project.facets.MetadataFacet;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
+import org.jboss.forge.resources.java.JavaResource;
 import org.jboss.forge.scaffoldx.AccessStrategy;
 import org.jboss.forge.scaffoldx.ScaffoldProvider;
 import org.jboss.forge.scaffoldx.TemplateStrategy;
@@ -81,23 +83,23 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         
         // Setup static resources.
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/styles/bootstrap.css"), getClass()
-                .getResourceAsStream("/scaffold/angularjs/styles/bootstrap.css"), overwrite));
+                .getResourceAsStream("/scaffold/styles/bootstrap.css"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/styles/main.css"), getClass()
-                .getResourceAsStream("/scaffold/angularjs/styles/main.css"), overwrite));
+                .getResourceAsStream("/scaffold/styles/main.css"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/styles/bootstrap-responsive.css"),
-                getClass().getResourceAsStream("/scaffold/angularjs/styles/bootstrap-responsive.css"), overwrite));
+                getClass().getResourceAsStream("/scaffold/styles/bootstrap-responsive.css"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/scripts/vendor/angular.js"), getClass()
-                .getResourceAsStream("/scaffold/angularjs/scripts/vendor/angular.js"), overwrite));
+                .getResourceAsStream("/scaffold/scripts/vendor/angular.js"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/scripts/vendor/angular-resource.js"),
-                getClass().getResourceAsStream("/scaffold/angularjs/scripts/vendor/angular-resource.js"), overwrite));
+                getClass().getResourceAsStream("/scaffold/scripts/vendor/angular-resource.js"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/img/forge-logo.png"), getClass()
-                .getResourceAsStream("/scaffold/angularjs/img/forge-logo.png"), overwrite));
+                .getResourceAsStream("/scaffold/img/forge-logo.png"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/img/glyphicons-halflings.png"), getClass()
-                .getResourceAsStream("/scaffold/angularjs/img/glyphicons-halflings.png"), overwrite));
+                .getResourceAsStream("/scaffold/img/glyphicons-halflings.png"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/img/glyphicons-halflings-white.png"), getClass()
-                .getResourceAsStream("/scaffold/angularjs/img/glyphicons-halflings-white.png"), overwrite));
+                .getResourceAsStream("/scaffold/img/glyphicons-halflings-white.png"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/test/lib/angular/angular-scenario.js"),
-                getClass().getResourceAsStream("/scaffold/angularjs/test/lib/angular/angular-scenario.js"), overwrite));
+                getClass().getResourceAsStream("/scaffold/test/lib/angular/angular-scenario.js"), overwrite));
         return result;
     }
 
@@ -139,9 +141,9 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     @Override
     public List<Resource<?>> generateFrom(List<Resource<?>> resources, String targetDir, boolean overwrite) {
         ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
-        for(Resource resource: resources)
+        for(Resource<?> resource: resources)
         {
-            JavaClass entity = null; 
+            JavaClass entity = getJavaClassFrom(resource);
             System.out.println("Generating artifacts from Entity:" + entity.getQualifiedName());
             WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
             
@@ -203,6 +205,25 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     public TemplateStrategy getTemplateStrategy() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    private JavaClass getJavaClassFrom(Resource<?> resource) {
+        JavaResource javaResource = null;
+        if(resource instanceof JavaResource)
+        {
+            javaResource = (JavaResource) resource;
+        }
+        else
+        {
+            return null;
+        }
+        JavaClass entity;
+        try {
+            entity = (JavaClass) javaResource.getJavaSource();
+        } catch (FileNotFoundException fileEx) {
+            throw new RuntimeException(fileEx);
+        }
+        return entity;
     }
 
     private void installTemplates() {

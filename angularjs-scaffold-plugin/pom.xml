@@ -138,7 +138,7 @@
         <dependency>
             <!-- Provides the Forge scaffold plugin in the Shell -->
             <groupId>org.jboss.forge</groupId>
-            <artifactId>forge-scaffold-plugins</artifactId>
+            <artifactId>forge-scaffoldx-plugin</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
