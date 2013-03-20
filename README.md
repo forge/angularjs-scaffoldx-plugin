@@ -1,4 +1,4 @@
-forge-scaffold-plugin
-=====================
+angularjs-scaffold-plugin
+=========================
 
-The new scaffold plugin for Forge 1.x and 2.x
+The new AngularJS scaffold provider for the new scaffold-x plugin in Forge 1.x and 2.x
