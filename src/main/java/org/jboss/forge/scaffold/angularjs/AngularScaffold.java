@@ -1,20 +1,27 @@
 package org.jboss.forge.scaffold.angularjs;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.JarURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.forge.env.Configuration;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.project.facets.DependencyFacet;
-import org.jboss.forge.project.facets.JavaSourceFacet;
 import org.jboss.forge.project.facets.MetadataFacet;
 import org.jboss.forge.project.facets.WebResourceFacet;
+import org.jboss.forge.project.facets.events.InstallFacets;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.resources.java.JavaResource;
@@ -41,17 +48,20 @@ import org.metawidget.util.simple.StringUtils;
 @Alias("angularjs")
 @Help("AngularJS scaffolding")
 @RequiresFacet({ WebResourceFacet.class, DependencyFacet.class, PersistenceFacet.class, EJBFacet.class, CDIFacet.class,
-        RestFacet.class, ScaffoldTemplateFacet.class })
+        RestFacet.class })
 public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
 
     protected ShellPrompt prompt;
-    
+
     @Inject
     protected IntrospectorClient introspectorClient;
-    
+
     @Inject
     @ProjectScoped
     Configuration configuration;
+
+    @Inject
+    private Event<InstallFacets> installTemplatesEvent;
 
     @Inject
     public AngularScaffold(final ShellPrompt prompt) {
@@ -78,7 +88,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
 
         // Copy templates
         if(installTemplates) {
-            installTemplates();            
+            installTemplates();
         }
         
         // Setup static resources.
@@ -171,9 +181,6 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             root.put("projectTitle", projectTitle);
             root.put("resourceRootPath", resourceRootPath);
     
-            // TODO: The list of template files to be processed per-entity (like detail.html.ftl and search.html.ftl) needs to
-            // be obtained dynamically. Another list to be processed for all entities (like index.html.ftl) also needs to be
-            // maintained. In short, a template should be associated with a processing directive like PER_ENTITY, PER_PROJECT etc.
             Map<String, String> perEntityTemplates = new HashMap<String, String>();
             perEntityTemplates.put("views/detail.html.ftl", "/views/" + entity.getName() + "/detail.html");
             perEntityTemplates.put("views/search.html.ftl", "/views/" + entity.getName() + "/search.html");
@@ -191,7 +198,8 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             }
         }
 
-        generateIndex(resources, targetDir, overwrite);
+        List<Resource<?>> indexResources = generateIndex(resources, targetDir, overwrite);
+        result.addAll(indexResources);
         return result;
     }
 
@@ -227,8 +235,33 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     }
 
     private void installTemplates() {
+        if(!project.hasFacet(ScaffoldTemplateFacet.class))
+        {
+            installTemplatesEvent.fire(new InstallFacets(ScaffoldTemplateFacet.class));
+        }
         ScaffoldTemplateFacet templates = project.getFacet(ScaffoldTemplateFacet.class);
-        //templates.createResource(null, ConstraintInspector.getName(getClass()), null);
+        URL resource = getClass().getClassLoader().getResource("scaffold");
+        if(resource != null && resource.getProtocol().equals("jar"))
+        {
+            try {
+                JarURLConnection connection = (JarURLConnection) resource.openConnection();
+                JarFile jarFile = connection.getJarFile();
+                Enumeration<JarEntry> entries = jarFile.entries();
+                while(entries.hasMoreElements())
+                {
+                    JarEntry jarEntry = entries.nextElement();
+                    String entryName = jarEntry.getName();
+                    if(entryName.startsWith("scaffold/") && entryName.endsWith(".ftl"))
+                    {
+                        String relativeFilename = entryName.substring("scaffold/".length());
+                        InputStream is = jarFile.getInputStream(jarEntry);
+                        templates.createResource(is, ConstraintInspector.getName(getClass()), relativeFilename);
+                    }
+                }
+            } catch (IOException ioEx) {
+                throw new RuntimeException(ioEx);
+            }
+        }
     }
 
 }
