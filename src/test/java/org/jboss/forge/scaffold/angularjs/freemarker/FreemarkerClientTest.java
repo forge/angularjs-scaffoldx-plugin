@@ -18,7 +18,7 @@ public class FreemarkerClientTest {
     
     @BeforeClass
     public static void setupClass() throws Exception {
-        freemarkerClient = new FreemarkerClient();
+        freemarkerClient = new FreemarkerClient(null);
     }
     
     @Test

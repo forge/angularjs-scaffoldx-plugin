@@ -16,7 +16,7 @@ public class FreemarkerClientPartialsSearchResultsPaginatorTest {
     
     @BeforeClass
     public static void setupClass() throws Exception {
-        freemarkerClient = new FreemarkerClient();
+        freemarkerClient = new FreemarkerClient(null);
     }
     
     private static String PAGINATOR_OUTPUT = "<div class=\"pagination pagination-centered\">\n" + 

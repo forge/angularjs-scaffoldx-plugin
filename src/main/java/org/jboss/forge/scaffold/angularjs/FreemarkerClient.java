@@ -1,10 +1,17 @@
 package org.jboss.forge.scaffold.angularjs;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.FileTemplateLoader;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -14,9 +21,18 @@ public class FreemarkerClient {
 
     private Configuration config;
 
-    public FreemarkerClient() {
+    public FreemarkerClient(File templateBaseDir) {
         config = new Configuration();
-        config.setClassForTemplateLoading(getClass(), "/scaffold");
+        List<TemplateLoader> loaders = new ArrayList<TemplateLoader>();
+        if (templateBaseDir != null) {
+            try {
+                loaders.add(new FileTemplateLoader(templateBaseDir));
+            } catch (IOException ioEx) {
+                throw new RuntimeException(ioEx);
+            }
+        }
+        loaders.add(new ClassTemplateLoader(getClass(), "/scaffold"));
+        config.setTemplateLoader(new MultiTemplateLoader(loaders.toArray(new TemplateLoader[0])));
         config.setObjectWrapper(new DefaultObjectWrapper());
     }
 

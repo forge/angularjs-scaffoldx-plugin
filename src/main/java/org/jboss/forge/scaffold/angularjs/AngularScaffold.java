@@ -1,5 +1,6 @@
 package org.jboss.forge.scaffold.angularjs;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +23,7 @@ import org.jboss.forge.project.facets.DependencyFacet;
 import org.jboss.forge.project.facets.MetadataFacet;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.project.facets.events.InstallFacets;
+import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.resources.java.JavaResource;
@@ -55,7 +57,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
 
     @Inject
     protected IntrospectorClient introspectorClient;
-
+    
     @Inject
     @ProjectScoped
     Configuration configuration;
@@ -139,7 +141,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         projectGlobalTemplates.put("scripts/filters/startFromFilter.js.ftl", "scripts/filters/startFromFilter.js");
         projectGlobalTemplates.put("test/e2e/runner.html.ftl", "test/e2e/runner.html");
         
-        FreemarkerClient freemarkerClient = new FreemarkerClient();
+        FreemarkerClient freemarkerClient = new FreemarkerClient(getTemplateBaseDir());
         for (String projectGlobalTemplate : projectGlobalTemplates.keySet()) {
             String output = freemarkerClient.processFTL(root, projectGlobalTemplate);
             String outputPath = projectGlobalTemplates.get(projectGlobalTemplate);
@@ -190,7 +192,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             perEntityTemplates.put("scripts/controllers/editEntityController.js.ftl", "/scripts/controllers/edit" + entity.getName() + "Controller.js");
             perEntityTemplates.put("test/e2e/scenarios.js.ftl", "test/e2e/" + entity.getName() + "scenarios.js");
             
-            FreemarkerClient freemarkerClient = new FreemarkerClient();
+            FreemarkerClient freemarkerClient = new FreemarkerClient(getTemplateBaseDir());
             for (String entityTemplate : perEntityTemplates.keySet()) {
                 String output = freemarkerClient.processFTL(root, entityTemplate);
                 String outputPath = perEntityTemplates.get(entityTemplate);
@@ -262,6 +264,18 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
                 throw new RuntimeException(ioEx);
             }
         }
+    }
+    
+    private File getTemplateBaseDir()
+    {
+        if (project.hasFacet(ScaffoldTemplateFacet.class)) {
+            ScaffoldTemplateFacet templateFacet = project.getFacet(ScaffoldTemplateFacet.class);
+            String scaffoldProviderName = ConstraintInspector.getName(AngularScaffold.class);
+            DirectoryResource templateDirectory = templateFacet.getTemplateDirectory(scaffoldProviderName);
+            File templateBaseDir = templateDirectory.getUnderlyingResourceObject();
+            return templateBaseDir;
+        }
+        return null;
     }
 
 }
