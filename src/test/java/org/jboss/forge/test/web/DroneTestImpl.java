@@ -204,7 +204,7 @@ public class DroneTestImpl implements DroneTest
          clazz.addImport(ExplodedImporter.class);
          clazz.addImport(JavaArchive.class);
          clazz.addImport(Filters.class);
-         String body = "return ShrinkWrap.create(WebArchive.class)"
+         String body = "return ShrinkWrap.create(WebArchive.class, \"test.war\")"
                   + ".addPackages(true, " + "Root.class.getPackage()" + ")";
 
          for (String item : deploymentItems)
