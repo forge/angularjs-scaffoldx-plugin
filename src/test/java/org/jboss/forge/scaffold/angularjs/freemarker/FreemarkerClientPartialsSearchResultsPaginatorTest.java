@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hamcrest.core.IsEqual;
-import org.jboss.forge.scaffold.angularjs.FreemarkerClient;
+import org.jboss.forge.scaffoldx.freemarker.FreemarkerClient;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ public class FreemarkerClientPartialsSearchResultsPaginatorTest {
     
     @BeforeClass
     public static void setupClass() throws Exception {
-        freemarkerClient = new FreemarkerClient(null);
+        freemarkerClient = new FreemarkerClient(null, FreemarkerClientPartialsSearchResultsPaginatorTest.class, "/scaffold");
     }
     
     private static String PAGINATOR_OUTPUT = "<div class=\"pagination pagination-centered\">\n" + 

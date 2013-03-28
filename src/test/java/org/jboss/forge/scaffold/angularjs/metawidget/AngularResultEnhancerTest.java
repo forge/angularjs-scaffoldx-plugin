@@ -13,13 +13,17 @@ import javax.persistence.TemporalType;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.JavaSourceFacet;
 import org.jboss.forge.scaffold.angularjs.AbstractHtml5ScaffoldTest;
-import org.jboss.forge.scaffold.angularjs.IntrospectorClient;
+import org.jboss.forge.scaffold.angularjs.AngularResultEnhancer;
+import org.jboss.forge.scaffoldx.metawidget.MetawidgetInspectorFacade;
 import org.junit.Test;
 
-public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
+public class AngularResultEnhancerTest extends AbstractHtml5ScaffoldTest {
 
     @Inject
-    private IntrospectorClient introspectorClient;
+    private MetawidgetInspectorFacade metawidgetInspectorFacade;
+    
+    @Inject
+    private AngularResultEnhancer angularResultEnhancer;
 
     @Test
     public void testInspectBasicField() throws Exception {
@@ -28,7 +32,10 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateSimpleEntity(entityName);
         generateStringField(fieldName);
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
+        
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
     }
 
@@ -41,7 +48,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateNotNullConstraint(fieldName);
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("required", "true"));
@@ -56,7 +64,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateSizeConstraint(fieldName, "5", null);
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("minimum-length", "5"));
@@ -71,7 +80,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateSizeConstraint(fieldName, null, "5");
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("maximum-length", "5"));
@@ -86,7 +96,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateSizeConstraint(fieldName, "5", "50");
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("minimum-length", "5"));
@@ -101,7 +112,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateBooleanField(fieldName);
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("type", "boolean"));
@@ -115,7 +127,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateTemporalField(fieldName, TemporalType.DATE);
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("datetime-type", "date"));
@@ -129,7 +142,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateTemporalField(fieldName, TemporalType.TIME);
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("datetime-type", "time"));
@@ -143,7 +157,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateTemporalField(fieldName, TemporalType.TIMESTAMP);
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("datetime-type", "both"));
@@ -157,7 +172,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateNumericField(fieldName, "int");
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("type", "number"));
@@ -171,7 +187,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateNumericField(fieldName, "long");
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("type", "number"));
@@ -185,7 +202,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateNumericField(fieldName, java.lang.Float.class);
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("type", "number"));
@@ -199,7 +217,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateNumericField(fieldName, java.lang.Double.class);
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("type", "number"));
@@ -214,7 +233,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateMinConstraint(fieldName, "0");
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("type", "number"));
@@ -230,7 +250,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateMaxConstraint(fieldName, "100");
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("type", "number"));
@@ -247,7 +268,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateMaxConstraint(fieldName, "100");
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("type", "number"));
@@ -266,7 +288,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateOneToOneField(fieldName, relatedEntityType, null);
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("one-to-one", "true"));
@@ -284,7 +307,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateManyToOneField(fieldName, relatedEntityType, null);
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("many-to-one", "true"));
@@ -302,7 +326,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateOneToManyField(fieldName, relatedEntityType, null);
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("n-to-many", "true"));
@@ -321,7 +346,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateManyToManyField(fieldName, relatedEntityType, null);
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("n-to-many", "true"));
@@ -340,7 +366,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateOneToOneField(fieldName, relatedEntityType, "customer");
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("one-to-one", "true"));
@@ -358,7 +385,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateManyToOneField(fieldName, relatedEntityType, "customer");
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("many-to-one", "true"));
@@ -377,7 +405,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateOneToManyField(fieldName, relatedEntityType, inverseFieldName);
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("n-to-many", "true"));
@@ -398,7 +427,8 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         generateManyToManyField(fieldName, relatedEntityType, inverseFieldName);
 
         JavaClass klass = getJavaClassFor(entityName);
-        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+        List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+        inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
 
         assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
         assertThat(inspectionResult, hasItemWithEntry("n-to-many", "true"));

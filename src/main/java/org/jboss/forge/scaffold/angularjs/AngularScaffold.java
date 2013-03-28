@@ -21,11 +21,14 @@ import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.project.facets.DependencyFacet;
 import org.jboss.forge.project.facets.MetadataFacet;
+import org.jboss.forge.project.facets.PackagingFacet;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.project.facets.events.InstallFacets;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.resources.java.JavaResource;
+import org.jboss.forge.scaffoldx.freemarker.FreemarkerClient;
+import org.jboss.forge.scaffoldx.metawidget.MetawidgetInspectorFacade;
 import org.jboss.forge.scaffoldx.AccessStrategy;
 import org.jboss.forge.scaffoldx.ScaffoldProvider;
 import org.jboss.forge.scaffoldx.TemplateStrategy;
@@ -35,7 +38,6 @@ import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.Alias;
 import org.jboss.forge.shell.plugins.Help;
 import org.jboss.forge.shell.plugins.RequiresFacet;
-import org.jboss.forge.shell.project.ProjectScoped;
 import org.jboss.forge.shell.util.ConstraintInspector;
 import org.jboss.forge.spec.javaee.CDIFacet;
 import org.jboss.forge.spec.javaee.EJBFacet;
@@ -55,18 +57,20 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     protected ShellPrompt prompt;
 
     @Inject
-    protected IntrospectorClient introspectorClient;
+    protected MetawidgetInspectorFacade metawidgetInspectorFacade;
     
     @Inject
-    @ProjectScoped
-    Configuration configuration;
+    protected AngularResultEnhancer angularResultEnhancer;
+    
+    protected Configuration configuration;
 
     @Inject
     private Event<InstallFacets> installTemplatesEvent;
 
     @Inject
-    public AngularScaffold(final ShellPrompt prompt) {
+    public AngularScaffold(final ShellPrompt prompt, final Configuration configuration) {
         this.prompt = prompt;
+        this.configuration = configuration;
     }
 
     @Override
@@ -143,7 +147,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         projectGlobalTemplates.put("scripts/filters/startFromFilter.js.ftl", "/scripts/filters/startFromFilter.js");
         projectGlobalTemplates.put("test/e2e/runner.html.ftl", "/test/e2e/runner.html");
         
-        FreemarkerClient freemarkerClient = new FreemarkerClient(getTemplateBaseDir());
+        FreemarkerClient freemarkerClient = new FreemarkerClient(getTemplateBaseDir(), getClass(), "/scaffold");
         WebResourceFacet web = project.getFacet(WebResourceFacet.class);
         for (String projectGlobalTemplate : projectGlobalTemplates.keySet()) {
             String output = freemarkerClient.processFTL(root, projectGlobalTemplate);
@@ -162,7 +166,8 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             System.out.println("Generating artifacts from Class:" + klass.getQualifiedName());
             WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
             
-            List<Map<String, String>> inspectionResults = introspectorClient.inspect(klass);
+            List<Map<String, String>> inspectionResults = metawidgetInspectorFacade.inspect(klass);
+            inspectionResults = angularResultEnhancer.enhanceResults(klass, inspectionResults);
             Map<String, Object> root = new HashMap<String, Object>();
             // TODO: Provide a 'utility' class for allowing transliteration across language naming schemes
             // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
@@ -171,9 +176,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             MetadataFacet metadata = this.project.getFacet(MetadataFacet.class);
             String projectIdentifier = StringUtils.camelCase(metadata.getProjectName());
             String projectTitle = StringUtils.uncamelCase(metadata.getProjectName());
-            // TODO: Implement a better way to obtain the project's context root. The project name need not always be the
-            // context root.
-            String contextRoot = metadata.getProjectName();
+            String contextRoot = project.getFacet(PackagingFacet.class).getFinalName();
             String resourceRootPath = configuration.getString(RestFacet.ROOTPATH);
             if (resourceRootPath == null) {
                 throw new RuntimeException(
@@ -199,7 +202,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             perEntityTemplates.put("scripts/controllers/editEntityController.js.ftl", "/scripts/controllers/edit" + klass.getName() + "Controller.js");
             perEntityTemplates.put("test/e2e/scenarios.js.ftl", "/test/e2e/" + klass.getName() + "scenarios.js");
             
-            FreemarkerClient freemarkerClient = new FreemarkerClient(getTemplateBaseDir());
+            FreemarkerClient freemarkerClient = new FreemarkerClient(getTemplateBaseDir(), getClass(), "/scaffold");
             for (String entityTemplate : perEntityTemplates.keySet()) {
                 String output = freemarkerClient.processFTL(root, entityTemplate);
                 String outputPath = perEntityTemplates.get(entityTemplate);
@@ -214,13 +217,13 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
 
     @Override
     public AccessStrategy getAccessStrategy() {
-        // TODO Auto-generated method stub
+        // Not required for the Angular scaffold generator.
         return null;
     }
 
     @Override
     public TemplateStrategy getTemplateStrategy() {
-        // TODO Auto-generated method stub
+        // Not required for the Angular scaffold generator.
         return null;
     }
 
