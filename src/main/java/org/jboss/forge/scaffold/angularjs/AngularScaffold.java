@@ -43,6 +43,7 @@ import org.jboss.forge.spec.javaee.CDIFacet;
 import org.jboss.forge.spec.javaee.EJBFacet;
 import org.jboss.forge.spec.javaee.PersistenceFacet;
 import org.jboss.forge.spec.javaee.RestFacet;
+import org.jboss.forge.spec.javaee.ServletFacet;
 import org.metawidget.util.simple.StringUtils;
 
 /**
@@ -154,6 +155,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             String outputPath = projectGlobalTemplates.get(projectGlobalTemplate);
             result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource(targetDir + outputPath), output, overwrite));
         }
+        this.project.getFacet(ServletFacet.class).getConfig().welcomeFile(targetDir + "/index.html");
         return result;
     }
 
