@@ -44,6 +44,7 @@ import org.jboss.forge.spec.javaee.EJBFacet;
 import org.jboss.forge.spec.javaee.PersistenceFacet;
 import org.jboss.forge.spec.javaee.RestFacet;
 import org.jboss.forge.spec.javaee.ServletFacet;
+import org.jboss.shrinkwrap.descriptor.api.spec.servlet.web.WebAppDescriptor;
 import org.metawidget.util.simple.StringUtils;
 
 /**
@@ -133,29 +134,32 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         }
 
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put("entityNames", entityNames);
         MetadataFacet metadata = this.project.getFacet(MetadataFacet.class);
         String projectIdentifier = StringUtils.camelCase(metadata.getProjectName());
         String projectTitle = StringUtils.uncamelCase(metadata.getProjectName());
+        root.put("entityNames", entityNames);
         root.put("projectId", projectIdentifier);
         root.put("projectTitle", projectTitle);
+        root.put("targetDir", targetDir);
 
         Map<String, String> projectGlobalTemplates = new HashMap<String, String>();
         projectGlobalTemplates.put("index.html.ftl", "/index.html");
-        projectGlobalTemplates.put("scripts/app.js.ftl", "/scripts/app.js");
-        projectGlobalTemplates.put("scripts/services/locationParser.js.ftl", "/scripts/services/locationParser.js");
-        projectGlobalTemplates.put("scripts/filters/genericSearchFilter.js.ftl", "/scripts/filters/genericSearchFilter.js");
-        projectGlobalTemplates.put("scripts/filters/startFromFilter.js.ftl", "/scripts/filters/startFromFilter.js");
-        projectGlobalTemplates.put("test/e2e/runner.html.ftl", "/test/e2e/runner.html");
+        projectGlobalTemplates.put("app.html.ftl", targetDir + "/app.html");
+        projectGlobalTemplates.put("scripts/app.js.ftl", targetDir + "/scripts/app.js");
+        projectGlobalTemplates.put("scripts/services/locationParser.js.ftl", targetDir + "/scripts/services/locationParser.js");
+        projectGlobalTemplates.put("scripts/filters/genericSearchFilter.js.ftl", targetDir
+                + "/scripts/filters/genericSearchFilter.js");
+        projectGlobalTemplates.put("scripts/filters/startFromFilter.js.ftl", targetDir + "/scripts/filters/startFromFilter.js");
+        projectGlobalTemplates.put("test/e2e/runner.html.ftl", targetDir + "/test/e2e/runner.html");
 
         FreemarkerClient freemarkerClient = new FreemarkerClient(getTemplateBaseDir(), getClass(), "/scaffold");
         WebResourceFacet web = project.getFacet(WebResourceFacet.class);
         for (String projectGlobalTemplate : projectGlobalTemplates.keySet()) {
             String output = freemarkerClient.processFTL(root, projectGlobalTemplate);
             String outputPath = projectGlobalTemplates.get(projectGlobalTemplate);
-            result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource(targetDir + outputPath), output, overwrite));
+            result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource(outputPath), output, overwrite));
         }
-        this.project.getFacet(ServletFacet.class).getConfig().welcomeFile(targetDir + "/index.html");
+        configureWelcomeFile();
         return result;
     }
 
@@ -283,6 +287,13 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             return templateBaseDir;
         }
         return null;
+    }
+
+    private void configureWelcomeFile() {
+        ServletFacet servlet = this.project.getFacet(ServletFacet.class);
+        WebAppDescriptor webAppDescriptor = servlet.getConfig().welcomeFile("/index.html");
+        servlet.saveConfig(webAppDescriptor);
+        return;
     }
 
 }
