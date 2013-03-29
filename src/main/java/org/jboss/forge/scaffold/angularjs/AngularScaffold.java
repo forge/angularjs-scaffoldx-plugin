@@ -15,9 +15,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.persistence.Entity;
 
 import org.jboss.forge.env.Configuration;
 import org.jboss.forge.parser.java.JavaClass;
+import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.project.facets.DependencyFacet;
 import org.jboss.forge.project.facets.MetadataFacet;
@@ -34,6 +36,8 @@ import org.jboss.forge.scaffoldx.ScaffoldProvider;
 import org.jboss.forge.scaffoldx.TemplateStrategy;
 import org.jboss.forge.scaffoldx.facets.ScaffoldTemplateFacet;
 import org.jboss.forge.scaffoldx.util.ScaffoldUtil;
+import org.jboss.forge.shell.ShellMessages;
+import org.jboss.forge.shell.ShellPrintWriter;
 import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.Alias;
 import org.jboss.forge.shell.plugins.Help;
@@ -57,6 +61,8 @@ import org.metawidget.util.simple.StringUtils;
 public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
 
     protected ShellPrompt prompt;
+
+    protected ShellPrintWriter writer;
 
     protected MetawidgetInspectorFacade metawidgetInspectorFacade;
 
@@ -125,10 +131,10 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         return result;
     }
 
-    public List<Resource<?>> generateIndex(List<Resource<?>> resources, String targetDir, boolean overwrite) {
+    public List<Resource<?>> generateIndex(List<JavaResource> resources, String targetDir, boolean overwrite) {
         ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
         List<String> entityNames = new ArrayList<String>();
-        for (Resource<?> resource : resources) {
+        for (JavaResource resource : resources) {
             JavaClass klass = getJavaClassFrom(resource);
             entityNames.add(klass.getName());
         }
@@ -166,7 +172,8 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     @Override
     public List<Resource<?>> generateFrom(List<Resource<?>> resources, String targetDir, boolean overwrite) {
         List<Resource<?>> result = new ArrayList<Resource<?>>();
-        for (Resource<?> resource : resources) {
+        List<JavaResource> filteredResources = filterResources(resources);
+        for (JavaResource resource : filteredResources) {
             JavaClass klass = getJavaClassFrom(resource);
             System.out.println("Generating artifacts from Class:" + klass.getQualifiedName());
             WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
@@ -219,7 +226,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             }
         }
 
-        List<Resource<?>> indexResources = generateIndex(resources, targetDir, overwrite);
+        List<Resource<?>> indexResources = generateIndex(filteredResources, targetDir, overwrite);
         result.addAll(indexResources);
         return result;
     }
@@ -236,16 +243,10 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         return null;
     }
 
-    private JavaClass getJavaClassFrom(Resource<?> resource) {
-        JavaResource javaResource = null;
-        if (resource instanceof JavaResource) {
-            javaResource = (JavaResource) resource;
-        } else {
-            return null;
-        }
+    private JavaClass getJavaClassFrom(JavaResource resource) {
         JavaClass entity;
         try {
-            entity = (JavaClass) javaResource.getJavaSource();
+            entity = (JavaClass) resource.getJavaSource();
         } catch (FileNotFoundException fileEx) {
             throw new RuntimeException(fileEx);
         }
@@ -294,6 +295,43 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         WebAppDescriptor webAppDescriptor = servlet.getConfig().welcomeFile("/index.html");
         servlet.saveConfig(webAppDescriptor);
         return;
+    }
+
+    private List<JavaResource> filterResources(List<Resource<?>> targets) {
+        List<JavaResource> results = new ArrayList<JavaResource>();
+        if (targets == null) {
+            targets = new ArrayList<Resource<?>>();
+        }
+        for (Resource<?> r : targets) {
+            if (r instanceof JavaResource) {
+                JavaSource<?> entity;
+                try {
+                    entity = ((JavaResource) r).getJavaSource();
+                } catch (FileNotFoundException fileEx) {
+                    displaySkippingNonexistentResourceMsg(r);
+                    continue;
+                }
+
+                if (entity instanceof JavaClass) {
+                    if (entity.hasAnnotation(Entity.class)) {
+                        results.add((JavaResource) r);
+                    } else {
+                        displaySkippingResourceMsg(entity);
+                    }
+                } else {
+                    displaySkippingResourceMsg(entity);
+                }
+            }
+        }
+        return results;
+    }
+
+    private void displaySkippingNonexistentResourceMsg(final Resource<?> r) {
+        ShellMessages.warn(writer, "Skipped non-existent Java resource [" + r.getFullyQualifiedName() + "]");
+    }
+
+    private void displaySkippingResourceMsg(final JavaSource<?> entity) {
+        ShellMessages.info(writer, "Skipped non-@Entity Java resource [" + entity.getQualifiedName() + "]");
     }
 
 }
