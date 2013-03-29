@@ -39,9 +39,11 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
         relatedResource = "${property.simpleType}Resource">
     ${relatedCollection} = ${relatedResource}.queryAll();
     <#elseif property["lookup"]??>
-    $scope.${property.name}List = [
+    <#assign
+        lookupCollection = "$scope.${property.name}List">
+    ${lookupCollection} = [
     <#list property["lookup"]?split(",") as option>
-    "${option}"<#if option_has_next>,</#if>
+        "${option}"<#if option_has_next>,</#if>
     </#list>
     ];
     </#if>

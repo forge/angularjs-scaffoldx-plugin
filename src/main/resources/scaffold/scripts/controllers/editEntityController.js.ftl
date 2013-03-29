@@ -51,12 +51,6 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
                     });
                 });
             });
-            <#elseif property["lookup"]??>
-            ${relatedCollection} = [
-            <#list property["lookup"]?split(",") as option>
-                "${option}"<#if option_has_next>,</#if>  
-            </#list>
-            ];
             </#if>
             </#list>
         };
@@ -110,6 +104,14 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
         ${modelProperty} = ${modelProperty} || [];
         ${modelProperty}.push(new ${relatedResource}());
     };
+    <#elseif property["lookup"]??>
+    <#assign
+            lookupCollection = "$scope.${property.name}List">
+    ${lookupCollection} = [
+    <#list property["lookup"]?split(",") as option>
+        "${option}"<#if option_has_next>,</#if>  
+    </#list>
+    ];
     </#if>
     </#list>
     

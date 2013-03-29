@@ -55,8 +55,8 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
     <#list properties as property>
     <#if property["lookup"]??>
     <#assign
-        lookupList="$scope.${property.name}List">
-    ${lookupList} = [
+        lookupCollection ="$scope.${property.name}List">
+    ${lookupCollection} = [
     <#list property["lookup"]?split(",") as option>
         "${option}"<#if option_has_next>,</#if>
     </#list>
