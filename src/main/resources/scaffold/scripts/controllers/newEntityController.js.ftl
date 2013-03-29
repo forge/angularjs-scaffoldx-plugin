@@ -51,6 +51,18 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
     };
     </#if>
     </#list>
+    
+    <#list properties as property>
+    <#if property["lookup"]??>
+    <#assign
+        lookupList="$scope.${property.name}List">
+    ${lookupList} = [
+    <#list property["lookup"]?split(",") as option>
+        "${option}"<#if option_has_next>,</#if>
+    </#list>
+    ];
+    </#if>
+    </#list>
 
     $scope.save = function() {
         var successCallback = function(data,responseHeaders){

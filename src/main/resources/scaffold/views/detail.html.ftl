@@ -8,6 +8,8 @@
         <#include "includes/nToOnePropertyDetail.html.ftl" >
         <#elseif (property["n-to-many"]!) == "true">
         <#include "includes/nToManyPropertyDetail.html.ftl" >
+        <#elseif property["lookup"]??>
+        <#include "includes/lookupPropertyDetail.html.ftl" >
         <#else>
         <#include "includes/basicPropertyDetail.html.ftl" >
         </#if>

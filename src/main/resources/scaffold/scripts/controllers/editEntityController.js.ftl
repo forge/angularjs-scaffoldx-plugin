@@ -51,6 +51,12 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
                     });
                 });
             });
+            <#elseif property["lookup"]??>
+            ${relatedCollection} = [
+            <#list property["lookup"]?split(",") as option>
+                "${option}"<#if option_has_next>,</#if>  
+            </#list>
+            ];
             </#if>
             </#list>
         };

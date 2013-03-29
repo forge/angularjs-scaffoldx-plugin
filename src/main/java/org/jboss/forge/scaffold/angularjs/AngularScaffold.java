@@ -73,10 +73,11 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     private Event<InstallFacets> installTemplatesEvent;
 
     @Inject
-    public AngularScaffold(final ShellPrompt prompt, final MetawidgetInspectorFacade metawidgetInspectorFacade,
-            final AngularResultEnhancer angularResultEnhancer, final Configuration configuration,
-            final Event<InstallFacets> installTemplatesEvent) {
+    public AngularScaffold(final ShellPrompt prompt, final ShellPrintWriter writer,
+            final MetawidgetInspectorFacade metawidgetInspectorFacade, final AngularResultEnhancer angularResultEnhancer,
+            final Configuration configuration, final Event<InstallFacets> installTemplatesEvent) {
         this.prompt = prompt;
+        this.writer = writer;
         this.metawidgetInspectorFacade = metawidgetInspectorFacade;
         this.angularResultEnhancer = angularResultEnhancer;
         this.configuration = configuration;
