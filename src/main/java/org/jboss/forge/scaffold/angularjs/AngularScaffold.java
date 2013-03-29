@@ -175,7 +175,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         List<JavaResource> filteredResources = filterResources(resources);
         for (JavaResource resource : filteredResources) {
             JavaClass klass = getJavaClassFrom(resource);
-            System.out.println("Generating artifacts from Class:" + klass.getQualifiedName());
+            ShellMessages.info(writer, "Generating artifacts from Class: [" + klass.getQualifiedName() + "]");
             WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
 
             List<Map<String, String>> inspectionResults = metawidgetInspectorFacade.inspect(klass);
