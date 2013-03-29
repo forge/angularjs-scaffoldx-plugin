@@ -206,23 +206,23 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             root.put("contextRoot", contextRoot);
 
             Map<String, String> perEntityTemplates = new HashMap<String, String>();
-            perEntityTemplates.put("views/detail.html.ftl", "/views/" + klass.getName() + "/detail.html");
-            perEntityTemplates.put("views/search.html.ftl", "/views/" + klass.getName() + "/search.html");
-            perEntityTemplates.put("scripts/services/entityFactory.js.ftl", "/scripts/services/" + klass.getName()
+            perEntityTemplates.put("views/detail.html.ftl", targetDir + "/views/" + klass.getName() + "/detail.html");
+            perEntityTemplates.put("views/search.html.ftl", targetDir + "/views/" + klass.getName() + "/search.html");
+            perEntityTemplates.put("scripts/services/entityFactory.js.ftl", targetDir + "/scripts/services/" + klass.getName()
                     + "Factory.js");
-            perEntityTemplates.put("scripts/controllers/newEntityController.js.ftl",
-                    "/scripts/controllers/new" + klass.getName() + "Controller.js");
-            perEntityTemplates.put("scripts/controllers/searchEntityController.js.ftl",
-                    "/scripts/controllers/search" + klass.getName() + "Controller.js");
-            perEntityTemplates.put("scripts/controllers/editEntityController.js.ftl",
-                    "/scripts/controllers/edit" + klass.getName() + "Controller.js");
-            perEntityTemplates.put("test/e2e/scenarios.js.ftl", "/test/e2e/" + klass.getName() + "scenarios.js");
+            perEntityTemplates.put("scripts/controllers/newEntityController.js.ftl", targetDir + "/scripts/controllers/new"
+                    + klass.getName() + "Controller.js");
+            perEntityTemplates.put("scripts/controllers/searchEntityController.js.ftl", targetDir
+                    + "/scripts/controllers/search" + klass.getName() + "Controller.js");
+            perEntityTemplates.put("scripts/controllers/editEntityController.js.ftl", targetDir + "/scripts/controllers/edit"
+                    + klass.getName() + "Controller.js");
+            perEntityTemplates.put("test/e2e/scenarios.js.ftl", targetDir + "/test/e2e/" + klass.getName() + "scenarios.js");
 
             FreemarkerClient freemarkerClient = new FreemarkerClient(getTemplateBaseDir(), getClass(), "/scaffold");
             for (String entityTemplate : perEntityTemplates.keySet()) {
                 String output = freemarkerClient.processFTL(root, entityTemplate);
                 String outputPath = perEntityTemplates.get(entityTemplate);
-                result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource(targetDir + outputPath), output, overwrite));
+                result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource(outputPath), output, overwrite));
             }
         }
 
