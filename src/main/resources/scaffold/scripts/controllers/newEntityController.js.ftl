@@ -22,38 +22,49 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
     <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
     <#assign
         relatedResource="${property.simpleType}Resource"
-        modelCollection="$scope.${property.name}List">
-    ${relatedResource}.queryAll(function(data){
-        ${modelCollection} = angular.fromJson(JSON.stringify(data));
+        relatedCollection="$scope.${property.name}List"
+        modelProperty = "${model}.${property.name}"
+        selectCollection="$scope.${property.name}SelectionList"
+        selectedItem="${property.name}Selection">
+    ${relatedCollection} = ${relatedResource}.queryAll(function(items){
+        ${selectCollection} = $.map(items, function(item) {
+            return ( {
+                value : item,
+                text : item.${property.optionLabel}
+            });
+        });
     });
-    </#if>
-    </#list>
     
-    <#list properties as property>
-    <#if (property["n-to-many"]!) == "true">
+    $scope.$watch("${selectedItem}", function(selection) {
+        if ( typeof selection != 'undefined') {
+            ${modelProperty} = selection.value;
+        }
+    });
+    <#elseif (property["n-to-many"]!) == "true">
     <#assign
         relatedResource = "${property.simpleType}Resource"
         relatedCollection = "$scope.${property.name}List"
         modelProperty = "${model}.${property.name}"
-        removeExistingItemFunction = "$scope.remove${property.name}"
-        addNewItemFunction = "$scope.add${property.name}">
-    ${relatedResource}.queryAll(function(data){
-        ${relatedCollection} = angular.fromJson(JSON.stringify(data));
+        selectCollection="$scope.${property.name}SelectionList"
+        selectedItem="${property.name}Selection">
+    ${relatedCollection} = ${relatedResource}.queryAll(function(items){
+        ${selectCollection} = $.map(items, function(item) {
+            return ( {
+                value : item,
+                text : item.${property.optionLabel}
+            });
+        });
     });
     
-    ${removeExistingItemFunction} = function(index) {
-        ${modelProperty}.splice(index, 1);
-    };
-    
-    ${addNewItemFunction} = function() {
-        ${modelProperty} = ${modelProperty} || [];
-        ${modelProperty}.push(new ${relatedResource}());
-    };
-    </#if>
-    </#list>
-    
-    <#list properties as property>
-    <#if property["lookup"]??>
+    $scope.$watch("${selectedItem}", function(selection) {
+        if (typeof selection != 'undefined') {
+            ${modelProperty} = [];
+            $.each(selection, function(idx,selectedItem) {
+                ${modelProperty}.push(selectedItem.value);
+            });
+        }
+    });
+    <#elseif property["lookup"]??>
     <#assign
         lookupCollection ="$scope.${property.name}List">
     ${lookupCollection} = [

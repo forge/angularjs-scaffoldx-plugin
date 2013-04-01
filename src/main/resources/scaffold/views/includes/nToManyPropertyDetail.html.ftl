@@ -6,13 +6,9 @@
     <div class="control-group" ng-class="{error: ${formProperty}.$invalid}">
         <label for="${property.name}" class="control-label">${propertyLabel}</label>
         <div class="controls">
-            <div ng-repeat="${property.name}Element in ${modelProperty}">
-                <select id="${property.name}{{$index}}" name="${property.name}{{$index}}" ng-model="${modelProperty}[$index]" ng-options="${property.name?substring(0, 1)} as ${property.name?substring(0, 1)}.${property.optionLabel} for ${property.name?substring(0, 1)} in ${property.name}List">
-                    <option value="">Choose a ${propertyLabel}</option>
-                </select> 
-                <button class="btn btn-mini btn-danger" ng-click="remove${property.name}($index)">-</button>
-            </div>
-            <button id="add${property.name}" class="btn btn-mini" ng-click="add${property.name}()">+</button>
+            <select id="${property.name}{{$index}}" name="${property.name}{{$index}}" multiple ng-model="${property.name}Selection" ng-options="${property.name?substring(0, 1)}.text for ${property.name?substring(0, 1)} in ${property.name}SelectionList">
+                <option value="">Choose a ${propertyLabel}</option>
+            </select>
         </div>
     </div>
 </#if>

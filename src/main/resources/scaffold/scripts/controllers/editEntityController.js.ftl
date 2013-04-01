@@ -27,28 +27,35 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
             <#assign
                 relatedResource = "${property.simpleType!}Resource"
                 relatedCollection = "$scope.${property.name}List"
+                selectCollection="$scope.${property.name}SelectionList"
                 modelProperty = "${model}.${property.name}"
                 originalProperty = "self.original.${property.name}">
             <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
-            ${relatedResource}.queryAll(function(data) {
-                ${relatedCollection} = data;
-                angular.forEach(${relatedCollection}, function(datum){
-                    if(angular.equals(datum, ${modelProperty})) {
-                        ${modelProperty} = datum;
-                        ${originalProperty} = datum;
+            ${relatedResource}.queryAll(function(items) {
+                ${selectCollection} = $.map(items, function(item) {
+                    var wrappedObject = {
+                        value : item,
+                        text : item.${property.optionLabel}
+                    };
+                    if(item.id == ${modelProperty}.id) {
+                        $scope.${property.name}Selection = wrappedObject;
                     }
+                    return wrappedObject;
                 });
             });
             <#elseif (property["n-to-many"]!) == "true">
-            ${relatedResource}.queryAll(function(data) {
-                ${relatedCollection} = data;
-                angular.forEach(${relatedCollection}, function(datum){
-                    angular.forEach(${modelProperty}, function(nestedDatum,index){
-                        if(angular.equals(datum,nestedDatum)) {
-                            ${modelProperty}[index] = datum;
-                            ${originalProperty}[index] = datum;
+            ${relatedResource}.queryAll(function(items) {
+                ${selectCollection} = $.map(items, function(item) {
+                    var wrappedObject = {
+                        value : item,
+                        text : item.${property.optionLabel}
+                    };
+                    for(var ctr = 0 ; ctr< $scope.groupIdentity.users.length;ctr++) {
+                        if(item.id == ${modelProperty}[ctr].id) {
+                            $scope.${property.name}Selection.push(wrappedObject);
                         }
-                    });
+                    }
+                    return wrappedObject;
                 });
             });
             </#if>
@@ -91,19 +98,27 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
     };
     
     <#list properties as property>
-    <#if (property["n-to-many"]!"false") == "true">
+    <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
     <#assign
             modelProperty = "${model}.${property.name}"
-            removeExistingItemFunction = "$scope.remove${property.name}"
-            addNewItemFunction = "$scope.add${property.name}">
-    ${removeExistingItemFunction} = function(index) {
-        ${modelProperty}.splice(index, 1);
-    };
-    
-    ${addNewItemFunction} = function() {
-        ${modelProperty} = ${modelProperty} || [];
-        ${modelProperty}.push(new ${relatedResource}());
-    };
+            selectedItem="${property.name}Selection">
+    $scope.$watch("${selectedItem}", function(selection) {
+        if ( typeof selection != 'undefined') {
+            ${modelProperty} = selection.value;
+        }
+    });
+    <#elseif (property["n-to-many"]!"false") == "true">
+    <#assign
+            modelProperty = "${model}.${property.name}"
+            selectedItem="${property.name}Selection">
+    $scope.$watch("${selectedItem}", function(selection) {
+        if (typeof selection != 'undefined') {
+            ${modelProperty} = [];
+            $.each(selection, function(idx,selectedItem) {
+                ${modelProperty}.push(selectedItem.value);
+            });
+        }
+    });
     <#elseif property["lookup"]??>
     <#assign
             lookupCollection = "$scope.${property.name}List">

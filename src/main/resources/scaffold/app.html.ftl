@@ -47,6 +47,7 @@
         </div>
     </div>
     
+    <script src="scripts/vendor/jquery-1.9.1.js"></script>
     <script src="scripts/vendor/angular.js"></script>
     <script src="scripts/vendor/angular-resource.js"></script>
     <script src="scripts/app.js"></script>

@@ -114,6 +114,8 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt,
                 web.getWebResource(targetDir + "/styles/bootstrap-responsive.css"),
                 getClass().getResourceAsStream("/scaffold/styles/bootstrap-responsive.css"), overwrite));
+        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource(targetDir + "/scripts/vendor/jquery-1.9.1.js"),
+                getClass().getResourceAsStream("/scaffold/scripts/vendor/jquery-1.9.1.js"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource(targetDir + "/scripts/vendor/angular.js"),
                 getClass().getResourceAsStream("/scaffold/scripts/vendor/angular.js"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt,
