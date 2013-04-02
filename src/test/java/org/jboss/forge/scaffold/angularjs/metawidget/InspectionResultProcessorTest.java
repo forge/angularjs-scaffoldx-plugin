@@ -13,17 +13,17 @@ import javax.persistence.TemporalType;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.JavaSourceFacet;
 import org.jboss.forge.scaffold.angularjs.AbstractHtml5ScaffoldTest;
-import org.jboss.forge.scaffold.angularjs.AngularResultEnhancer;
+import org.jboss.forge.scaffold.angularjs.InspectionResultProcessor;
 import org.jboss.forge.scaffoldx.metawidget.MetawidgetInspectorFacade;
 import org.junit.Test;
 
-public class AngularResultEnhancerTest extends AbstractHtml5ScaffoldTest {
+public class InspectionResultProcessorTest extends AbstractHtml5ScaffoldTest {
 
     @Inject
     private MetawidgetInspectorFacade metawidgetInspectorFacade;
     
     @Inject
-    private AngularResultEnhancer angularResultEnhancer;
+    private InspectionResultProcessor angularResultEnhancer;
 
     @Test
     public void testInspectBasicField() throws Exception {

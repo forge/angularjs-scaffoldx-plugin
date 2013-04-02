@@ -16,11 +16,11 @@
         <#list properties as property>
         <#if (property.hidden!"false") != "true">
             <#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
-            <td><a href="#/${entityName}s/edit/{{result.id}}">{{result.${property.name}.${property.optionLabel}}}</a></td>
+            <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}.${property.optionLabel}}}</a></td>
             <#elseif (property["n-to-many"]!"false") == "true">
             <#-- Do nothing. We won't allow for display of collection properties in search results for now. -->
             <#else>
-            <td><a href="#/${entityName}s/edit/{{result.id}}">{{result.${property.name}}}</a></td>
+            <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}}}</a></td>
             </#if>
         </#if>
         </#list>

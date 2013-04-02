@@ -2,7 +2,6 @@
     angularApp = "${projectId}" 
     angularController = "Search${entityName}Controller" 
     angularResource = "${entityName}Resource" 
-    entityId = "${entityName}Id" 
     model = "$scope.${entityName?uncap_first}" 
     entityRoute = "/${entityName}s" 
 >

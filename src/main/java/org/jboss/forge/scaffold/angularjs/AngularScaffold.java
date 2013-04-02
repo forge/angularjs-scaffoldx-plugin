@@ -66,7 +66,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
 
     protected MetawidgetInspectorFacade metawidgetInspectorFacade;
 
-    protected AngularResultEnhancer angularResultEnhancer;
+    protected InspectionResultProcessor angularResultEnhancer;
 
     protected Configuration configuration;
 
@@ -74,7 +74,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
 
     @Inject
     public AngularScaffold(final ShellPrompt prompt, final ShellPrintWriter writer,
-            final MetawidgetInspectorFacade metawidgetInspectorFacade, final AngularResultEnhancer angularResultEnhancer,
+            final MetawidgetInspectorFacade metawidgetInspectorFacade, final InspectionResultProcessor angularResultEnhancer,
             final Configuration configuration, final Event<InstallFacets> installTemplatesEvent) {
         this.prompt = prompt;
         this.writer = writer;
@@ -182,11 +182,13 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
 
             List<Map<String, String>> inspectionResults = metawidgetInspectorFacade.inspect(klass);
+            String entityId = angularResultEnhancer.fetchEntityId(klass, inspectionResults);
             inspectionResults = angularResultEnhancer.enhanceResults(klass, inspectionResults);
             Map<String, Object> root = new HashMap<String, Object>();
             // TODO: Provide a 'utility' class for allowing transliteration across language naming schemes
             // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
             root.put("entityName", klass.getName());
+            root.put("entityId", entityId);
             root.put("properties", inspectionResults);
             MetadataFacet metadata = this.project.getFacet(MetadataFacet.class);
             String projectIdentifier = StringUtils.camelCase(metadata.getProjectName());

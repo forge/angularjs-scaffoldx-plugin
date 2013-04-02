@@ -2,7 +2,7 @@
     angularApp = "${projectId}"
     angularController = "Edit${entityName}Controller"
     angularResource = "${entityName}Resource"
-    entityId = "${entityName}Id"
+    entityIdJsVar = "${entityName}Id"
     model = "$scope.${entityName?uncap_first}"
     entityRoute = "/${entityName}s"
 >
@@ -26,18 +26,18 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
             <#list properties as property>
             <#assign
                 relatedResource = "${property.simpleType!}Resource"
-                relatedCollection = "$scope.${property.name}List"
-                selectCollection="$scope.${property.name}SelectionList"
+                relatedCollection ="$scope.${property.name}SelectionList"
                 modelProperty = "${model}.${property.name}"
-                originalProperty = "self.original.${property.name}">
+                originalProperty = "self.original.${property.name}"
+                reverseId = property["reverse-primary-key"]!>
             <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
             ${relatedResource}.queryAll(function(items) {
-                ${selectCollection} = $.map(items, function(item) {
+                ${relatedCollection} = $.map(items, function(item) {
                     var wrappedObject = {
                         value : item,
                         text : item.${property.optionLabel}
                     };
-                    if(item.id == ${modelProperty}.id) {
+                    if(${modelProperty} && item.${reverseId} == ${modelProperty}.${reverseId}) {
                         $scope.${property.name}Selection = wrappedObject;
                     }
                     return wrappedObject;
@@ -45,14 +45,16 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
             });
             <#elseif (property["n-to-many"]!) == "true">
             ${relatedResource}.queryAll(function(items) {
-                ${selectCollection} = $.map(items, function(item) {
+                ${relatedCollection} = $.map(items, function(item) {
                     var wrappedObject = {
                         value : item,
                         text : item.${property.optionLabel}
                     };
-                    for(var ctr = 0 ; ctr< $scope.groupIdentity.users.length;ctr++) {
-                        if(item.id == ${modelProperty}[ctr].id) {
-                            $scope.${property.name}Selection.push(wrappedObject);
+                    if(${modelProperty}){
+                        for(var ctr = 0; ctr < ${modelProperty}.length; ctr++) {
+                            if(item.${reverseId} == ${modelProperty}[ctr].${reverseId}) {
+                                $scope.${property.name}Selection.push(wrappedObject);
+                            }
                         }
                     }
                     return wrappedObject;
@@ -64,7 +66,7 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
         var errorCallback = function() {
             $location.path("${entityRoute}");
         };
-        ${angularResource}.get({${entityId}:$routeParams.${entityId}}, successCallback, errorCallback);
+        ${angularResource}.get({${entityIdJsVar}:$routeParams.${entityIdJsVar}}, successCallback, errorCallback);
     };
 
     $scope.isClean = function() {
@@ -103,7 +105,7 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
             modelProperty = "${model}.${property.name}"
             selectedItem="${property.name}Selection">
     $scope.$watch("${selectedItem}", function(selection) {
-        if ( typeof selection != 'undefined') {
+        if (typeof selection != 'undefined') {
             ${modelProperty} = selection.value;
         }
     });
