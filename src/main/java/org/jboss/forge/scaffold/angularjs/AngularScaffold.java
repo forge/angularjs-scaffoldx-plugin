@@ -296,9 +296,14 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     }
 
     private void configureWelcomeFile() {
+        String indexFileEntry = "/index.html";
+        
         ServletFacet servlet = this.project.getFacet(ServletFacet.class);
-        WebAppDescriptor webAppDescriptor = servlet.getConfig().welcomeFile("/index.html");
-        servlet.saveConfig(webAppDescriptor);
+        WebAppDescriptor webAppDescriptor = servlet.getConfig();
+        if (!webAppDescriptor.getWelcomeFiles().contains(indexFileEntry)) {
+            webAppDescriptor = webAppDescriptor.welcomeFile(indexFileEntry);
+            servlet.saveConfig(webAppDescriptor);
+        }
         return;
     }
 
