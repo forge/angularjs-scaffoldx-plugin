@@ -1,7 +1,7 @@
 <#assign formName="${entityName}Form"
         formProperty = "${formName}.${property.name}"
         modelProperty = "${entityName?uncap_first}.${property.name}"
-        propertyLabel = "${property.name?cap_first}">
+        propertyLabel = "${property.label}">
 <#if (property.hidden!"false") == "false">
     <div class="control-group" ng-class="{error: ${formProperty}.$invalid}">
         <label for="${property.name}" class="control-label">${propertyLabel}</label>

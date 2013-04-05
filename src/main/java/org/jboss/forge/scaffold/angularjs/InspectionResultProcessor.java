@@ -14,6 +14,7 @@ import org.jboss.forge.resources.java.JavaResource;
 import org.jboss.forge.scaffoldx.metawidget.MetawidgetInspectorFacade;
 import org.jboss.forge.scaffoldx.metawidget.inspector.ForgeInspectionResultConstants;
 import org.jboss.forge.shell.ShellPrompt;
+import org.metawidget.util.simple.StringUtils;
 
 public class InspectionResultProcessor {
 
@@ -30,6 +31,7 @@ public class InspectionResultProcessor {
 
     public List<Map<String, String>> enhanceResults(JavaClass entity, List<Map<String, String>> inspectionResults) {
         for (Map<String, String> propertyAttributes : inspectionResults) {
+            populateLabelStrings(propertyAttributes);
             canonicalizeNumberTypes(propertyAttributes);
             chooseRelationshipOptionLabels(entity, propertyAttributes);
         }
@@ -44,6 +46,11 @@ public class InspectionResultProcessor {
             }
         }
         throw new IllegalStateException("No Id was found for the class:" + entity.getName());
+    }
+
+    private void populateLabelStrings(Map<String, String> propertyAttributes) {
+        String propertyName = propertyAttributes.get("name");
+        propertyAttributes.put("label", StringUtils.uncamelCase(propertyName));
     }
 
     private void canonicalizeNumberTypes(Map<String, String> propertyAttributes) {

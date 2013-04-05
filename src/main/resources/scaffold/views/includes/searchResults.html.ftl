@@ -5,7 +5,7 @@
         <#if (property.hidden!"false") != "true">
             <#if (property["n-to-many"]!"false") != "true">
             <#-- Display only singular properties for now. Exclude collections as they cannot be displayed "meaningfully". -->
-            <th>${property.name?cap_first}</th>
+            <th>${property.label}</th>
             </#if>
         </#if>
         </#list>
