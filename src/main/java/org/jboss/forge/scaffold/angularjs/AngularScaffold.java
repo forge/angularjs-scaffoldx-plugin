@@ -42,6 +42,7 @@ import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.Alias;
 import org.jboss.forge.shell.plugins.Help;
 import org.jboss.forge.shell.plugins.RequiresFacet;
+import org.jboss.forge.shell.project.ProjectScoped;
 import org.jboss.forge.shell.util.ConstraintInspector;
 import org.jboss.forge.spec.javaee.CDIFacet;
 import org.jboss.forge.spec.javaee.EJBFacet;
@@ -73,6 +74,14 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     private Event<InstallFacets> installTemplatesEvent;
 
     @Inject
+    @ProjectScoped
+    private WebResourceFacet web;
+
+    @Inject
+    @ProjectScoped
+    private MetadataFacet metadata;
+
+    @Inject
     public AngularScaffold(final ShellPrompt prompt, final ShellPrintWriter writer,
             final MetawidgetInspectorFacade metawidgetInspectorFacade, final InspectionResultProcessor angularResultEnhancer,
             final Configuration configuration, final Event<InstallFacets> installTemplatesEvent) {
@@ -99,7 +108,6 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
 
     public List<Resource<?>> setup(String targetDir, boolean overwrite, boolean installTemplates) {
         ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
-        WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
 
         // Copy templates
         if (installTemplates) {
@@ -114,7 +122,8 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt,
                 web.getWebResource(targetDir + "/styles/bootstrap-responsive.css"),
                 getClass().getResourceAsStream("/scaffold/styles/bootstrap-responsive.css"), overwrite));
-        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource(targetDir + "/scripts/vendor/jquery-1.9.1.js"),
+        result.add(ScaffoldUtil.createOrOverwrite(this.prompt,
+                web.getWebResource(targetDir + "/scripts/vendor/jquery-1.9.1.js"),
                 getClass().getResourceAsStream("/scaffold/scripts/vendor/jquery-1.9.1.js"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource(targetDir + "/scripts/vendor/angular.js"),
                 getClass().getResourceAsStream("/scaffold/scripts/vendor/angular.js"), overwrite));
@@ -143,12 +152,9 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         }
 
         Map<String, Object> root = new HashMap<String, Object>();
-        MetadataFacet metadata = this.project.getFacet(MetadataFacet.class);
-        String projectIdentifier = StringUtils.camelCase(metadata.getProjectName());
-        String projectTitle = StringUtils.uncamelCase(metadata.getProjectName());
         root.put("entityNames", entityNames);
-        root.put("projectId", projectIdentifier);
-        root.put("projectTitle", projectTitle);
+        root.put("projectId", StringUtils.camelCase(metadata.getProjectName()));
+        root.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
         root.put("targetDir", targetDir);
 
         Map<String, String> projectGlobalTemplates = new HashMap<String, String>();
@@ -162,7 +168,6 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         projectGlobalTemplates.put("test/e2e/runner.html.ftl", targetDir + "/test/e2e/runner.html");
 
         FreemarkerClient freemarkerClient = new FreemarkerClient(getTemplateBaseDir(), getClass(), "/scaffold");
-        WebResourceFacet web = project.getFacet(WebResourceFacet.class);
         for (String projectGlobalTemplate : projectGlobalTemplates.keySet()) {
             String output = freemarkerClient.processFTL(root, projectGlobalTemplate);
             String outputPath = projectGlobalTemplates.get(projectGlobalTemplate);
@@ -179,36 +184,20 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         for (JavaResource resource : filteredResources) {
             JavaClass klass = getJavaClassFrom(resource);
             ShellMessages.info(writer, "Generating artifacts from Class: [" + klass.getQualifiedName() + "]");
-            WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
 
             List<Map<String, String>> inspectionResults = metawidgetInspectorFacade.inspect(klass);
             String entityId = angularResultEnhancer.fetchEntityId(klass, inspectionResults);
             inspectionResults = angularResultEnhancer.enhanceResults(klass, inspectionResults);
-            Map<String, Object> root = new HashMap<String, Object>();
             // TODO: Provide a 'utility' class for allowing transliteration across language naming schemes
             // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
+            Map<String, Object> root = new HashMap<String, Object>();
             root.put("entityName", klass.getName());
             root.put("entityId", entityId);
             root.put("properties", inspectionResults);
-            MetadataFacet metadata = this.project.getFacet(MetadataFacet.class);
-            String projectIdentifier = StringUtils.camelCase(metadata.getProjectName());
-            String projectTitle = StringUtils.uncamelCase(metadata.getProjectName());
-            String contextRoot = project.getFacet(PackagingFacet.class).getFinalName();
-            String resourceRootPath = configuration.getString(RestFacet.ROOTPATH);
-            if (resourceRootPath == null) {
-                throw new RuntimeException(
-                        "This project does not have a rootpath for REST resources. You may need to run \"rest setup\" in Forge.");
-            }
-            if (resourceRootPath.startsWith("/")) {
-                resourceRootPath = resourceRootPath.substring(1);
-            }
-            if (resourceRootPath.endsWith("/")) {
-                resourceRootPath = resourceRootPath.substring(0, resourceRootPath.length() - 1);
-            }
-            root.put("projectId", projectIdentifier);
-            root.put("projectTitle", projectTitle);
-            root.put("resourceRootPath", resourceRootPath);
-            root.put("contextRoot", contextRoot);
+            root.put("projectId", StringUtils.camelCase(metadata.getProjectName()));
+            root.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
+            root.put("resourceRootPath", getRootResourcePath());
+            root.put("contextRoot", project.getFacet(PackagingFacet.class).getFinalName());
 
             Map<String, String> perEntityTemplates = new HashMap<String, String>();
             perEntityTemplates.put("views/detail.html.ftl", targetDir + "/views/" + klass.getName() + "/detail.html");
@@ -248,6 +237,56 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         return null;
     }
 
+    private void configureWelcomeFile() {
+        String indexFileEntry = "/index.html";
+
+        ServletFacet servlet = this.project.getFacet(ServletFacet.class);
+        WebAppDescriptor webAppDescriptor = servlet.getConfig();
+        if (!webAppDescriptor.getWelcomeFiles().contains(indexFileEntry)) {
+            webAppDescriptor = webAppDescriptor.welcomeFile(indexFileEntry);
+            servlet.saveConfig(webAppDescriptor);
+        }
+        return;
+    }
+
+    private void displaySkippingNonexistentResourceMsg(final Resource<?> r) {
+        ShellMessages.warn(writer, "Skipped non-existent Java resource [" + r.getFullyQualifiedName() + "]");
+    }
+
+    private void displaySkippingResourceMsg(final JavaSource<?> entity) {
+        ShellMessages.info(writer, "Skipped non-@Entity Java resource [" + entity.getQualifiedName() + "]");
+    }
+
+    private List<JavaResource> filterResources(List<Resource<?>> targets) {
+        List<JavaResource> results = new ArrayList<JavaResource>();
+        if (targets == null) {
+            targets = new ArrayList<Resource<?>>();
+        }
+        for (Resource<?> r : targets) {
+            if (r instanceof JavaResource) {
+                JavaSource<?> entity;
+                try {
+                    entity = ((JavaResource) r).getJavaSource();
+                } catch (FileNotFoundException fileEx) {
+                    displaySkippingNonexistentResourceMsg(r);
+                    continue;
+                }
+
+                // Filter Java classes that have the JPA @Entity annotation, and skip the rest
+                if (entity instanceof JavaClass) {
+                    if (entity.hasAnnotation(Entity.class)) {
+                        results.add((JavaResource) r);
+                    } else {
+                        displaySkippingResourceMsg(entity);
+                    }
+                } else {
+                    displaySkippingResourceMsg(entity);
+                }
+            }
+        }
+        return results;
+    }
+
     private JavaClass getJavaClassFrom(JavaResource resource) {
         JavaClass entity;
         try {
@@ -256,6 +295,32 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             throw new RuntimeException(fileEx);
         }
         return entity;
+    }
+
+    private String getRootResourcePath() {
+        String resourceRootPath = configuration.getString(RestFacet.ROOTPATH);
+        if (resourceRootPath == null) {
+            throw new RuntimeException(
+                    "This project does not have a rootpath for REST resources. You may need to run \"rest setup\" in Forge.");
+        }
+        if (resourceRootPath.startsWith("/")) {
+            resourceRootPath = resourceRootPath.substring(1);
+        }
+        if (resourceRootPath.endsWith("/")) {
+            resourceRootPath = resourceRootPath.substring(0, resourceRootPath.length() - 1);
+        }
+        return resourceRootPath;
+    }
+
+    private File getTemplateBaseDir() {
+        if (project.hasFacet(ScaffoldTemplateFacet.class)) {
+            ScaffoldTemplateFacet templateFacet = project.getFacet(ScaffoldTemplateFacet.class);
+            String scaffoldProviderName = ConstraintInspector.getName(AngularScaffold.class);
+            DirectoryResource templateDirectory = templateFacet.getTemplateDirectory(scaffoldProviderName);
+            File templateBaseDir = templateDirectory.getUnderlyingResourceObject();
+            return templateBaseDir;
+        }
+        return null;
     }
 
     private void installTemplates() {
@@ -282,66 +347,6 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
                 throw new RuntimeException(ioEx);
             }
         }
-    }
-
-    private File getTemplateBaseDir() {
-        if (project.hasFacet(ScaffoldTemplateFacet.class)) {
-            ScaffoldTemplateFacet templateFacet = project.getFacet(ScaffoldTemplateFacet.class);
-            String scaffoldProviderName = ConstraintInspector.getName(AngularScaffold.class);
-            DirectoryResource templateDirectory = templateFacet.getTemplateDirectory(scaffoldProviderName);
-            File templateBaseDir = templateDirectory.getUnderlyingResourceObject();
-            return templateBaseDir;
-        }
-        return null;
-    }
-
-    private void configureWelcomeFile() {
-        String indexFileEntry = "/index.html";
-        
-        ServletFacet servlet = this.project.getFacet(ServletFacet.class);
-        WebAppDescriptor webAppDescriptor = servlet.getConfig();
-        if (!webAppDescriptor.getWelcomeFiles().contains(indexFileEntry)) {
-            webAppDescriptor = webAppDescriptor.welcomeFile(indexFileEntry);
-            servlet.saveConfig(webAppDescriptor);
-        }
-        return;
-    }
-
-    private List<JavaResource> filterResources(List<Resource<?>> targets) {
-        List<JavaResource> results = new ArrayList<JavaResource>();
-        if (targets == null) {
-            targets = new ArrayList<Resource<?>>();
-        }
-        for (Resource<?> r : targets) {
-            if (r instanceof JavaResource) {
-                JavaSource<?> entity;
-                try {
-                    entity = ((JavaResource) r).getJavaSource();
-                } catch (FileNotFoundException fileEx) {
-                    displaySkippingNonexistentResourceMsg(r);
-                    continue;
-                }
-
-                if (entity instanceof JavaClass) {
-                    if (entity.hasAnnotation(Entity.class)) {
-                        results.add((JavaResource) r);
-                    } else {
-                        displaySkippingResourceMsg(entity);
-                    }
-                } else {
-                    displaySkippingResourceMsg(entity);
-                }
-            }
-        }
-        return results;
-    }
-
-    private void displaySkippingNonexistentResourceMsg(final Resource<?> r) {
-        ShellMessages.warn(writer, "Skipped non-existent Java resource [" + r.getFullyQualifiedName() + "]");
-    }
-
-    private void displaySkippingResourceMsg(final JavaSource<?> entity) {
-        ShellMessages.info(writer, "Skipped non-@Entity Java resource [" + entity.getQualifiedName() + "]");
     }
 
 }
