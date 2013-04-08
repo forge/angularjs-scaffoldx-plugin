@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.hamcrest.core.IsEqual;
 import org.jboss.forge.scaffoldx.freemarker.FreemarkerClient;
+import org.jboss.forge.scaffoldx.freemarker.TemplateLoaderConfig;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -23,7 +24,8 @@ public class FreemarkerClientPartialsBasicPropertyTest {
     
     @BeforeClass
     public static void setupClass() throws Exception {
-        freemarkerClient = new FreemarkerClient(null, FreemarkerClientPartialsBasicPropertyTest.class, "/scaffold");
+        freemarkerClient = new FreemarkerClient(new TemplateLoaderConfig(null, FreemarkerClientPartialsBasicPropertyTest.class,
+                "/scaffold"));
     }
     
     @Test

@@ -1,5 +1,9 @@
 package org.jboss.forge.scaffold.angularjs;
 
+import static org.jboss.forge.scaffold.angularjs.ResourceProvider.getEntityTemplates;
+import static org.jboss.forge.scaffold.angularjs.ResourceProvider.getGlobalTemplates;
+import static org.jboss.forge.scaffold.angularjs.ResourceProvider.getStatics;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,6 +18,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.Entity;
 
@@ -29,20 +34,19 @@ import org.jboss.forge.project.facets.events.InstallFacets;
 import org.jboss.forge.resources.DirectoryResource;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.resources.java.JavaResource;
-import org.jboss.forge.scaffoldx.freemarker.FreemarkerClient;
 import org.jboss.forge.scaffoldx.metawidget.MetawidgetInspectorFacade;
 import org.jboss.forge.scaffoldx.AccessStrategy;
 import org.jboss.forge.scaffoldx.ScaffoldProvider;
+import org.jboss.forge.scaffoldx.ScaffoldQualifier;
 import org.jboss.forge.scaffoldx.TemplateStrategy;
 import org.jboss.forge.scaffoldx.facets.ScaffoldTemplateFacet;
-import org.jboss.forge.scaffoldx.util.ScaffoldUtil;
+import org.jboss.forge.scaffoldx.freemarker.TemplateLoaderConfig;
 import org.jboss.forge.shell.ShellMessages;
 import org.jboss.forge.shell.ShellPrintWriter;
 import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.Alias;
 import org.jboss.forge.shell.plugins.Help;
 import org.jboss.forge.shell.plugins.RequiresFacet;
-import org.jboss.forge.shell.project.ProjectScoped;
 import org.jboss.forge.shell.util.ConstraintInspector;
 import org.jboss.forge.spec.javaee.CDIFacet;
 import org.jboss.forge.spec.javaee.EJBFacet;
@@ -61,6 +65,8 @@ import org.metawidget.util.simple.StringUtils;
         RestFacet.class })
 public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
 
+    public static final String SCAFFOLD_DIR = "/scaffold";
+
     protected ShellPrompt prompt;
 
     protected ShellPrintWriter writer;
@@ -74,13 +80,14 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     private Event<InstallFacets> installTemplatesEvent;
 
     @Inject
-    @ProjectScoped
-    private WebResourceFacet web;
-
-    @Inject
-    @ProjectScoped
     private MetadataFacet metadata;
 
+    @Inject
+    private CopyWebResourcesCommand copyResourcesCommand;
+    
+    @Inject
+    private ProcessWithFreemarkerCommand processWithFreemarkerCommand;
+    
     @Inject
     public AngularScaffold(final ShellPrompt prompt, final ShellPrintWriter writer,
             final MetawidgetInspectorFacade metawidgetInspectorFacade, final InspectionResultProcessor angularResultEnhancer,
@@ -115,39 +122,14 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         }
 
         // Setup static resources.
-        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource(targetDir + "/styles/bootstrap.css"),
-                getClass().getResourceAsStream("/scaffold/styles/bootstrap.css"), overwrite));
-        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource(targetDir + "/styles/main.css"), getClass()
-                .getResourceAsStream("/scaffold/styles/main.css"), overwrite));
-        result.add(ScaffoldUtil.createOrOverwrite(this.prompt,
-                web.getWebResource(targetDir + "/styles/bootstrap-responsive.css"),
-                getClass().getResourceAsStream("/scaffold/styles/bootstrap-responsive.css"), overwrite));
-        result.add(ScaffoldUtil.createOrOverwrite(this.prompt,
-                web.getWebResource(targetDir + "/scripts/vendor/jquery-1.9.1.js"),
-                getClass().getResourceAsStream("/scaffold/scripts/vendor/jquery-1.9.1.js"), overwrite));
-        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource(targetDir + "/scripts/vendor/angular.js"),
-                getClass().getResourceAsStream("/scaffold/scripts/vendor/angular.js"), overwrite));
-        result.add(ScaffoldUtil.createOrOverwrite(this.prompt,
-                web.getWebResource(targetDir + "/scripts/vendor/angular-resource.js"),
-                getClass().getResourceAsStream("/scaffold/scripts/vendor/angular-resource.js"), overwrite));
-        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource(targetDir + "/img/forge-logo.png"),
-                getClass().getResourceAsStream("/scaffold/img/forge-logo.png"), overwrite));
-        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource(targetDir + "/img/glyphicons-halflings.png"),
-                getClass().getResourceAsStream("/scaffold/img/glyphicons-halflings.png"), overwrite));
-        result.add(ScaffoldUtil.createOrOverwrite(this.prompt,
-                web.getWebResource(targetDir + "/img/glyphicons-halflings-white.png"),
-                getClass().getResourceAsStream("/scaffold/img/glyphicons-halflings-white.png"), overwrite));
-        result.add(ScaffoldUtil.createOrOverwrite(this.prompt,
-                web.getWebResource(targetDir + "/test/lib/angular/angular-scenario.js"),
-                getClass().getResourceAsStream("/scaffold/test/lib/angular/angular-scenario.js"), overwrite));
+        result.addAll(copyResourcesCommand.execute(getStatics(targetDir), overwrite));
         return result;
     }
 
-    public List<Resource<?>> generateIndex(List<JavaResource> resources, String targetDir, boolean overwrite) {
+    public List<Resource<?>> generateIndex(List<JavaClass> filteredClasses, String targetDir, boolean overwrite) {
         ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
         List<String> entityNames = new ArrayList<String>();
-        for (JavaResource resource : resources) {
-            JavaClass klass = getJavaClassFrom(resource);
+        for (JavaClass klass : filteredClasses) {
             entityNames.add(klass.getName());
         }
 
@@ -157,22 +139,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         root.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
         root.put("targetDir", targetDir);
 
-        Map<String, String> projectGlobalTemplates = new HashMap<String, String>();
-        projectGlobalTemplates.put("index.html.ftl", "/index.html");
-        projectGlobalTemplates.put("app.html.ftl", targetDir + "/app.html");
-        projectGlobalTemplates.put("scripts/app.js.ftl", targetDir + "/scripts/app.js");
-        projectGlobalTemplates.put("scripts/services/locationParser.js.ftl", targetDir + "/scripts/services/locationParser.js");
-        projectGlobalTemplates.put("scripts/filters/genericSearchFilter.js.ftl", targetDir
-                + "/scripts/filters/genericSearchFilter.js");
-        projectGlobalTemplates.put("scripts/filters/startFromFilter.js.ftl", targetDir + "/scripts/filters/startFromFilter.js");
-        projectGlobalTemplates.put("test/e2e/runner.html.ftl", targetDir + "/test/e2e/runner.html");
-
-        FreemarkerClient freemarkerClient = new FreemarkerClient(getTemplateBaseDir(), getClass(), "/scaffold");
-        for (String projectGlobalTemplate : projectGlobalTemplates.keySet()) {
-            String output = freemarkerClient.processFTL(root, projectGlobalTemplate);
-            String outputPath = projectGlobalTemplates.get(projectGlobalTemplate);
-            result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource(outputPath), output, overwrite));
-        }
+        result.addAll(processWithFreemarkerCommand.execute(getGlobalTemplates(targetDir), root, overwrite));
         configureWelcomeFile();
         return result;
     }
@@ -180,9 +147,8 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     @Override
     public List<Resource<?>> generateFrom(List<Resource<?>> resources, String targetDir, boolean overwrite) {
         List<Resource<?>> result = new ArrayList<Resource<?>>();
-        List<JavaResource> filteredResources = filterResources(resources);
-        for (JavaResource resource : filteredResources) {
-            JavaClass klass = getJavaClassFrom(resource);
+        List<JavaClass> filteredClasses = filterResources(resources);
+        for (JavaClass klass : filteredClasses) {
             ShellMessages.info(writer, "Generating artifacts from Class: [" + klass.getQualifiedName() + "]");
 
             List<Map<String, String>> inspectionResults = metawidgetInspectorFacade.inspect(klass);
@@ -199,28 +165,10 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             root.put("resourceRootPath", getRootResourcePath());
             root.put("contextRoot", project.getFacet(PackagingFacet.class).getFinalName());
 
-            Map<String, String> perEntityTemplates = new HashMap<String, String>();
-            perEntityTemplates.put("views/detail.html.ftl", targetDir + "/views/" + klass.getName() + "/detail.html");
-            perEntityTemplates.put("views/search.html.ftl", targetDir + "/views/" + klass.getName() + "/search.html");
-            perEntityTemplates.put("scripts/services/entityFactory.js.ftl", targetDir + "/scripts/services/" + klass.getName()
-                    + "Factory.js");
-            perEntityTemplates.put("scripts/controllers/newEntityController.js.ftl", targetDir + "/scripts/controllers/new"
-                    + klass.getName() + "Controller.js");
-            perEntityTemplates.put("scripts/controllers/searchEntityController.js.ftl", targetDir
-                    + "/scripts/controllers/search" + klass.getName() + "Controller.js");
-            perEntityTemplates.put("scripts/controllers/editEntityController.js.ftl", targetDir + "/scripts/controllers/edit"
-                    + klass.getName() + "Controller.js");
-            perEntityTemplates.put("test/e2e/scenarios.js.ftl", targetDir + "/test/e2e/" + klass.getName() + "scenarios.js");
-
-            FreemarkerClient freemarkerClient = new FreemarkerClient(getTemplateBaseDir(), getClass(), "/scaffold");
-            for (String entityTemplate : perEntityTemplates.keySet()) {
-                String output = freemarkerClient.processFTL(root, entityTemplate);
-                String outputPath = perEntityTemplates.get(entityTemplate);
-                result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource(outputPath), output, overwrite));
-            }
+            result.addAll(processWithFreemarkerCommand.execute(getEntityTemplates(targetDir, klass.getName()), root, overwrite));
         }
 
-        List<Resource<?>> indexResources = generateIndex(filteredResources, targetDir, overwrite);
+        List<Resource<?>> indexResources = generateIndex(filteredClasses, targetDir, overwrite);
         result.addAll(indexResources);
         return result;
     }
@@ -257,8 +205,8 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         ShellMessages.info(writer, "Skipped non-@Entity Java resource [" + entity.getQualifiedName() + "]");
     }
 
-    private List<JavaResource> filterResources(List<Resource<?>> targets) {
-        List<JavaResource> results = new ArrayList<JavaResource>();
+    private List<JavaClass> filterResources(List<Resource<?>> targets) {
+        List<JavaClass> results = new ArrayList<JavaClass>();
         if (targets == null) {
             targets = new ArrayList<Resource<?>>();
         }
@@ -275,7 +223,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
                 // Filter Java classes that have the JPA @Entity annotation, and skip the rest
                 if (entity instanceof JavaClass) {
                     if (entity.hasAnnotation(Entity.class)) {
-                        results.add((JavaResource) r);
+                        results.add((JavaClass) entity);
                     } else {
                         displaySkippingResourceMsg(entity);
                     }
@@ -285,16 +233,6 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             }
         }
         return results;
-    }
-
-    private JavaClass getJavaClassFrom(JavaResource resource) {
-        JavaClass entity;
-        try {
-            entity = (JavaClass) resource.getJavaSource();
-        } catch (FileNotFoundException fileEx) {
-            throw new RuntimeException(fileEx);
-        }
-        return entity;
     }
 
     private String getRootResourcePath() {
@@ -310,17 +248,6 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             resourceRootPath = resourceRootPath.substring(0, resourceRootPath.length() - 1);
         }
         return resourceRootPath;
-    }
-
-    private File getTemplateBaseDir() {
-        if (project.hasFacet(ScaffoldTemplateFacet.class)) {
-            ScaffoldTemplateFacet templateFacet = project.getFacet(ScaffoldTemplateFacet.class);
-            String scaffoldProviderName = ConstraintInspector.getName(AngularScaffold.class);
-            DirectoryResource templateDirectory = templateFacet.getTemplateDirectory(scaffoldProviderName);
-            File templateBaseDir = templateDirectory.getUnderlyingResourceObject();
-            return templateBaseDir;
-        }
-        return null;
     }
 
     private void installTemplates() {
@@ -347,6 +274,27 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
                 throw new RuntimeException(ioEx);
             }
         }
+    }
+    
+    @Produces
+    @ScaffoldQualifier
+    public TemplateLoaderConfig createTemplateLoaderConfig()
+    {
+        String providerName = ConstraintInspector.getName(AngularScaffold.class);
+        File templateBaseDir = getTemplateBaseDir(providerName);
+        return new TemplateLoaderConfig(templateBaseDir, getClass(), SCAFFOLD_DIR);
+    }
+    
+    private File getTemplateBaseDir(String scaffoldProviderName)
+    {
+       if (project != null && project.hasFacet(ScaffoldTemplateFacet.class))
+       {
+          ScaffoldTemplateFacet templateFacet = project.getFacet(ScaffoldTemplateFacet.class);
+          DirectoryResource templateDirectory = templateFacet.getTemplateDirectory(scaffoldProviderName);
+          File templateBaseDir = templateDirectory.getUnderlyingResourceObject();
+          return templateBaseDir;
+       }
+       return null;
     }
 
 }

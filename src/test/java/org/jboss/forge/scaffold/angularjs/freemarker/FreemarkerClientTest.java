@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.hamcrest.core.IsNull;
 import org.jboss.forge.scaffoldx.freemarker.FreemarkerClient;
+import org.jboss.forge.scaffoldx.freemarker.TemplateLoaderConfig;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,7 +19,7 @@ public class FreemarkerClientTest {
     
     @BeforeClass
     public static void setupClass() throws Exception {
-        freemarkerClient = new FreemarkerClient(null, FreemarkerClient.class, "/scaffold");
+        freemarkerClient = new FreemarkerClient(new TemplateLoaderConfig(null, FreemarkerClient.class, "/scaffold"));
     }
     
     @Test
