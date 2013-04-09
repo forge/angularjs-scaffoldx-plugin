@@ -83,10 +83,13 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     private MetadataFacet metadata;
 
     @Inject
-    private CopyWebResourcesCommand copyResourcesCommand;
+    private Event<CopyWebResourcesEvent> copyResourcesEvent;
     
     @Inject
-    private ProcessWithFreemarkerCommand processWithFreemarkerCommand;
+    private Event<ProcessWithFreemarkerEvent> processWithFreemarkerEvent;
+    
+    @Inject
+    private ResourceRegistry resourceRegistry;
     
     @Inject
     public AngularScaffold(final ShellPrompt prompt, final ShellPrintWriter writer,
@@ -122,7 +125,8 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         }
 
         // Setup static resources.
-        result.addAll(copyResourcesCommand.execute(getStatics(targetDir), overwrite));
+        copyResourcesEvent.fire(new CopyWebResourcesEvent(getStatics(targetDir), overwrite));
+        result.addAll(resourceRegistry.getCreatedResources());
         return result;
     }
 
@@ -139,7 +143,8 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         root.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
         root.put("targetDir", targetDir);
 
-        result.addAll(processWithFreemarkerCommand.execute(getGlobalTemplates(targetDir), root, overwrite));
+        processWithFreemarkerEvent.fire(new ProcessWithFreemarkerEvent(getGlobalTemplates(targetDir), root, overwrite));
+        result.addAll(resourceRegistry.getCreatedResources());
         configureWelcomeFile();
         return result;
     }
@@ -165,7 +170,8 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             root.put("resourceRootPath", getRootResourcePath());
             root.put("contextRoot", project.getFacet(PackagingFacet.class).getFinalName());
 
-            result.addAll(processWithFreemarkerCommand.execute(getEntityTemplates(targetDir, klass.getName()), root, overwrite));
+            processWithFreemarkerEvent.fire(new ProcessWithFreemarkerEvent(getEntityTemplates(targetDir, klass.getName()), root, overwrite));
+            result.addAll(resourceRegistry.getCreatedResources());
         }
 
         List<Resource<?>> indexResources = generateIndex(filteredClasses, targetDir, overwrite);

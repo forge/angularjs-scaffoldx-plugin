@@ -2,8 +2,7 @@ package org.jboss.forge.scaffold.angularjs;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.forge.project.facets.WebResourceFacet;
@@ -19,17 +18,23 @@ public class ProcessWithFreemarkerCommand {
 
     @Inject
     private WebResourceFacet web;
-    
+
     @Inject
     private FreemarkerClient freemarkerClient;
-    
-    public List<Resource<?>> execute(List<ScaffoldResource> templates, Map<String,Object> root, boolean overwrite) {
+
+    @Inject
+    private ResourceRegistry resourceRegistry;
+
+    public void execute(@Observes ProcessWithFreemarkerEvent event) {
+        resourceRegistry.clear();
         List<Resource<?>> resources = new ArrayList<Resource<?>>();
-        for (ScaffoldResource projectGlobalTemplate : templates) {
-            String output = freemarkerClient.processFTL(root, projectGlobalTemplate.getSource());
-            resources.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource(projectGlobalTemplate.getDestination()), output, overwrite));
+        for (ScaffoldResource projectGlobalTemplate : event.getResources()) {
+            String output = freemarkerClient.processFTL(event.getRoot(), projectGlobalTemplate.getSource());
+            resources.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource(projectGlobalTemplate.getDestination()),
+                    output, event.isOverwrite()));
         }
-        return resources;
+        resourceRegistry.addAll(resources);
+        return;
     }
-    
+
 }
