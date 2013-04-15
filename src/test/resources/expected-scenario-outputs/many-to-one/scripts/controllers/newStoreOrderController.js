@@ -2,10 +2,20 @@
 angular.module('test').controller('NewStoreOrderController', function ($scope, $location, locationParser, StoreOrderResource , CustomerResource) {
     $scope.disabled = false;
     
-    CustomerResource.queryAll(function(data){
-        $scope.customerList = angular.fromJson(JSON.stringify(data));
+    $scope.customerList = CustomerResource.queryAll(function(items){
+        $scope.customerSelectionList = $.map(items, function(item) {
+            return ( {
+                value : item,
+                text : item.id
+            });
+        });
     });
     
+    $scope.$watch("customerSelection", function(selection) {
+        if ( typeof selection != 'undefined') {
+            $scope.storeOrder.customer = selection.value;
+        }
+    });
 
     $scope.save = function() {
         var successCallback = function(data,responseHeaders){

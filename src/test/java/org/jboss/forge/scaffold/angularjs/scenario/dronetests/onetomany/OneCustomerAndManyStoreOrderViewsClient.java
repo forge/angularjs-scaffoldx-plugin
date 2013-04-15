@@ -44,7 +44,7 @@ public class OneCustomerAndManyStoreOrderViewsClient {
         Wait<WebDriver> wait = new WebDriverWait(driver, 10);
         
         // Click on the Customers nav entry
-        driver.get(baseUrl.toString() + "#/");
+        driver.get(baseUrl.toString() + "app.html#/");
         driver.findElement(By.linkText("Customers")).click();
         wait.until(new HasLandedOnSearchCustomerView());
         
@@ -61,7 +61,7 @@ public class OneCustomerAndManyStoreOrderViewsClient {
         
         // Verify the details are presented in the Edit view 
         wait.until(new HasLandedOnEditCustomerView());
-        assertEquals(baseUrl.toString() + "#/Customers/edit/1", driver.getCurrentUrl());
+        assertEquals(baseUrl.toString() + "app.html#/Customers/edit/1", driver.getCurrentUrl());
         assertEquals("John Doe", driver.findElement(By.id("firstName")).getAttribute("value"));
         assertEquals("2013-01-10", driver.findElement(By.id("dateOfBirth")).getAttribute("value"));
         
@@ -95,7 +95,7 @@ public class OneCustomerAndManyStoreOrderViewsClient {
         Wait<WebDriver> wait = new WebDriverWait(driver, 10);
         
         // Click on the StoreOrders nav entry
-        driver.get(baseUrl.toString() + "#/");
+        driver.get(baseUrl.toString() + "app.html#/");
         driver.findElement(By.linkText("StoreOrders")).click();
         wait.until(new HasLandedOnSearchStoreOrderView());
         
@@ -112,7 +112,7 @@ public class OneCustomerAndManyStoreOrderViewsClient {
         
         // Verify the details are presented in the Edit view 
         wait.until(new HasLandedOnEditStoreOrderView());
-        assertEquals(baseUrl.toString() + "#/StoreOrders/edit/2", driver.getCurrentUrl());
+        assertEquals(baseUrl.toString() + "app.html#/StoreOrders/edit/2", driver.getCurrentUrl());
         assertEquals("Apples", driver.findElement(By.id("product")).getAttribute("value"));
         assertEquals("2013-01-10", driver.findElement(By.id("orderDate")).getAttribute("value"));
         
@@ -146,7 +146,7 @@ public class OneCustomerAndManyStoreOrderViewsClient {
         Wait<WebDriver> wait = new WebDriverWait(driver, 10);
         
         // Click on the Customers nav entry
-        driver.get(baseUrl.toString() + "#/");
+        driver.get(baseUrl.toString() + "app.html#/");
         driver.findElement(By.linkText("Customers")).click();
         wait.until(new HasLandedOnSearchCustomerView());
         
@@ -159,19 +159,22 @@ public class OneCustomerAndManyStoreOrderViewsClient {
         driver.findElement(By.id("firstName")).sendKeys("John Doe");
         driver.findElement(By.id("dateOfBirth")).clear();
         driver.findElement(By.id("dateOfBirth")).sendKeys("2013-01-10");
-        driver.findElement(By.id("addorders")).click();
-        WebElement ordersElement = driver.findElement(By.id("orders0"));
+        WebElement ordersElement = driver.findElement(By.id("orders"));
         Select orders = new Select(ordersElement);
         orders.selectByVisibleText("2");
         driver.findElement(By.id("saveCustomer")).click();
         
         // Verify the details are presented in the Edit view 
         wait.until(new HasLandedOnEditCustomerView());
-        assertEquals(baseUrl.toString() + "#/Customers/edit/3", driver.getCurrentUrl());
+        assertEquals(baseUrl.toString() + "app.html#/Customers/edit/3", driver.getCurrentUrl());
         assertEquals("John Doe", driver.findElement(By.id("firstName")).getAttribute("value"));
         assertEquals("2013-01-10", driver.findElement(By.id("dateOfBirth")).getAttribute("value"));
-        ordersElement = driver.findElement(By.id("orders0"));
+        ordersElement = driver.findElement(By.id("orders"));
         orders = new Select(ordersElement);
+        for(WebElement option : orders.getAllSelectedOptions())
+        {
+            System.out.println(option.getText());
+        }
         assertEquals("2", orders.getFirstSelectedOption().getText());
     }
     

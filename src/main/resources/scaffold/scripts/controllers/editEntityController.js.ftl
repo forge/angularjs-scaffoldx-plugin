@@ -51,11 +51,11 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
                         text : item.${property.optionLabel}
                     };
                     if(${modelProperty}){
-                        for(var ctr = 0; ctr < ${modelProperty}.length; ctr++) {
-                            if(item.${reverseId} == ${modelProperty}[ctr].${reverseId}) {
+                        $.each(${modelProperty}, function(idx, element) {
+                            if(item.${reverseId} == element.${reverseId}) {
                                 $scope.${property.name}Selection.push(wrappedObject);
                             }
-                        }
+                        });
                     }
                     return wrappedObject;
                 });
@@ -113,8 +113,9 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
     <#assign
             modelProperty = "${model}.${property.name}"
             selectedItem="${property.name}Selection">
+    $scope.${selectedItem} = $scope.${selectedItem} || [];
     $scope.$watch("${selectedItem}", function(selection) {
-        if (typeof selection != 'undefined') {
+        if (typeof selection != 'undefined' && ${model}) {
             ${modelProperty} = [];
             $.each(selection, function(idx,selectedItem) {
                 ${modelProperty}.push(selectedItem.value);

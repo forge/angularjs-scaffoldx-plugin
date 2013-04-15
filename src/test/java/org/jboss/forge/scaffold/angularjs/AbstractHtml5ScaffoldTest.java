@@ -1,10 +1,7 @@
 package org.jboss.forge.scaffold.angularjs;
 
-import javax.inject.Inject;
-
 import org.jboss.forge.project.Project;
 import org.jboss.forge.test.AbstractShellTest;
-import org.jboss.forge.test.web.DroneTest;
 import org.junit.Before;
 
 public abstract class AbstractHtml5ScaffoldTest extends AbstractShellTest {

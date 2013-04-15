@@ -2,10 +2,20 @@
 angular.module('test').controller('NewCustomerController', function ($scope, $location, locationParser, CustomerResource , AddressResource) {
     $scope.disabled = false;
     
-    AddressResource.queryAll(function(data){
-        $scope.shippingAddressList = angular.fromJson(JSON.stringify(data));
+    $scope.shippingAddressList = AddressResource.queryAll(function(items){
+        $scope.shippingAddressSelectionList = $.map(items, function(item) {
+            return ( {
+                value : item,
+                text : item.id
+            });
+        });
     });
     
+    $scope.$watch("shippingAddressSelection", function(selection) {
+        if ( typeof selection != 'undefined') {
+            $scope.customer.shippingAddress = selection.value;
+        }
+    });
 
     $scope.save = function() {
         var successCallback = function(data,responseHeaders){

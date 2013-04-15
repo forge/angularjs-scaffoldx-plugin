@@ -3,21 +3,17 @@
         <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
     </div>
     <div class="control-group" ng-class="{error: GroupIdentityForm.groupName.$invalid}">
-        <label for="groupName" class="control-label">GroupName</label>
+        <label for="groupName" class="control-label">Group Name</label>
         <div class="controls">
-<input id="groupName" name="groupName" type="text" ng-model="groupIdentity.groupName" placeholder="Enter the GroupIdentity groupName"></input>
+<input id="groupName" name="groupName" type="text" ng-model="groupIdentity.groupName" placeholder="Enter the GroupIdentity Group Name"></input>
         </div>
     </div>
     <div class="control-group" ng-class="{error: GroupIdentityForm.users.$invalid}">
         <label for="users" class="control-label">Users</label>
         <div class="controls">
-            <div ng-repeat="usersElement in groupIdentity.users">
-                <select id="users{{$index}}" name="users{{$index}}" ng-model="groupIdentity.users[$index]" ng-options="u as u.id for u in usersList">
-                    <option value="">Choose a Users</option>
-                </select> 
-                <button class="btn btn-mini btn-danger" ng-click="removeusers($index)">-</button>
-            </div>
-            <button id="addusers" class="btn btn-mini" ng-click="addusers()">+</button>
+            <select id="users" name="users" multiple ng-model="usersSelection" ng-options="u.text for u in usersSelectionList">
+                <option value="">Choose a Users</option>
+            </select>
         </div>
     </div>
     <div class="control-group">

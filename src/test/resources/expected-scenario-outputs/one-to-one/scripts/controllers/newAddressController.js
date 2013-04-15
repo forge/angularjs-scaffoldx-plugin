@@ -2,7 +2,6 @@
 angular.module('test').controller('NewAddressController', function ($scope, $location, locationParser, AddressResource ) {
     $scope.disabled = false;
     
-    
 
     $scope.save = function() {
         var successCallback = function(data,responseHeaders){

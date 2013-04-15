@@ -8,15 +8,20 @@ angular.module('test').controller('EditCustomerController', function($scope, $ro
         var successCallback = function(data){
             self.original = data;
             $scope.customer = new CustomerResource(self.original);
-            StoreOrderResource.queryAll(function(data) {
-                $scope.ordersList = data;
-                angular.forEach($scope.ordersList, function(datum){
-                    angular.forEach($scope.customer.orders, function(nestedDatum,index){
-                        if(angular.equals(datum,nestedDatum)) {
-                            $scope.customer.orders[index] = datum;
-                            self.original.orders[index] = datum;
-                        }
-                    });
+            StoreOrderResource.queryAll(function(items) {
+                $scope.ordersSelectionList = $.map(items, function(item) {
+                    var wrappedObject = {
+                        value : item,
+                        text : item.id
+                    };
+                    if($scope.customer.orders){
+                        $.each($scope.customer.orders, function(idx, element) {
+                            if(item.id == element.id) {
+                                $scope.ordersSelection.push(wrappedObject);
+                            }
+                        });
+                    }
+                    return wrappedObject;
                 });
             });
         };
@@ -56,14 +61,15 @@ angular.module('test').controller('EditCustomerController', function($scope, $ro
         $scope.customer.$remove(successCallback, errorCallback);
     };
     
-    $scope.removeorders = function(index) {
-        $scope.customer.orders.splice(index, 1);
-    };
-    
-    $scope.addorders = function() {
-        $scope.customer.orders = $scope.customer.orders || [];
-        $scope.customer.orders.push(new StoreOrderResource());
-    };
+    $scope.ordersSelection = $scope.ordersSelection || [];
+    $scope.$watch("ordersSelection", function(selection) {
+        if (typeof selection != 'undefined' && $scope.customer) {
+            $scope.customer.orders = [];
+            $.each(selection, function(idx,selectedItem) {
+                $scope.customer.orders.push(selectedItem.value);
+            });
+        }
+    });
     
     $scope.get();
 });

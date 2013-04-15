@@ -8,13 +8,16 @@ angular.module('test').controller('EditStoreOrderController', function($scope, $
         var successCallback = function(data){
             self.original = data;
             $scope.storeOrder = new StoreOrderResource(self.original);
-            CustomerResource.queryAll(function(data) {
-                $scope.customerList = data;
-                angular.forEach($scope.customerList, function(datum){
-                    if(angular.equals(datum, $scope.storeOrder.customer)) {
-                        $scope.storeOrder.customer = datum;
-                        self.original.customer = datum;
+            CustomerResource.queryAll(function(items) {
+                $scope.customerSelectionList = $.map(items, function(item) {
+                    var wrappedObject = {
+                        value : item,
+                        text : item.id
+                    };
+                    if($scope.storeOrder.customer && item.id == $scope.storeOrder.customer.id) {
+                        $scope.customerSelection = wrappedObject;
                     }
+                    return wrappedObject;
                 });
             });
         };
@@ -54,6 +57,11 @@ angular.module('test').controller('EditStoreOrderController', function($scope, $
         $scope.storeOrder.$remove(successCallback, errorCallback);
     };
     
+    $scope.$watch("customerSelection", function(selection) {
+        if (typeof selection != 'undefined') {
+            $scope.storeOrder.customer = selection.value;
+        }
+    });
     
     $scope.get();
 });

@@ -2,19 +2,23 @@
 angular.module('test').controller('NewGroupIdentityController', function ($scope, $location, locationParser, GroupIdentityResource , UserIdentityResource) {
     $scope.disabled = false;
     
-    
-    UserIdentityResource.queryAll(function(data){
-        $scope.usersList = angular.fromJson(JSON.stringify(data));
+    $scope.usersList = UserIdentityResource.queryAll(function(items){
+        $scope.usersSelectionList = $.map(items, function(item) {
+            return ( {
+                value : item,
+                text : item.id
+            });
+        });
     });
     
-    $scope.removeusers = function(index) {
-        $scope.groupIdentity.users.splice(index, 1);
-    };
-    
-    $scope.addusers = function() {
-        $scope.groupIdentity.users = $scope.groupIdentity.users || [];
-        $scope.groupIdentity.users.push(new UserIdentityResource());
-    };
+    $scope.$watch("usersSelection", function(selection) {
+        if (typeof selection != 'undefined') {
+            $scope.groupIdentity.users = [];
+            $.each(selection, function(idx,selectedItem) {
+                $scope.groupIdentity.users.push(selectedItem.value);
+            });
+        }
+    });
 
     $scope.save = function() {
         var successCallback = function(data,responseHeaders){

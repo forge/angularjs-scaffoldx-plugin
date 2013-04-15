@@ -8,15 +8,20 @@ angular.module('test').controller('EditGroupIdentityController', function($scope
         var successCallback = function(data){
             self.original = data;
             $scope.groupIdentity = new GroupIdentityResource(self.original);
-            UserIdentityResource.queryAll(function(data) {
-                $scope.usersList = data;
-                angular.forEach($scope.usersList, function(datum){
-                    angular.forEach($scope.groupIdentity.users, function(nestedDatum,index){
-                        if(angular.equals(datum,nestedDatum)) {
-                            $scope.groupIdentity.users[index] = datum;
-                            self.original.users[index] = datum;
-                        }
-                    });
+            UserIdentityResource.queryAll(function(items) {
+                $scope.usersSelectionList = $.map(items, function(item) {
+                    var wrappedObject = {
+                        value : item,
+                        text : item.id
+                    };
+                    if($scope.groupIdentity.users){
+                        $.each($scope.groupIdentity.users, function(idx, element) {
+                            if(item.id == element.id) {
+                                $scope.usersSelection.push(wrappedObject);
+                            }
+                        });
+                    }
+                    return wrappedObject;
                 });
             });
         };
@@ -56,14 +61,15 @@ angular.module('test').controller('EditGroupIdentityController', function($scope
         $scope.groupIdentity.$remove(successCallback, errorCallback);
     };
     
-    $scope.removeusers = function(index) {
-        $scope.groupIdentity.users.splice(index, 1);
-    };
-    
-    $scope.addusers = function() {
-        $scope.groupIdentity.users = $scope.groupIdentity.users || [];
-        $scope.groupIdentity.users.push(new UserIdentityResource());
-    };
+    $scope.usersSelection = $scope.usersSelection || [];
+    $scope.$watch("usersSelection", function(selection) {
+        if (typeof selection != 'undefined' && $scope.groupIdentity) {
+            $scope.groupIdentity.users = [];
+            $.each(selection, function(idx,selectedItem) {
+                $scope.groupIdentity.users.push(selectedItem.value);
+            });
+        }
+    });
     
     $scope.get();
 });

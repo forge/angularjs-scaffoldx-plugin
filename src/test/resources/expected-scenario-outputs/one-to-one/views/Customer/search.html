@@ -1,22 +1,22 @@
 <h2>Search for Customers</h2>
 <form id="CustomerSearch" class="form-horizontal">
 <div class="control-group">
-    <label for="firstName" class="control-label">FirstName</label>
+    <label for="firstName" class="control-label">First Name</label>
     <div class="controls">
-        <input id="firstName" name="firstName" type="text" ng-model="search.firstName" placeholder="Enter the Customer firstName"></input>
+        <input id="firstName" name="firstName" type="text" ng-model="search.firstName" placeholder="Enter the Customer First Name"></input>
     </div>
 </div>
 <div class="control-group">
-    <label for="dateOfBirth" class="control-label">DateOfBirth</label>
+    <label for="dateOfBirth" class="control-label">Date Of Birth</label>
     <div class="controls">
-        <input id="dateOfBirth" name="dateOfBirth" type="text" ng-model="search.dateOfBirth" placeholder="Enter the Customer dateOfBirth"></input>
+        <input id="dateOfBirth" name="dateOfBirth" type="text" ng-model="search.dateOfBirth" placeholder="Enter the Customer Date Of Birth"></input>
     </div>
 </div>
 <div class="control-group">
-    <label for="shippingAddress" class="control-label">ShippingAddress</label>
+    <label for="shippingAddress" class="control-label">Shipping Address</label>
     <div class="controls">
         <select id="shippingAddress" name="shippingAddress" ng-model="search.shippingAddress" ng-options="s as s.id for s in shippingAddressList">
-            <option value="">Choose a ShippingAddress</option>
+            <option value="">Choose a Shipping Address</option>
         </select>
     </div>
 </div>
@@ -31,9 +31,9 @@
 <table class="table table-bordered table-striped clearfix">
     <thead>
         <tr>
-                    <th>FirstName</th>
-            <th>DateOfBirth</th>
-            <th>ShippingAddress</th>
+                    <th>First Name</th>
+            <th>Date Of Birth</th>
+            <th>Shipping Address</th>
         </tr>
     </thead>
     <tbody id="search-results-body">

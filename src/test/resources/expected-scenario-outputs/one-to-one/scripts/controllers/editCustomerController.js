@@ -8,13 +8,16 @@ angular.module('test').controller('EditCustomerController', function($scope, $ro
         var successCallback = function(data){
             self.original = data;
             $scope.customer = new CustomerResource(self.original);
-            AddressResource.queryAll(function(data) {
-                $scope.shippingAddressList = data;
-                angular.forEach($scope.shippingAddressList, function(datum){
-                    if(angular.equals(datum, $scope.customer.shippingAddress)) {
-                        $scope.customer.shippingAddress = datum;
-                        self.original.shippingAddress = datum;
+            AddressResource.queryAll(function(items) {
+                $scope.shippingAddressSelectionList = $.map(items, function(item) {
+                    var wrappedObject = {
+                        value : item,
+                        text : item.id
+                    };
+                    if($scope.customer.shippingAddress && item.id == $scope.customer.shippingAddress.id) {
+                        $scope.shippingAddressSelection = wrappedObject;
                     }
+                    return wrappedObject;
                 });
             });
         };
@@ -54,6 +57,11 @@ angular.module('test').controller('EditCustomerController', function($scope, $ro
         $scope.customer.$remove(successCallback, errorCallback);
     };
     
+    $scope.$watch("shippingAddressSelection", function(selection) {
+        if (typeof selection != 'undefined') {
+            $scope.customer.shippingAddress = selection.value;
+        }
+    });
     
     $scope.get();
 });

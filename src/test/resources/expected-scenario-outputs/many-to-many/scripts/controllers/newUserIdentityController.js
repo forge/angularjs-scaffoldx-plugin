@@ -2,7 +2,6 @@
 angular.module('test').controller('NewUserIdentityController', function ($scope, $location, locationParser, UserIdentityResource ) {
     $scope.disabled = false;
     
-    
 
     $scope.save = function() {
         var successCallback = function(data,responseHeaders){

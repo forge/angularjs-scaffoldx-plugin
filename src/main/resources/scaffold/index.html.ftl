@@ -1,1 +1,1 @@
-<meta http-equiv="refresh" content="0;url=.${targetDir}/app.html" /> 
+<meta http-equiv="refresh" content="0;url=.${targetDir}/app.html" />

@@ -2,7 +2,6 @@
 angular.module('test').controller('NewCustomerController', function ($scope, $location, locationParser, CustomerResource ) {
     $scope.disabled = false;
     
-    
 
     $scope.save = function() {
         var successCallback = function(data,responseHeaders){

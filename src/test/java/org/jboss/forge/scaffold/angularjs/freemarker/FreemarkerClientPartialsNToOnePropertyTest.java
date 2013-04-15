@@ -16,7 +16,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.metawidget.util.simple.StringUtils;
 
 public class FreemarkerClientPartialsNToOnePropertyTest {
 
@@ -32,6 +31,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
     public void testGenerateHiddenProperty() throws Exception {
         Map<String, String> idProperties = new HashMap<String, String>();
         idProperties.put("name", "id");
+        idProperties.put("label", "Id");
         idProperties.put("hidden", "true");
         idProperties.put("type", "number");
 
@@ -46,6 +46,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
     public void testGenerateHiddenAndRequiredProperty() throws Exception {
         Map<String, String> idProperties = new HashMap<String, String>();
         idProperties.put("name", "id");
+        idProperties.put("label", "Id");
         idProperties.put("hidden", "true");
         idProperties.put("required", "true");
         idProperties.put("type", "number");
@@ -62,6 +63,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         Map<String, String> voucherProperties = new HashMap<String, String>();
         String oneToOneProperty = "voucher";
         voucherProperties.put("name", oneToOneProperty);
+        voucherProperties.put("label", "Voucher");
         voucherProperties.put("type", "com.example.scaffoldtester.model.DiscountVoucher");
         voucherProperties.put("one-to-one", "true");
         voucherProperties.put("simpleType", "DiscountVoucher");
@@ -86,10 +88,10 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         assertThat(selectElement, notNullValue());
         assertThat(selectElement.attr("id"), equalTo(oneToOneProperty));
         String collectionElement = oneToOneProperty.substring(0, 1);
-        String optionsExpression = collectionElement + " as " + collectionElement + ".id for " + collectionElement + " in "
-                + oneToOneProperty + "List";
+        String optionsExpression = collectionElement + ".text for " + collectionElement + " in "
+                + oneToOneProperty + "SelectionList";
         assertThat(selectElement.attr("ng-options"), equalTo(optionsExpression));
-        assertThat(selectElement.attr("ng-model"), equalTo(StringUtils.decapitalize(entityName) + "." + oneToOneProperty));
+        assertThat(selectElement.attr("ng-model"), equalTo(oneToOneProperty + "Selection"));
     }
 
     @Test
@@ -97,6 +99,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         Map<String, String> customerProperties = new HashMap<String, String>();
         String oneToOneProperty = "customer";
         customerProperties.put("name", oneToOneProperty);
+        customerProperties.put("label", "Customer");
         customerProperties.put("type", "com.example.scaffoldtester.model.Customer");
         customerProperties.put("many-to-one", "true");
         customerProperties.put("simpleType", "Customer");
@@ -121,10 +124,10 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         assertThat(selectElement, notNullValue());
         assertThat(selectElement.attr("id"), equalTo(oneToOneProperty));
         String collectionElement = oneToOneProperty.substring(0, 1);
-        String optionsExpression = collectionElement + " as " + collectionElement + ".id for " + collectionElement + " in "
-                + oneToOneProperty + "List";
+        String optionsExpression = collectionElement + ".text for " + collectionElement + " in "
+                + oneToOneProperty + "SelectionList";
         assertThat(selectElement.attr("ng-options"), equalTo(optionsExpression));
-        assertThat(selectElement.attr("ng-model"), equalTo(StringUtils.decapitalize(entityName) + "." + oneToOneProperty));
+        assertThat(selectElement.attr("ng-model"), equalTo(oneToOneProperty + "Selection"));
     }
 
 }

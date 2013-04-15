@@ -44,7 +44,7 @@ public class CustomerAndAddressViewsClient {
         Wait<WebDriver> wait = new WebDriverWait(driver, 10);
         
         // Click on the Customers nav entry
-        driver.get(baseUrl.toString() + "#/");
+        driver.get(baseUrl.toString() + "app.html#/");
         driver.findElement(By.linkText("Customers")).click();
         wait.until(new HasLandedOnSearchCustomerView());
         
@@ -61,7 +61,7 @@ public class CustomerAndAddressViewsClient {
         
         // Verify the details are presented in the Edit view 
         wait.until(new HasLandedOnEditCustomerView());
-        assertEquals(baseUrl.toString() + "#/Customers/edit/1", driver.getCurrentUrl());
+        assertEquals(baseUrl.toString() + "app.html#/Customers/edit/1", driver.getCurrentUrl());
         assertEquals("John Doe", driver.findElement(By.id("firstName")).getAttribute("value"));
         assertEquals("2013-01-10", driver.findElement(By.id("dateOfBirth")).getAttribute("value"));
         
@@ -95,7 +95,7 @@ public class CustomerAndAddressViewsClient {
         Wait<WebDriver> wait = new WebDriverWait(driver, 10);
         
         // Click on the Address nav entry
-        driver.get(baseUrl.toString() + "#/");
+        driver.get(baseUrl.toString() + "app.html#/");
         driver.findElement(By.linkText("Addresss")).click();
         wait.until(new HasLandedOnSearchAddressView());
         
@@ -118,7 +118,7 @@ public class CustomerAndAddressViewsClient {
         
         // Verify the details are presented in the Edit view 
         wait.until(new HasLandedOnEditAddressView());
-        assertEquals(baseUrl.toString() + "#/Addresss/edit/2", driver.getCurrentUrl());
+        assertEquals(baseUrl.toString() + "app.html#/Addresss/edit/2", driver.getCurrentUrl());
         assertEquals("6747 Crystal Limits", driver.findElement(By.id("street")).getAttribute("value"));
         assertEquals("Markinch", driver.findElement(By.id("city")).getAttribute("value"));
         assertEquals("Mississippi", driver.findElement(By.id("state")).getAttribute("value"));
@@ -165,7 +165,7 @@ public class CustomerAndAddressViewsClient {
         Wait<WebDriver> wait = new WebDriverWait(driver, 10);
         
         // Click on the Customers nav entry
-        driver.get(baseUrl.toString() + "#/");
+        driver.get(baseUrl.toString() + "app.html#/");
         driver.findElement(By.linkText("Customers")).click();
         wait.until(new HasLandedOnSearchCustomerView());
         
@@ -185,7 +185,7 @@ public class CustomerAndAddressViewsClient {
         
         // Verify the details are presented in the Edit view 
         wait.until(new HasLandedOnEditCustomerView());
-        assertEquals(baseUrl.toString() + "#/Customers/edit/3", driver.getCurrentUrl());
+        assertEquals(baseUrl.toString() + "app.html#/Customers/edit/3", driver.getCurrentUrl());
         assertEquals("John Doe", driver.findElement(By.id("firstName")).getAttribute("value"));
         assertEquals("2013-01-10", driver.findElement(By.id("dateOfBirth")).getAttribute("value"));
         addressElement = driver.findElement(By.id("shippingAddress"));

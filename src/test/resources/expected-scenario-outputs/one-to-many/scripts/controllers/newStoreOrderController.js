@@ -2,7 +2,6 @@
 angular.module('test').controller('NewStoreOrderController', function ($scope, $location, locationParser, StoreOrderResource ) {
     $scope.disabled = false;
     
-    
 
     $scope.save = function() {
         var successCallback = function(data,responseHeaders){
