@@ -33,8 +33,8 @@ import org.jboss.forge.scaffold.angularjs.scenario.dronetests.manytoone.ManyStor
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.onetomany.OneCustomerAndManyStoreOrderViewsClient;
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.onetoone.CustomerAndAddressViewsClient;
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.singleentity.CustomerViewClient;
+import org.jboss.forge.scaffold.angularjs.scenario.dronetests.singleentitywithenum.CustomerWithPaymentTypeViewClient;
 import org.jboss.forge.test.web.DroneTest;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
@@ -74,6 +74,45 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "single-entity");
 
         verifyBuildWithTest(CustomerViewClient.class, new Class<?>[] { HasLandedOnNewCustomerView.class,
+                HasLandedOnEditCustomerView.class, HasLandedOnSearchCustomerView.class });
+    }
+    
+    @Test
+    public void testScaffoldForSingleEntityAndEnum() throws Exception {
+        generateCustomerEntity();
+        
+        generatePaymentTypeEnum();
+        
+        generatePaymentTypeFieldInCustomer();
+
+        generateRestResources();
+
+        generateScaffold();
+
+        WebResourceFacet web = project.getFacet(WebResourceFacet.class);
+
+        // Check if the static assets exist
+        assertStaticFilesAreGenerated(web);
+
+        // Check the generated Index page
+        assertWebResourceContents(web, "/index.html", "single-entity-enum");
+
+        // Check the generated Angular Module
+        assertWebResourceContents(web, "/scripts/app.js", "single-entity-enum");
+
+        // Check the generated Angular Views (templates/partials)
+        assertWebResourceContents(web, "/views/Customer/search.html", "single-entity-enum");
+        assertWebResourceContents(web, "/views/Customer/detail.html", "single-entity-enum");
+
+        // Check the generated Angular Controllers
+        assertWebResourceContents(web, "/scripts/controllers/newCustomerController.js", "single-entity-enum");
+        assertWebResourceContents(web, "/scripts/controllers/editCustomerController.js", "single-entity-enum");
+        assertWebResourceContents(web, "/scripts/controllers/searchCustomerController.js", "single-entity-enum");
+
+        // Check the generated Angular services
+        assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "single-entity-enum");
+
+        verifyBuildWithTest(CustomerWithPaymentTypeViewClient.class, new Class<?>[] { HasLandedOnNewCustomerView.class,
                 HasLandedOnEditCustomerView.class, HasLandedOnSearchCustomerView.class });
     }
 
@@ -297,6 +336,17 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         queueInputLines("");
         getShell().execute("entity --named GroupIdentity");
         getShell().execute("field string --named groupName");
+    }
+    
+    private void generatePaymentTypeEnum() throws Exception {
+        getShell().execute(
+                "java new-enum-type --package com.test.model \"public enum PaymentType { CASH, CREDIT_CARD, DEBIT_CARD }\";");
+    }
+    
+    private void generatePaymentTypeFieldInCustomer() throws Exception {
+        queueInputLines("");
+        getShell().execute("cd ../Customer.java");
+        getShell().execute("field custom --named paymentType --type com.test.model.PaymentType.java;");
     }
 
     private void generateOneCustomerManyStoreOrderRelation() throws Exception {

@@ -1,0 +1,33 @@
+<form id="CustomerForm" name="CustomerForm" class="form-horizontal">
+    <div ng-show="displayError" class="alert alert-error">
+        <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
+    </div>
+    <div class="control-group" ng-class="{error: CustomerForm.firstName.$invalid}">
+        <label for="firstName" class="control-label">First Name</label>
+        <div class="controls">
+<input id="firstName" name="firstName" type="text" required ng-model="customer.firstName" placeholder="Enter the Customer First Name"></input>
+            <span class="help-inline" ng-show="CustomerForm.firstName.$error.required">required</span> 
+        </div>
+    </div>
+    <div class="control-group" ng-class="{error: CustomerForm.dateOfBirth.$invalid}">
+        <label for="dateOfBirth" class="control-label">Date Of Birth</label>
+        <div class="controls">
+<input id="dateOfBirth" name="dateOfBirth" type="date" ng-model="customer.dateOfBirth" placeholder="Enter the Customer Date Of Birth"></input>
+        </div>
+    </div>
+    <div class="control-group" ng-class="{error: CustomerForm.paymentType.$invalid}">
+        <label for="paymentType" class="control-label">Payment Type</label>
+        <div class="controls">
+        <select id="paymentType" name="paymentType" ng-model="customer.paymentType" ng-options="p for p in paymentTypeList"  >
+            <option value="">Choose a Payment Type</option>
+        </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <button id="saveCustomer" name="saveCustomer" class="btn btn-primary" ng-disabled="isClean() || CustomerForm.$invalid" ng-click="save()"><i class="icon-ok-sign icon-white"></i> Save</button>
+            <button id="cancel" name="cancel" class="btn" ng-click="cancel()"><i class="icon-remove-sign"></i> Cancel</button>
+            <button id="deleteCustomer" name="deleteCustomer" class="btn btn-danger" ng-show="customer.id" ng-click="remove()"><i class="icon-trash icon-white"></i> Delete</button>
+        </div>
+    <div>
+</form>

@@ -54,6 +54,8 @@ public class TestHelpers {
     public static final Map<String, String> ONE_TO_ONE_PROP = createOneToOneProperty();
 
     public static final Map<String, String> MANY_TO_ONE_PROP = createManyToOneProperty();
+    
+    public static final Map<String, String> ENUM_PROP = createEnumProperty();
 
     private static final String DATE_CLASS;
 
@@ -223,6 +225,15 @@ public class TestHelpers {
         Map<String, String> properties = new PropertyBuilder().withName(lhsProperty)
                 .withLabel(StringUtils.uncamelCase(lhsProperty)).withType(rhsType).asMTo1().withSimpleType(rhsSimpleType)
                 .withOptionLabel(rhsOptionLabel).create();
+        return properties;
+    }
+    
+    private static Map<String, String> createEnumProperty() {
+        String propertyName = "paymentType";
+        String lookupValues = "CASH,CREDIT_CARD,DEBIT_CARD";
+        String propertyType = "com.example.scaffoldtester.model.DeliveryType";
+        Map<String, String> properties = new PropertyBuilder().withName(propertyName)
+                .withLabel(StringUtils.uncamelCase(propertyName)).withType(propertyType).withLookupValues(lookupValues).create();
         return properties;
     }
 

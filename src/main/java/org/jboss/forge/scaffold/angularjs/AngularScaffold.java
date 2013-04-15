@@ -159,6 +159,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             List<Map<String, String>> inspectionResults = metawidgetInspectorFacade.inspect(klass);
             String entityId = angularResultEnhancer.fetchEntityId(klass, inspectionResults);
             inspectionResults = angularResultEnhancer.enhanceResults(klass, inspectionResults);
+            ShellMessages.info(writer, "Inspection Results: [" + inspectionResults + "]");
             // TODO: Provide a 'utility' class for allowing transliteration across language naming schemes
             // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
             Map<String, Object> root = new HashMap<String, Object>();
