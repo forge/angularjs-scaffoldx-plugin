@@ -4,13 +4,13 @@
     </div>
     <div class="control-group" ng-class="{error: GroupIdentityForm.groupName.$invalid}">
         <label for="groupName" class="control-label">Group Name</label>
-        <div class="controls">
+        <div id="groupNameControls" class="controls">
 <input id="groupName" name="groupName" type="text" ng-model="groupIdentity.groupName" placeholder="Enter the GroupIdentity Group Name"></input>
         </div>
     </div>
     <div class="control-group" ng-class="{error: GroupIdentityForm.users.$invalid}">
         <label for="users" class="control-label">Users</label>
-        <div class="controls">
+        <div id="usersControls" class="controls">
             <select id="users" name="users" multiple ng-model="usersSelection" ng-options="u.text for u in usersSelectionList">
                 <option value="">Choose a Users</option>
             </select>

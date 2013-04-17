@@ -5,14 +5,26 @@
     <div class="control-group" ng-class="{error: CustomerForm.firstName.$invalid}">
         <label for="firstName" class="control-label">First Name</label>
         <div id="firstNameControls" class="controls">
-<input id="firstName" name="firstName" type="text" required ng-model="customer.firstName" placeholder="Enter the Customer First Name"></input>
+<input id="firstName" name="firstName" type="text" required ng-maxlength="100" ng-minlength="3" ng-model="customer.firstName" placeholder="Enter the Customer First Name"></input>
             <span class="help-inline" ng-show="CustomerForm.firstName.$error.required">required</span> 
+            <span class="help-inline" ng-show="CustomerForm.firstName.$error.minlength">minimum length is 3</span>
+            <span class="help-inline" ng-show="CustomerForm.firstName.$error.maxlength">maximum length is 100</span>
         </div>
     </div>
     <div class="control-group" ng-class="{error: CustomerForm.dateOfBirth.$invalid}">
         <label for="dateOfBirth" class="control-label">Date Of Birth</label>
         <div id="dateOfBirthControls" class="controls">
 <input id="dateOfBirth" name="dateOfBirth" type="date" ng-model="customer.dateOfBirth" placeholder="Enter the Customer Date Of Birth"></input>
+        </div>
+    </div>
+    <div class="control-group" ng-class="{error: CustomerForm.ficoCreditScore.$invalid}">
+        <label for="ficoCreditScore" class="control-label">Fico Credit Score</label>
+        <div id="ficoCreditScoreControls" class="controls">
+<input id="ficoCreditScore" name="ficoCreditScore" type="number" min="300" max="850" required ng-model="customer.ficoCreditScore" placeholder="Enter the Customer Fico Credit Score"></input>
+            <span class="help-inline" ng-show="CustomerForm.ficoCreditScore.$error.required">required</span> 
+            <span class="help-inline" ng-show="CustomerForm.ficoCreditScore.$error.number">not a number</span>
+            <span class="help-inline" ng-show="CustomerForm.ficoCreditScore.$error.min">minimum allowed is 300</span>
+            <span class="help-inline" ng-show="CustomerForm.ficoCreditScore.$error.max">maximum allowed is 850</span>
         </div>
     </div>
     <div class="control-group">

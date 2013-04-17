@@ -33,6 +33,7 @@ import org.jboss.forge.scaffold.angularjs.scenario.dronetests.manytoone.ManyStor
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.onetomany.OneCustomerAndManyStoreOrderViewsClient;
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.onetoone.CustomerAndAddressViewsClient;
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.singleentity.CustomerViewClient;
+import org.jboss.forge.scaffold.angularjs.scenario.dronetests.singleentityvalidations.CustomerViewWithValidationsClient;
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.singleentitywithenum.CustomerWithPaymentTypeViewClient;
 import org.jboss.forge.test.web.DroneTest;
 import org.junit.Test;
@@ -113,6 +114,41 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "single-entity-enum");
 
         verifyBuildWithTest(CustomerWithPaymentTypeViewClient.class, new Class<?>[] { HasLandedOnNewCustomerView.class,
+                HasLandedOnEditCustomerView.class, HasLandedOnSearchCustomerView.class });
+    }
+    
+    @Test
+    public void testScaffoldForSingleEntityWithValidations() throws Exception {
+        generateCustomerEntityWithValidations();
+
+        generateRestResources();
+
+        generateScaffold();
+
+        WebResourceFacet web = project.getFacet(WebResourceFacet.class);
+
+        // Check if the static assets exist
+        assertStaticFilesAreGenerated(web);
+
+        // Check the generated Index page
+        assertWebResourceContents(web, "/index.html", "single-entity-validations");
+
+        // Check the generated Angular Module
+        assertWebResourceContents(web, "/scripts/app.js", "single-entity-validations");
+
+        // Check the generated Angular Views (templates/partials)
+        assertWebResourceContents(web, "/views/Customer/search.html", "single-entity-validations");
+        assertWebResourceContents(web, "/views/Customer/detail.html", "single-entity-validations");
+
+        // Check the generated Angular Controllers
+        assertWebResourceContents(web, "/scripts/controllers/newCustomerController.js", "single-entity-validations");
+        assertWebResourceContents(web, "/scripts/controllers/editCustomerController.js", "single-entity-validations");
+        assertWebResourceContents(web, "/scripts/controllers/searchCustomerController.js", "single-entity-validations");
+
+        // Check the generated Angular services
+        assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "single-entity");
+
+        verifyBuildWithTest(CustomerViewWithValidationsClient.class, new Class<?>[] { HasLandedOnNewCustomerView.class,
                 HasLandedOnEditCustomerView.class, HasLandedOnSearchCustomerView.class });
     }
 
@@ -367,6 +403,19 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
     private void generateManyGroupManyUserRelation() throws Exception {
         getShell().execute("cd ../GroupIdentity.java");
         getShell().execute("field manyToMany --named users --fieldType com.test.model.UserIdentity.java --fetchType EAGER");
+    }
+    
+    private void generateCustomerEntityWithValidations() throws Exception {
+        queueInputLines("");
+        getShell().execute("entity --named Customer");
+        getShell().execute("field string --named firstName");
+        getShell().execute("field temporal --type DATE --named dateOfBirth");
+        getShell().execute("field int --named ficoCreditScore");
+        getShell().execute("constraint NotNull --onProperty firstName");
+        getShell().execute("constraint Size --onProperty firstName --min 3 --max 100");
+        getShell().execute("constraint NotNull --onProperty ficoCreditScore");
+        getShell().execute("constraint Min --onProperty ficoCreditScore --min 300");
+        getShell().execute("constraint Max --onProperty ficoCreditScore --max 850");
     }
 
     private void verifyBuildWithTest(Class<?> testClass, Class<?>[] helpers) throws Exception {

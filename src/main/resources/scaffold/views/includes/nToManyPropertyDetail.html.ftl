@@ -7,7 +7,7 @@
 <#if (property.hidden!"false") == "false">
     <div class="control-group" ng-class="{error: ${formProperty}.$invalid}">
         <label for="${property.name}" class="control-label">${propertyLabel}</label>
-        <div class="controls">
+        <div id="${property.name}Controls" class="controls">
             <select id="${property.name}" name="${property.name}" multiple ng-model="${property.name}Selection" ng-options="${collectionVar}.text for ${collectionVar} in ${collection}">
                 <option value="">Choose a ${propertyLabel}</option>
             </select>

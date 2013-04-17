@@ -6,7 +6,7 @@
 <#if (property.hidden!"false") == "false">
     <div class="control-group" ng-class="{error: ${formProperty}.$invalid}">
         <label for="${property.name}" class="control-label">${propertyLabel}</label>
-        <div class="controls">
+        <div id="${property.name}Controls" class="controls">
         <select id="${property.name}" name="${property.name}" ng-model="${modelProperty}" ng-options="${collectionVar} for ${collectionVar} in ${property.name}List" <#if (property.required!) == "true">required</#if> >
             <option value="">Choose a ${propertyLabel}</option>
         </select>
