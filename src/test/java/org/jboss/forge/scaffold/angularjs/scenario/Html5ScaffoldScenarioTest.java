@@ -30,8 +30,10 @@ import org.jboss.forge.scaffold.angularjs.scenario.dronetests.helpers.HasLandedO
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.helpers.HasLandedOnSearchUserIdentityView;
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.manytomany.ManyUserAndManyGroupViewsClient;
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.manytoone.ManyStoreOrderAndOneCustomerViewsClient;
+import org.jboss.forge.scaffold.angularjs.scenario.dronetests.manytoonerequired.ManyStoreOrderAndOneRequiredCustomerViewsClient;
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.onetomany.OneCustomerAndManyStoreOrderViewsClient;
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.onetoone.CustomerAndAddressViewsClient;
+import org.jboss.forge.scaffold.angularjs.scenario.dronetests.onetoonerequired.AddressAndRequiredCustomerViewsClient;
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.singleentity.CustomerViewClient;
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.singleentityvalidations.CustomerViewWithValidationsClient;
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.singleentitywithenum.CustomerWithPaymentTypeViewClient;
@@ -197,6 +199,52 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
                 HasLandedOnEditCustomerView.class, HasLandedOnSearchCustomerView.class, HasLandedOnNewStoreOrderView.class,
                 HasLandedOnEditStoreOrderView.class, HasLandedOnSearchStoreOrderView.class });
     }
+    
+    @Test
+    public void testScaffoldForManyToOneRequiredRelation() throws Exception {
+        generateCustomerEntity();
+
+        generateStoreOrderEntity();
+
+        generateManyStoreOrderOneCustomerRelationAsRequired();
+
+        generateRestResources();
+
+        generateScaffold();
+
+        WebResourceFacet web = project.getFacet(WebResourceFacet.class);
+
+        // Check if the static assets exist
+        assertStaticFilesAreGenerated(web);
+
+        // Check the generated Index page
+        assertWebResourceContents(web, "/index.html", "many-to-one-required");
+
+        // Check the generated Angular Module
+        assertWebResourceContents(web, "/scripts/app.js", "many-to-one-required");
+
+        // Check the generated Angular Views (templates/partials)
+        assertWebResourceContents(web, "/views/Customer/search.html", "many-to-one-required");
+        assertWebResourceContents(web, "/views/Customer/detail.html", "many-to-one-required");
+        assertWebResourceContents(web, "/views/StoreOrder/search.html", "many-to-one-required");
+        assertWebResourceContents(web, "/views/StoreOrder/detail.html", "many-to-one-required");
+
+        // Check the generated Angular Controllers
+        assertWebResourceContents(web, "/scripts/controllers/newCustomerController.js", "many-to-one-required");
+        assertWebResourceContents(web, "/scripts/controllers/editCustomerController.js", "many-to-one-required");
+        assertWebResourceContents(web, "/scripts/controllers/searchCustomerController.js", "many-to-one-required");
+        assertWebResourceContents(web, "/scripts/controllers/newStoreOrderController.js", "many-to-one-required");
+        assertWebResourceContents(web, "/scripts/controllers/editStoreOrderController.js", "many-to-one-required");
+        assertWebResourceContents(web, "/scripts/controllers/searchStoreOrderController.js", "many-to-one-required");
+
+        // Check the generated Angular services
+        assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "many-to-one-required");
+        assertWebResourceContents(web, "/scripts/services/StoreOrderFactory.js", "many-to-one-required");
+        
+        verifyBuildWithTest(ManyStoreOrderAndOneRequiredCustomerViewsClient.class, new Class<?>[] { HasLandedOnNewCustomerView.class,
+                HasLandedOnEditCustomerView.class, HasLandedOnSearchCustomerView.class, HasLandedOnNewStoreOrderView.class,
+                HasLandedOnEditStoreOrderView.class, HasLandedOnSearchStoreOrderView.class });
+    }
 
     @Test
     public void testScaffoldForOneToOneRelation() throws Exception {
@@ -240,6 +288,52 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         assertWebResourceContents(web, "/scripts/services/AddressFactory.js", "one-to-one");
         
         verifyBuildWithTest(CustomerAndAddressViewsClient.class, new Class<?>[] { HasLandedOnNewCustomerView.class,
+            HasLandedOnEditCustomerView.class, HasLandedOnSearchCustomerView.class, HasLandedOnNewAddressView.class,
+            HasLandedOnEditAddressView.class, HasLandedOnSearchAddressView.class });
+    }
+    
+    @Test
+    public void testScaffoldForOneToOneRequiredRelation() throws Exception {
+        generateCustomerEntity();
+
+        generateAddressEntity();
+
+        generateOneCustomerOneAddressRelationAsRequired();
+
+        generateRestResources();
+
+        generateScaffold();
+
+        WebResourceFacet web = project.getFacet(WebResourceFacet.class);
+
+        // Check if the static assets exist
+        assertStaticFilesAreGenerated(web);
+
+        // Check the generated Index page
+        assertWebResourceContents(web, "/index.html", "one-to-one-required");
+
+        // Check the generated Angular Module
+        assertWebResourceContents(web, "/scripts/app.js", "one-to-one-required");
+
+        // Check the generated Angular Views (templates/partials)
+        assertWebResourceContents(web, "/views/Customer/search.html", "one-to-one-required");
+        assertWebResourceContents(web, "/views/Customer/detail.html", "one-to-one-required");
+        assertWebResourceContents(web, "/views/Address/search.html", "one-to-one-required");
+        assertWebResourceContents(web, "/views/Address/detail.html", "one-to-one-required");
+
+        // Check the generated Angular Controllers
+        assertWebResourceContents(web, "/scripts/controllers/newCustomerController.js", "one-to-one-required");
+        assertWebResourceContents(web, "/scripts/controllers/editCustomerController.js", "one-to-one-required");
+        assertWebResourceContents(web, "/scripts/controllers/searchCustomerController.js", "one-to-one-required");
+        assertWebResourceContents(web, "/scripts/controllers/newAddressController.js", "one-to-one-required");
+        assertWebResourceContents(web, "/scripts/controllers/editAddressController.js", "one-to-one-required");
+        assertWebResourceContents(web, "/scripts/controllers/searchAddressController.js", "one-to-one-required");
+
+        // Check the generated Angular services
+        assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "one-to-one-required");
+        assertWebResourceContents(web, "/scripts/services/AddressFactory.js", "one-to-one-required");
+        
+        verifyBuildWithTest(AddressAndRequiredCustomerViewsClient.class, new Class<?>[] { HasLandedOnNewCustomerView.class,
             HasLandedOnEditCustomerView.class, HasLandedOnSearchCustomerView.class, HasLandedOnNewAddressView.class,
             HasLandedOnEditAddressView.class, HasLandedOnSearchAddressView.class });
     }
@@ -394,10 +488,20 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         getShell().execute("cd ../Customer.java");
         getShell().execute("field oneToOne --named shippingAddress --fieldType com.test.model.Address.java");
     }
+    
+    private void generateOneCustomerOneAddressRelationAsRequired() throws Exception {
+        getShell().execute("cd ../Customer.java");
+        getShell().execute("field oneToOne --named shippingAddress --fieldType com.test.model.Address.java --required");
+    }
 
     private void generateManyStoreOrderOneCustomerRelation() throws Exception {
         getShell().execute("cd ../StoreOrder.java");
         getShell().execute("field manyToOne --named customer --fieldType com.test.model.Customer.java");
+    }
+    
+    private void generateManyStoreOrderOneCustomerRelationAsRequired() throws Exception {
+        getShell().execute("cd ../StoreOrder.java");
+        getShell().execute("field manyToOne --named customer --fieldType com.test.model.Customer.java --required");
     }
 
     private void generateManyGroupManyUserRelation() throws Exception {
