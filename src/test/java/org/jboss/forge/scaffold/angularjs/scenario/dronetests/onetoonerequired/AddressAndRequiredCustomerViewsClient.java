@@ -176,6 +176,16 @@ public class AddressAndRequiredCustomerViewsClient {
         addressElement = driver.findElement(By.id("shippingAddress"));
         addresses = new Select(addressElement);
         assertEquals("1", addresses.getFirstSelectedOption().getText());
+        
+        // Browse to search customer view and verify if searching for the customer works 
+        driver.findElement(By.id("cancel")).click();
+        wait.until(new HasLandedOnSearchCustomerView());
+        addressElement = driver.findElement(By.id("shippingAddress"));
+        addresses = new Select(addressElement);
+        addresses.selectByVisibleText("1");
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("id(\"search-results-body\")/tr")));
+        searchResults = driver.findElements(By.xpath("id(\"search-results-body\")/tr"));
+        assertEquals(1, searchResults.size());
     }
     
     private boolean isBootstrapErrorDisplayedForFormControl(String formElementId, String message) {

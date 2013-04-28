@@ -125,7 +125,7 @@ public class CustomerAndAddressViewsClient {
         assertEquals("USA", driver.findElement(By.id("country")).getAttribute("value"));
         assertEquals("39512-8569", driver.findElement(By.id("postalcode")).getAttribute("value"));
         
-        // Browse to search customer view and verify if searching for the customer works 
+        // Browse to search address view and verify if searching for the address works 
         driver.findElement(By.id("cancel")).click();
         wait.until(new HasLandedOnSearchAddressView());
         driver.findElement(By.id("street")).clear();
@@ -169,11 +169,11 @@ public class CustomerAndAddressViewsClient {
         driver.findElement(By.linkText("Customers")).click();
         wait.until(new HasLandedOnSearchCustomerView());
         
-        // Choose to create a new store order
+        // Choose to create a new customer
         driver.findElement(By.id("Create")).click();
         wait.until(new HasLandedOnNewCustomerView());
         
-        // Enter the store order details and save
+        // Enter the customer details and save
         driver.findElement(By.id("firstName")).clear();
         driver.findElement(By.id("firstName")).sendKeys("John Doe");
         driver.findElement(By.id("dateOfBirth")).clear();
@@ -191,6 +191,16 @@ public class CustomerAndAddressViewsClient {
         addressElement = driver.findElement(By.id("shippingAddress"));
         addresses = new Select(addressElement);
         assertEquals("2", addresses.getFirstSelectedOption().getText());
+        
+        // Browse to the search view and verify if searching through HTML dropdowns work
+        driver.findElement(By.id("cancel")).click();
+        wait.until(new HasLandedOnSearchCustomerView());
+        addressElement = driver.findElement(By.id("shippingAddress"));
+        addresses = new Select(addressElement);
+        addresses.selectByVisibleText("2");
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("id(\"search-results-body\")/tr")));
+        List<WebElement> searchResults = driver.findElements(By.xpath("id(\"search-results-body\")/tr"));
+        assertEquals(1, searchResults.size());
     }
     
 }

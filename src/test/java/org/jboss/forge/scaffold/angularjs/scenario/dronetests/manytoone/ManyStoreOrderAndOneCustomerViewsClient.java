@@ -116,7 +116,7 @@ public class ManyStoreOrderAndOneCustomerViewsClient {
         assertEquals("Apples", driver.findElement(By.id("product")).getAttribute("value"));
         assertEquals("2013-01-10", driver.findElement(By.id("orderDate")).getAttribute("value"));
         
-        // Browse to search customer view and verify if searching for the customer works 
+        // Browse to search customer view and verify if searching for the store order works 
         driver.findElement(By.id("cancel")).click();
         wait.until(new HasLandedOnSearchStoreOrderView());
         driver.findElement(By.id("product")).clear();
@@ -172,6 +172,16 @@ public class ManyStoreOrderAndOneCustomerViewsClient {
         customerElement = driver.findElement(By.id("customer"));
         customers = new Select(customerElement);
         assertEquals("1", customers.getFirstSelectedOption().getText());
+        
+        // Browse to search customer view and verify if searching for the store order through HTML dropdowns work
+        driver.findElement(By.id("cancel")).click();
+        wait.until(new HasLandedOnSearchStoreOrderView());
+        customerElement = driver.findElement(By.id("customer"));
+        customers = new Select(customerElement);
+        customers.selectByVisibleText("1");
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("id(\"search-results-body\")/tr")));
+        List<WebElement> searchResults = driver.findElements(By.xpath("id(\"search-results-body\")/tr"));
+        assertEquals(1, searchResults.size());
     }
     
 }

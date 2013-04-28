@@ -129,13 +129,22 @@ public class ManyStoreOrderAndOneRequiredCustomerViewsClient {
         customers = new Select(customerElement);
         assertEquals("1", customers.getFirstSelectedOption().getText());
         
-        // Browse to search customer view and verify if searching for the customer works 
+        // Browse to search store order view and verify if searching for the store order works 
         driver.findElement(By.id("cancel")).click();
         wait.until(new HasLandedOnSearchStoreOrderView());
         driver.findElement(By.id("product")).clear();
         driver.findElement(By.id("product")).sendKeys("Apple");
         wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("id(\"search-results-body\")/tr")));
         List<WebElement> searchResults = driver.findElements(By.xpath("id(\"search-results-body\")/tr"));
+        assertEquals(1, searchResults.size());
+        
+        // Verify if searching for the store order through HTML dropdowns work
+        driver.findElement(By.id("product")).clear();
+        customerElement = driver.findElement(By.id("customer"));
+        customers = new Select(customerElement);
+        customers.selectByVisibleText("1");
+        wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("id(\"search-results-body\")/tr")));
+        searchResults = driver.findElements(By.xpath("id(\"search-results-body\")/tr"));
         assertEquals(1, searchResults.size());
         
         // Browse to the edit View of a search result and verify if the details are displayed
