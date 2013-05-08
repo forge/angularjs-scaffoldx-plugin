@@ -22,7 +22,7 @@
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span3">
-                    <img src="img/forge-logo.png" alt="JBoss Forge"></img>
+                    <img class="hidden-phone" src="img/forge-logo.png" alt="JBoss Forge"></img>
                     <nav class="well sidebar-nav" ng-controller="NavController">
                         <ul id="sidebar-entries" class="nav nav-list">
                             <#list entityNames as entityName>
