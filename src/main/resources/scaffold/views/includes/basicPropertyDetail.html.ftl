@@ -6,7 +6,7 @@
     <div class="control-group" ng-class="{error: ${formProperty}.$invalid}">
         <label for="${property.name}" class="control-label">${propertyLabel}</label>
         <div id="${property.name}Controls" class="controls">
-            <input id="${property.name}" name="${property.name}"<#t/>
+            <input id="${property.name}" name="${property.name}"<#rt/>
                 <#if property.type == "number"> type="number"<#t/>
                     <#if property["minimum-value"]??> min="${property["minimum-value"]}"</#if><#t/>
                     <#if property["maximum-value"]??> max="${property["maximum-value"]}"</#if><#t/>

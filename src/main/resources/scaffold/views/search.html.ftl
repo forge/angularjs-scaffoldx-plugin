@@ -1,7 +1,7 @@
 <h2>Search for ${entityName}s</h2>
 <form id="${entityName}Search" class="form-horizontal">
     <#list properties as property>
-    <#include "includes/searchFormInput.html.ftl" >
+    <#include "includes/searchFormInput.html.ftl">
     </#list>
     <div class="control-group">
         <div class="controls">
@@ -11,7 +11,6 @@
     </div>
 </form>
 <div id="search-results">
-    <#include "includes/searchResults.html.ftl" >
-
-    <#include "includes/searchResultsPaginator.html.ftl" >
+    <#include "includes/searchResults.html.ftl">
+    <#include "includes/searchResultsPaginator.html.ftl">
 </div>

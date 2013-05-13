@@ -5,14 +5,14 @@
     <div class="control-group" ng-class="{error: StoreOrderForm.product.$invalid}">
         <label for="product" class="control-label">Product</label>
         <div id="productControls" class="controls">
-<input id="product" name="product" type="text" required ng-model="storeOrder.product" placeholder="Enter the StoreOrder Product"></input>
+            <input id="product" name="product" type="text" required ng-model="storeOrder.product" placeholder="Enter the StoreOrder Product"></input>
             <span class="help-inline" ng-show="StoreOrderForm.product.$error.required">required</span> 
         </div>
     </div>
     <div class="control-group" ng-class="{error: StoreOrderForm.orderDate.$invalid}">
         <label for="orderDate" class="control-label">Order Date</label>
         <div id="orderDateControls" class="controls">
-<input id="orderDate" name="orderDate" type="date" ng-model="storeOrder.orderDate" placeholder="Enter the StoreOrder Order Date"></input>
+            <input id="orderDate" name="orderDate" type="date" ng-model="storeOrder.orderDate" placeholder="Enter the StoreOrder Order Date"></input>
         </div>
     </div>
     <div class="control-group" ng-class="{error: StoreOrderForm.customer.$invalid}">

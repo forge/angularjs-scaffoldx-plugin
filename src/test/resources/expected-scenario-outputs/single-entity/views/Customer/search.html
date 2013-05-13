@@ -1,17 +1,17 @@
 <h2>Search for Customers</h2>
 <form id="CustomerSearch" class="form-horizontal">
-<div class="control-group">
-    <label for="firstName" class="control-label">First Name</label>
-    <div class="controls">
-        <input id="firstName" name="firstName" type="text" ng-model="search.firstName" placeholder="Enter the Customer First Name"></input>
+    <div class="control-group">
+        <label for="firstName" class="control-label">First Name</label>
+        <div class="controls">
+            <input id="firstName" name="firstName" type="text" ng-model="search.firstName" placeholder="Enter the Customer First Name"></input>
+        </div>
     </div>
-</div>
-<div class="control-group">
-    <label for="dateOfBirth" class="control-label">Date Of Birth</label>
-    <div class="controls">
-        <input id="dateOfBirth" name="dateOfBirth" type="text" ng-model="search.dateOfBirth" placeholder="Enter the Customer Date Of Birth"></input>
+    <div class="control-group">
+        <label for="dateOfBirth" class="control-label">Date Of Birth</label>
+        <div class="controls">
+            <input id="dateOfBirth" name="dateOfBirth" type="text" ng-model="search.dateOfBirth" placeholder="Enter the Customer Date Of Birth"></input>
+        </div>
     </div>
-</div>
     <div class="control-group">
         <div class="controls">
             <a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()"><i class="icon-search icon-white"></i> Search</a>
@@ -20,30 +20,31 @@
     </div>
 </form>
 <div id="search-results">
-<table class="table table-bordered table-striped clearfix">
-    <thead>
-        <tr>
-                    <th>First Name</th>
-            <th>Date Of Birth</th>
-        </tr>
-    </thead>
-    <tbody id="search-results-body">
-        <tr ng-repeat="result in searchResults | searchFilter:searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
-            <td><a href="#/Customers/edit/{{result.id}}">{{result.firstName}}</a></td>
-            <td><a href="#/Customers/edit/{{result.id}}">{{result.dateOfBirth}}</a></td>
-        </tr>
-    </tbody>
-</table>
-<div class="pagination pagination-centered">
-    <ul>
-        <li ng-class="{disabled:currentPage == 0}">
-            <a id="prev" href ng-click="previous()">«</a>
-        </li>
-        <li ng-repeat="n in pageRange" ng-class="{active:currentPage == n}" ng-click="setPage(n)">
-            <a href ng-bind="n + 1">1</a>
-        </li>
-        <li ng-class="{disabled: currentPage == (numberOfPages() - 1)}">
-            <a id="next" href ng-click="next()">»</a>
-        </li>
-    </ul>
-</div></div>
+    <table class="table table-bordered table-striped clearfix">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Date Of Birth</th>
+            </tr>
+        </thead>
+        <tbody id="search-results-body">
+            <tr ng-repeat="result in searchResults | searchFilter:searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+                <td><a href="#/Customers/edit/{{result.id}}">{{result.firstName}}</a></td>
+                <td><a href="#/Customers/edit/{{result.id}}">{{result.dateOfBirth}}</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="pagination pagination-centered">
+        <ul>
+            <li ng-class="{disabled:currentPage == 0}">
+                <a id="prev" href ng-click="previous()">«</a>
+            </li>
+            <li ng-repeat="n in pageRange" ng-class="{active:currentPage == n}" ng-click="setPage(n)">
+                <a href ng-bind="n + 1">1</a>
+            </li>
+            <li ng-class="{disabled: currentPage == (numberOfPages() - 1)}">
+                <a id="next" href ng-click="next()">»</a>
+            </li>
+        </ul>
+    </div>
+</div>
