@@ -58,6 +58,7 @@ html, body {
     #main th, #main td {
         margin: 0;
         vertical-align: top;
+        border-top: 1px solid #DDDDDD;
     }
     #main th {
         text-align: left;
@@ -91,7 +92,7 @@ html, body {
     }
     #main td {
         display: block;
-        min-height: 1.25em;
+        min-height: 1.4em;
         text-align: left;
     }
 
@@ -110,5 +111,8 @@ html, body {
     }
     #main th:last-child, #main td:last-child {
         border-bottom: 1px solid #babcbf;
+    }
+    #main tbody> tr:last-child {
+        border-right: 1px solid #BABCBF;
     }
 }
