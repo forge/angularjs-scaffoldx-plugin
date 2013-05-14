@@ -1,6 +1,7 @@
 
 angular.module('test').controller('NewCustomerController', function ($scope, $location, locationParser, CustomerResource , StoreOrderResource) {
     $scope.disabled = false;
+    $scope.customer = $scope.customer || {};
     
     $scope.ordersList = StoreOrderResource.queryAll(function(items){
         $scope.ordersSelectionList = $.map(items, function(item) {

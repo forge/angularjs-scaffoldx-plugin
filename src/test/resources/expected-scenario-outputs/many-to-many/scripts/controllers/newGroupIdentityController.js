@@ -1,6 +1,7 @@
 
 angular.module('test').controller('NewGroupIdentityController', function ($scope, $location, locationParser, GroupIdentityResource , UserIdentityResource) {
     $scope.disabled = false;
+    $scope.groupIdentity = $scope.groupIdentity || {};
     
     $scope.usersList = UserIdentityResource.queryAll(function(items){
         $scope.usersSelectionList = $.map(items, function(item) {

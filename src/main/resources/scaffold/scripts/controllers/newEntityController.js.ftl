@@ -16,6 +16,7 @@
 
 angular.module('${angularApp}').controller('${angularController}', function ($scope, $location, locationParser, ${angularResource} ${relatedResources}) {
     $scope.disabled = false;
+    ${model} = ${model} || {};
     
     <#list properties as property>
     <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">

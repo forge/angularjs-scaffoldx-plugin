@@ -1,6 +1,7 @@
 
 angular.module('test').controller('NewAddressController', function ($scope, $location, locationParser, AddressResource ) {
     $scope.disabled = false;
+    $scope.address = $scope.address || {};
     
 
     $scope.save = function() {

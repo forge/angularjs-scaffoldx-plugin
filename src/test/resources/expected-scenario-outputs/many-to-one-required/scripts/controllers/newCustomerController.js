@@ -1,6 +1,7 @@
 
 angular.module('test').controller('NewCustomerController', function ($scope, $location, locationParser, CustomerResource ) {
     $scope.disabled = false;
+    $scope.customer = $scope.customer || {};
     
 
     $scope.save = function() {
