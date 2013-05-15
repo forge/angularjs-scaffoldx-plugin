@@ -82,8 +82,8 @@ public class TestHelpers {
         root.put("projectTitle", StringUtils.uncamelCase(PROJECT_ID));
         root.put("entityName", ENTITY_NAME);
         root.put("entityId", "id");
-        root.put("contextRoot", PROJECT_ID);
         root.put("resourceRootPath", "rest");
+        root.put("parentDirectories", "");
         root.put("properties", entityAttributeProperties);
         return Collections.unmodifiableMap(root);
     }

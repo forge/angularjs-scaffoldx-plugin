@@ -34,7 +34,6 @@ import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.project.facets.DependencyFacet;
 import org.jboss.forge.project.facets.MetadataFacet;
-import org.jboss.forge.project.facets.PackagingFacet;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.project.facets.events.InstallFacets;
 import org.jboss.forge.resources.DirectoryResource;
@@ -197,7 +196,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             root.put("projectId", StringUtils.camelCase(metadata.getProjectName()));
             root.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
             root.put("resourceRootPath", getRootResourcePath());
-            root.put("contextRoot", project.getFacet(PackagingFacet.class).getFinalName());
+            root.put("parentDirectories", getParentDirectories(targetDir));
 
             // Process the Freemarker templates with the Freemarker data model and retrieve the generated resources from the
             // registry.
@@ -377,6 +376,43 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
           return templateBaseDir;
        }
        return null;
+    }
+    
+    /**
+     * Provided a target directory, this method calculates the parent directories to re-create the path to the web resource
+     * root.
+     * 
+     * @param targetDir The target directory that would be used as the basis for calculating the parent directories. 
+     * @return The parent directories to traverse. Represented as a sequence of '..' characters with '/' to denote multiple
+     *         parent directories.
+     */
+    private String getParentDirectories(String targetDir) {
+        if (targetDir == null || targetDir.isEmpty()) {
+            return "";
+        } else {
+            if (targetDir.startsWith("/")) {
+                targetDir = targetDir.substring(1);
+            }
+            if (targetDir.endsWith("/")) {
+                targetDir = targetDir.substring(0, targetDir.length() - 1);
+            }
+            int parents = countOccurrences(targetDir, '/') + 1;
+            StringBuilder parentDirectories = new StringBuilder();
+            for (int ctr = 0; ctr < parents; ctr++) {
+                parentDirectories.append("../");
+            }
+            return parentDirectories.toString();
+        }
+    }
+
+    private int countOccurrences(String searchString, char charToSearch) {
+        int count = 0;
+        for (int ctr = 0; ctr < searchString.length(); ctr++) {
+            if (searchString.charAt(ctr) == charToSearch) {
+                count++;
+            }
+        }
+        return count;
     }
 
 }

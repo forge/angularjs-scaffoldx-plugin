@@ -74,9 +74,9 @@ public class ResourceProvider {
         resources.add(new ScaffoldResource("scripts/services/locationParser.js.ftl", targetDir
                 + "/scripts/services/locationParser.js"));
         resources.add(new ScaffoldResource("scripts/filters/genericSearchFilter.js.ftl", targetDir
-                + "scripts/filters/genericSearchFilter.js"));
+                + "/scripts/filters/genericSearchFilter.js"));
         resources.add(new ScaffoldResource("scripts/filters/startFromFilter.js.ftl", targetDir
-                + "scripts/filters/startFromFilter.js"));
+                + "/scripts/filters/startFromFilter.js"));
         return resources;
     }
 
