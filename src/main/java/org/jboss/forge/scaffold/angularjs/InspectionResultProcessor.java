@@ -1,3 +1,9 @@
+/**
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Eclipse Public License version 1.0, available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.jboss.forge.scaffold.angularjs;
 
 import java.io.FileNotFoundException;
@@ -6,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.persistence.Id;
 
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.Project;
@@ -16,6 +23,17 @@ import org.jboss.forge.scaffoldx.metawidget.inspector.ForgeInspectionResultConst
 import org.jboss.forge.shell.ShellPrompt;
 import org.metawidget.util.simple.StringUtils;
 
+/**
+ * An 'Inspection Result Processor' that enhances the inspection results provided by Metawidget. This class does not implement
+ * the {@link org.metawidget.inspectionresultprocessor.iface.InspectionResultProcessor} of Metawidget since it needs access to
+ * the injected Forge {@link ShellPrompt} instance.
+ * 
+ * This processor enhances the inspection results with HTML form labels for the inspected properties. It canonicalizes all
+ * numerical types to the HTML5 'number' form input type.
+ * 
+ * It also prompts the user to choose a field to be displayed in the HTML form select fields. Form select fields may display
+ * Ids, but this may not be intuitive, especially when other properties would be better suited visually.
+ */
 public class InspectionResultProcessor {
 
     private ShellPrompt prompt;
@@ -38,6 +56,13 @@ public class InspectionResultProcessor {
         return inspectionResults;
     }
 
+    /**
+     * Provides the Id of the JPA entity as obtained during inspection by Metawidget.
+     * 
+     * @param entity The {@link JavaClass} representing the JPA entity. 
+     * @param inspectionResults A list representing the inspection results for each property of the entity 
+     * @return The name of the property in the entity representing the entity {@link Id} aka the primary key. 
+     */
     public String fetchEntityId(JavaClass entity, List<Map<String, String>> inspectionResults) {
         for(Map<String, String> inspectionResult: inspectionResults){
             boolean isPrimaryKey = Boolean.parseBoolean(inspectionResult.get(ForgeInspectionResultConstants.PRIMARY_KEY));
@@ -72,6 +97,7 @@ public class InspectionResultProcessor {
         boolean isNToManyRel = Boolean.parseBoolean(propertyAttributes.get("n-to-many"));
         if (isManyToOneRel || isNToManyRel || isOneToOneRel) {
             String rightHandSideType;
+            // Obtain the class name of the other/right-hand side of the relationship. 
             if (isOneToOneRel || isManyToOneRel) {
                 rightHandSideType = propertyAttributes.get("type");
             } else {

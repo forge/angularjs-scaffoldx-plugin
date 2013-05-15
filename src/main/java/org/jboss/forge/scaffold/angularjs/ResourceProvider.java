@@ -1,3 +1,9 @@
+/**
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Eclipse Public License version 1.0, available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.jboss.forge.scaffold.angularjs;
 
 import static org.jboss.forge.scaffold.angularjs.AngularScaffold.SCAFFOLD_DIR;
@@ -5,6 +11,11 @@ import static org.jboss.forge.scaffold.angularjs.AngularScaffold.SCAFFOLD_DIR;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A collection of utility methods that return collections representing groups of {@link ScaffoldResource}s for further
+ * processing.
+ * 
+ */
 public class ResourceProvider {
 
     private static final String GLYPHICONS_WHITE_PNG = "/img/glyphicons-halflings-white.png";
@@ -25,6 +36,13 @@ public class ResourceProvider {
 
     private static final String BOOTSTRAP_CSS = "/styles/bootstrap.css";
 
+    /**
+     * Provides a list of {@link ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
+     * 
+     * @param targetDir The target directory that serves as the root directory of the destination for the generated resources to
+     *        be copied to.
+     * @return A list of {@link ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
+     */
     public static List<ScaffoldResource> getStatics(String targetDir) {
         List<ScaffoldResource> statics = new ArrayList<ScaffoldResource>();
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_CSS, targetDir + BOOTSTRAP_CSS));
@@ -39,6 +57,15 @@ public class ResourceProvider {
         return statics;
     }
     
+    /**
+     * Provides a list of {@link ScaffoldResource}s representing Freemarker templates that are to be processed only once for a
+     * scaffold generation run.
+     * 
+     * @param targetDir The target directory that serves as the root directory of the destination for the generated resources to
+     *        be written to.
+     * @return A list of {@link ScaffoldResource}s representing Freemarker templates that are to be processed only once for a
+     *         scaffold generation run.
+     */
     public static List<ScaffoldResource> getGlobalTemplates(String targetDir) {
         List<ScaffoldResource> resources = new ArrayList<ScaffoldResource>();
         resources.add(new ScaffoldResource("index.html.ftl", "/index.html"));
@@ -53,6 +80,16 @@ public class ResourceProvider {
         return resources;
     }
 
+    /**
+     * Provides a list of {@link ScaffoldResource}s representing Freemarker templates that are to be processed for every entity
+     * during a scaffold generation run.
+     * 
+     * @param targetDir The target directory that serves as the root directory of the destination for the generated resources to
+     *        be written to.
+     * @param entityName The name of the JPA entity
+     * @return A list of {@link ScaffoldResource}s representing Freemarker templates that are to be processed for every entity
+     *         during a scaffold generation run.
+     */
     public static List<ScaffoldResource> getEntityTemplates(String targetDir, String entityName) {
         List<ScaffoldResource> resources = new ArrayList<ScaffoldResource>();
         resources.add(new ScaffoldResource("views/detail.html.ftl", targetDir + "/views/" + entityName
