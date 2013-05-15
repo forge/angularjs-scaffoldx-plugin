@@ -22,6 +22,7 @@ angular.module('${angularApp}',['ngResource'])
   }])
   .controller('NavController', function NavController($scope, $location) {
     $scope.matchesRoute = function(route) {
-        return ($location.path().startsWith("/" + route));
+        var path = $location.path();
+        return (path === ("/" + route) || path.startsWith("/" + route + "/"));
     };
   });
