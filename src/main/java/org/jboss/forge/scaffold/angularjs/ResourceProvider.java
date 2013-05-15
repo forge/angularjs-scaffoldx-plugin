@@ -7,8 +7,6 @@ import java.util.List;
 
 public class ResourceProvider {
 
-    private static final String ANGULAR_SCENARIO_JS = "/test/lib/angular/angular-scenario.js";
-
     private static final String GLYPHICONS_WHITE_PNG = "/img/glyphicons-halflings-white.png";
 
     private static final String GLYPHICONS_PNG = "/img/glyphicons-halflings.png";
@@ -38,7 +36,6 @@ public class ResourceProvider {
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + FORGE_LOGO_PNG, targetDir + FORGE_LOGO_PNG));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_PNG, targetDir + GLYPHICONS_PNG));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_WHITE_PNG, targetDir + GLYPHICONS_WHITE_PNG));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_SCENARIO_JS, targetDir + ANGULAR_SCENARIO_JS));
         return statics;
     }
     
@@ -53,7 +50,6 @@ public class ResourceProvider {
                 + "scripts/filters/genericSearchFilter.js"));
         resources.add(new ScaffoldResource("scripts/filters/startFromFilter.js.ftl", targetDir
                 + "scripts/filters/startFromFilter.js"));
-        resources.add(new ScaffoldResource("test/e2e/runner.html.ftl", targetDir + "/test/e2e/runner.html"));
         return resources;
     }
 
@@ -71,8 +67,6 @@ public class ResourceProvider {
                 + "/scripts/controllers/search" + entityName + "Controller.js"));
         resources.add(new ScaffoldResource("scripts/controllers/editEntityController.js.ftl", targetDir
                 + "/scripts/controllers/edit" + entityName + "Controller.js"));
-        resources.add(new ScaffoldResource("test/e2e/scenarios.js.ftl", targetDir + "/test/e2e/" + entityName
-                + "scenarios.js"));
         return resources;
     }
 

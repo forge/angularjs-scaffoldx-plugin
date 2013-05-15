@@ -105,14 +105,13 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
 
     @Override
     public boolean install() {
-        // TODO Add Maven artifacts to the project here. Required facet installation is already handled by the class-level
-        // @RequiresFacet annotation.
+        // Required facet installation is already handled by the class-level @RequiresFacet annotation.
         return true;
     }
 
     @Override
     public boolean isInstalled() {
-        // TODO Looks unnecessary for this scaffold. See comments on install(). We could extract install() and installed() out.
+        // Unnecessary for this scaffold. See comments on install().
         return true;
     }
 
@@ -159,7 +158,6 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             List<Map<String, String>> inspectionResults = metawidgetInspectorFacade.inspect(klass);
             String entityId = angularResultEnhancer.fetchEntityId(klass, inspectionResults);
             inspectionResults = angularResultEnhancer.enhanceResults(klass, inspectionResults);
-            ShellMessages.info(writer, "Inspection Results: [" + inspectionResults + "]");
             // TODO: Provide a 'utility' class for allowing transliteration across language naming schemes
             // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
             Map<String, Object> root = new HashMap<String, Object>();
