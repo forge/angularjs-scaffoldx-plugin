@@ -1,3 +1,9 @@
+/**
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Eclipse Public License version 1.0, available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.jboss.forge.scaffold.matchers;
 
 import java.util.List;
@@ -8,6 +14,10 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+/**
+ * A Hamcrest matcher to aid in verifying that inspection results represented as a List of Map of String key-value pairs,
+ * contains a key-value pair in one of the Maps (i.e. one of the class/object properties).
+ */
 public class InspectionResultMatcher<T> extends TypeSafeMatcher<List<Map<String, String>>> {
 
     private String key;

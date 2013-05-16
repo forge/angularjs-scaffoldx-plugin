@@ -1,3 +1,9 @@
+/**
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Eclipse Public License version 1.0, available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.jboss.forge.scaffold.angularjs.freemarker;
 
 import static org.jboss.forge.scaffold.angularjs.TestHelpers.*;
@@ -13,6 +19,10 @@ import org.jboss.forge.scaffoldx.freemarker.TemplateLoaderConfig;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * Tests to verify that Freemarker templates that generate JavaScript work. Verifies that the templates dont error out during
+ * processing. Functional tests verify whether the generated JavaScript actually work.
+ */
 public class FreemarkerClientTest {
 
     private static FreemarkerClient freemarkerClient;

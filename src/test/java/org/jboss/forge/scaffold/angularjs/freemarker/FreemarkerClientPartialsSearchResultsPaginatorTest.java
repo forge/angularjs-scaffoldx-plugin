@@ -1,3 +1,9 @@
+/**
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Eclipse Public License version 1.0, available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.jboss.forge.scaffold.angularjs.freemarker;
 
 import static org.junit.Assert.*;
@@ -11,6 +17,9 @@ import org.jboss.forge.scaffoldx.freemarker.TemplateLoaderConfig;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * Tests to verify that the generated HTML the paginator in the search page is generated correctly.
+ */
 public class FreemarkerClientPartialsSearchResultsPaginatorTest {
 
     private static FreemarkerClient freemarkerClient;

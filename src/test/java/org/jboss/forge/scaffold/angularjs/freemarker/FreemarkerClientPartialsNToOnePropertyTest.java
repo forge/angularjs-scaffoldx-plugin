@@ -1,3 +1,9 @@
+/**
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Eclipse Public License version 1.0, available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.jboss.forge.scaffold.angularjs.freemarker;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -17,6 +23,9 @@ import org.jsoup.select.Elements;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * Tests to verify that the generated HTML for 1:1 and M:1 associations of JPA entities are generated correctly.
+ */
 public class FreemarkerClientPartialsNToOnePropertyTest {
 
     private static FreemarkerClient freemarkerClient;

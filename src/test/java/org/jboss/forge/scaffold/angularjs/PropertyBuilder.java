@@ -1,9 +1,19 @@
+/**
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Eclipse Public License version 1.0, available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.jboss.forge.scaffold.angularjs;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A builder to help in creation of Metawidget inspection results to be used in tests, without actually inspecting classes or
+ * objects.
+ */
 class PropertyBuilder {
     private Map<String, String> properties = new HashMap<String, String>();
 

@@ -1,3 +1,9 @@
+/**
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Eclipse Public License version 1.0, available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.jboss.forge.scaffold.angularjs.scenario;
 
 import java.io.InputStream;
@@ -9,6 +15,10 @@ import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.shell.util.Streams;
 import org.junit.Assert;
 
+/**
+ * Test helpers to aid in verifying whether the required files are generated, and in some cases also verify whether their
+ * contents are the same as expected.
+ */
 public class TestHelpers {
 
     private static final String SCENARIO_OUTPUTS = "expected-scenario-outputs/";

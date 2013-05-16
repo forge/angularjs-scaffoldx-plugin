@@ -1,3 +1,9 @@
+/**
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Eclipse Public License version 1.0, available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.jboss.forge.scaffold.angularjs.freemarker;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -19,6 +25,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.metawidget.util.simple.StringUtils;
 
+/**
+ * Tests to verify that the generated HTML for the search results table in the search page is generated correctly.
+ */
 public class FreemarkerClientPartialsSearchResultsTest {
 
     private static FreemarkerClient freemarkerClient;

@@ -1,3 +1,9 @@
+/**
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Eclipse Public License version 1.0, available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.jboss.forge.scaffold.angularjs.scenario;
 
 import static org.jboss.forge.scaffold.angularjs.scenario.TestHelpers.assertStaticFilesAreGenerated;
@@ -38,8 +44,18 @@ import org.jboss.forge.scaffold.angularjs.scenario.dronetests.singleentity.Custo
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.singleentityvalidations.CustomerViewWithValidationsClient;
 import org.jboss.forge.scaffold.angularjs.scenario.dronetests.singleentitywithenum.CustomerWithPaymentTypeViewClient;
 import org.jboss.forge.test.web.DroneTest;
+import org.junit.Ignore;
 import org.junit.Test;
 
+/**
+ * Functional tests to verify that JPA object graphs of various kinds are scaffolded correctly. The generated scaffold is tested
+ * through Arquillian Drone tests that are triggered via a Maven build.
+ * 
+ * The generated files are compared to ensure that simple breaking changes in the templates are caught earlier.
+ * 
+ * The functional tests referenced internally by these tests are marked as {@link Ignore} so that they're triggered only when
+ * running these top-level tests. They would fail if run outside the generated Maven projects containing the scaffolding.
+ */
 public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
 
     @Inject

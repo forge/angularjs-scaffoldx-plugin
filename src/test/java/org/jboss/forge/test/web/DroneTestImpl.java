@@ -1,5 +1,5 @@
-/*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+/**
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Eclipse Public License version 1.0, available at
  * http://www.eclipse.org/legal/epl-v10.html
@@ -47,194 +47,205 @@ import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 /**
- * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
- * 
+ * Enhances a Maven project create during test execution, with Arquillian dependencies to enable testing of Arquillian Drone
+ * tests using Firefox. The tests are run on a managed AS7 container.
  */
-public class DroneTestImpl implements DroneTest
-{
-   @Override
-   public void setup(final Project project)
-   {
-      ResourceFacet resources = project.getFacet(ResourceFacet.class);
-      FileResource<?> arquillian = resources.getTestResource("arquillian.xml");
-      if (!arquillian.exists())
-      {
-         arquillian.createNewFile();
-         arquillian.setContents(this.getClass().getResourceAsStream("/web/arquillian.xml"));
-      }
-
-      MavenCoreFacet mvn = project.getFacet(MavenCoreFacet.class);
-
-      DependencyFacet deps = project.getFacet(DependencyFacet.class);
-      deps.addDirectManagedDependency(
-               DependencyBuilder.create("org.jboss.arquillian:arquillian-bom:1.0.1.Final")
-                        .setPackagingType(PackagingType.BASIC).setScopeType(ScopeType.IMPORT));
-      deps.addDirectManagedDependency(
-              DependencyBuilder.create("org.jboss.arquillian.extension:arquillian-drone-bom:1.2.0.Alpha1")
-                       .setPackagingType(PackagingType.BASIC).setScopeType(ScopeType.IMPORT));
-      deps.addDirectManagedDependency(DependencyBuilder.create("org.seleniumhq.selenium:selenium-java:2.31.0"));
-      deps.addDirectManagedDependency(DependencyBuilder.create("org.seleniumhq.selenium:selenium-firefox-driver:2.31.0"));
-      deps.addDirectManagedDependency(DependencyBuilder.create("org.seleniumhq.selenium:selenium-api:2.31.0"));
-      deps.addDirectManagedDependency(DependencyBuilder.create("org.seleniumhq.selenium:selenium-support:2.31.0"));
-      deps.addDirectManagedDependency(DependencyBuilder.create("org.seleniumhq.selenium:selenium-remote-driver:2.31.0"));
-
-      ProfileBuilder profileBuilder = ProfileBuilder
-               .create()
-               .setId("JBOSS_AS_MANAGED_7_1")
-               .setActiveByDefault(true)
-               .addDependency(
-                        DependencyBuilder.create("org.jboss.arquillian.junit:arquillian-junit-container").setScopeType(ScopeType.TEST))
-               .addDependency(
-                        DependencyBuilder.create("org.jboss.arquillian.protocol:arquillian-protocol-servlet").setScopeType(ScopeType.TEST))
-               .addDependency(DependencyBuilder.create("junit:junit:4.11").setScopeType(ScopeType.TEST))
-               .addDependency(DependencyBuilder.create("org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl:1.1.0-beta-1").setScopeType(ScopeType.TEST))
-               .addDependency(DependencyBuilder.create("org.jboss.as:jboss-as-arquillian-container-managed:7.1.1.Final").setScopeType(ScopeType.TEST))
-               .addDependency(DependencyBuilder.create("org.jboss.arquillian.extension:arquillian-drone-webdriver-depchain:1.1.0.Final")
-                                .setPackagingType(PackagingType.BASIC).setScopeType(ScopeType.TEST));
-
-      Profile profile = profileBuilder.getAsMavenProfile();
-
-      Build build = new Build();
-
-      Plugin plugin = new Plugin();
-      plugin.setArtifactId("maven-dependency-plugin");
-      plugin.setExtensions(false);
-
-      PluginExecution execution = new PluginExecution();
-      execution.setId("unpack");
-      execution.setPhase("process-test-classes");
-      execution.addGoal("unpack");
-
-      ConfigurationBuilder configBuilder = ConfigurationBuilder.create();
-      ConfigurationElementBuilder artifactItem = configBuilder
-               .createConfigurationElement("artifactItems").addChild("artifactItem");
-      artifactItem.addChild("groupId").setText("org.jboss.as");
-      artifactItem.addChild("artifactId").setText("jboss-as-dist");
-      artifactItem.addChild("version").setText("7.1.1.Final");
-      artifactItem.addChild("type").setText("zip");
-      artifactItem.addChild("outputDirectory").setText("target/");
-      try {
-         new Xpp3DomBuilder();
-         execution.setConfiguration(
-                  Xpp3DomBuilder.build(new ByteArrayInputStream(configBuilder.toString().getBytes()), "UTF-8"));
-      }
-      catch (XmlPullParserException e) {
-         throw new RuntimeException(e);
-      }
-      catch (IOException e) {
-         throw new RuntimeException(e);
-      }
-
-      plugin.addExecution(execution);
-
-      build.addPlugin(plugin);
-      profile.setBuild(build);
-      Model pom = mvn.getPOM();
-      pom.addProfile(profile);
-      mvn.setPOM(pom);
-   }
-
-   @Override
-   public JavaClass from(final Project project, final Class<?> clazz)
-   {
-      try {
-         return (JavaClass) project.getFacet(JavaSourceFacet.class).getTestJavaResource(clazz.getName())
-                  .getJavaSource();
-      }
-      catch (FileNotFoundException e) {
-         throw new RuntimeException(e);
-      }
-   }
-
-   @Override
-   public void addAsTestClass(final Project project, final JavaClass clazz)
-   {
-      try {
-         JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
-         clazz.setName(clazz.getName() + "Test");
-
-         if (!clazz.hasAnnotation(RunWith.class))
-         {
-            Annotation<JavaClass> runWith = clazz.addAnnotation(RunWith.class);
-            runWith.setLiteralValue("Arquillian.class");
-         }
-
-         if (clazz.hasAnnotation(Ignore.class))
-         {
-            clazz.removeAnnotation(clazz.getAnnotation(Ignore.class));
-         }
-
-         clazz.addImport(Arquillian.class);
-         java.saveTestJavaSource(clazz);
-      }
-      catch (FileNotFoundException e) {
-         throw new RuntimeException(e);
-      }
-   }
-
-   @Override
-   public Method<JavaClass> buildDefaultDeploymentMethod(final Project project, final JavaClass clazz,
-            final Collection<String> deploymentItems)
-   {
-      try {
-         JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
-
-         JavaResource root = java.getTestJavaResource(java.getBasePackage() + ".Root");
-         if (!root.exists())
-         {
-            java.saveTestJavaSource(JavaParser.create(JavaInterface.class).setName("Root")
-                     .setPackage(java.getBasePackage()));
-         }
-         clazz.addImport(root.getJavaSource());
-
-         clazz.addImport(WebArchive.class);
-         clazz.addImport(Deployment.class);
-         clazz.addImport(ShrinkWrap.class);
-
-         Method<JavaClass> method = clazz.getMethod("getDeployment");
-
-         if (method == null)
-            method = clazz.addMethod("public static WebArchive getDeployment() {}");
-
-         if (!method.hasAnnotation(Deployment.class)) {
-            Annotation<JavaClass> deployment = method.addAnnotation(Deployment.class);
-            deployment.setLiteralValue("testable", "false");
+public class DroneTestImpl implements DroneTest {
+    /**
+     * Adds the Arquillian dependencies to the project POM. Also adds instructions in the POM to unpack the AS7 distribution to
+     * the target directory, for use in the test phase.
+     */
+    @Override
+    public void setup(final Project project) {
+        ResourceFacet resources = project.getFacet(ResourceFacet.class);
+        FileResource<?> arquillian = resources.getTestResource("arquillian.xml");
+        if (!arquillian.exists()) {
+            arquillian.createNewFile();
+            arquillian.setContents(this.getClass().getResourceAsStream("/web/arquillian.xml"));
         }
 
-         clazz.addImport(ExplodedImporter.class);
-         clazz.addImport(JavaArchive.class);
-         clazz.addImport(Filters.class);
-         String body = "return ShrinkWrap.create(WebArchive.class, \"test.war\")"
-                  + ".addPackages(true, " + "Root.class.getPackage()" + ")";
+        MavenCoreFacet mvn = project.getFacet(MavenCoreFacet.class);
 
-         for (String item : deploymentItems)
-         {
-            body = body + item;
-         }
+        DependencyFacet deps = project.getFacet(DependencyFacet.class);
+        deps.addDirectManagedDependency(DependencyBuilder.create("org.jboss.arquillian:arquillian-bom:1.0.1.Final")
+                .setPackagingType(PackagingType.BASIC).setScopeType(ScopeType.IMPORT));
+        deps.addDirectManagedDependency(DependencyBuilder
+                .create("org.jboss.arquillian.extension:arquillian-drone-bom:1.2.0.Alpha1")
+                .setPackagingType(PackagingType.BASIC).setScopeType(ScopeType.IMPORT));
+        deps.addDirectManagedDependency(DependencyBuilder.create("org.seleniumhq.selenium:selenium-java:2.31.0"));
+        deps.addDirectManagedDependency(DependencyBuilder.create("org.seleniumhq.selenium:selenium-firefox-driver:2.31.0"));
+        deps.addDirectManagedDependency(DependencyBuilder.create("org.seleniumhq.selenium:selenium-api:2.31.0"));
+        deps.addDirectManagedDependency(DependencyBuilder.create("org.seleniumhq.selenium:selenium-support:2.31.0"));
+        deps.addDirectManagedDependency(DependencyBuilder.create("org.seleniumhq.selenium:selenium-remote-driver:2.31.0"));
 
-         body = body + ".merge(ShrinkWrap.create(ExplodedImporter.class, \"temp.jar\")" +
-                  ".importDirectory(\"src/main/webapp\") " +
-                  ".as(JavaArchive.class),\"/\", Filters.includeAll());";
+        ProfileBuilder profileBuilder = ProfileBuilder
+                .create()
+                .setId("JBOSS_AS_MANAGED_7_1")
+                .setActiveByDefault(true)
+                .addDependency(
+                        DependencyBuilder.create("org.jboss.arquillian.junit:arquillian-junit-container").setScopeType(
+                                ScopeType.TEST))
+                .addDependency(
+                        DependencyBuilder.create("org.jboss.arquillian.protocol:arquillian-protocol-servlet").setScopeType(
+                                ScopeType.TEST))
+                .addDependency(DependencyBuilder.create("junit:junit:4.11").setScopeType(ScopeType.TEST))
+                .addDependency(
+                        DependencyBuilder.create("org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl:1.1.0-beta-1")
+                                .setScopeType(ScopeType.TEST))
+                .addDependency(
+                        DependencyBuilder.create("org.jboss.as:jboss-as-arquillian-container-managed:7.1.1.Final")
+                                .setScopeType(ScopeType.TEST))
+                .addDependency(
+                        DependencyBuilder
+                                .create("org.jboss.arquillian.extension:arquillian-drone-webdriver-depchain:1.1.0.Final")
+                                .setPackagingType(PackagingType.BASIC).setScopeType(ScopeType.TEST));
 
-         method.setBody(body);
+        Profile profile = profileBuilder.getAsMavenProfile();
 
-         return method;
-      }
-      catch (FileNotFoundException e) {
-         throw new RuntimeException(e);
-      }
-   }
+        Build build = new Build();
 
-   @Override
-   public void addHelpers(Project project, JavaClass[] classes) {
-       for(JavaClass clazz: classes) {
-           try {
-               JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
-               java.saveTestJavaSource(clazz);
+        Plugin plugin = new Plugin();
+        plugin.setArtifactId("maven-dependency-plugin");
+        plugin.setExtensions(false);
+
+        PluginExecution execution = new PluginExecution();
+        execution.setId("unpack");
+        execution.setPhase("process-test-classes");
+        execution.addGoal("unpack");
+
+        ConfigurationBuilder configBuilder = ConfigurationBuilder.create();
+        ConfigurationElementBuilder artifactItem = configBuilder.createConfigurationElement("artifactItems").addChild(
+                "artifactItem");
+        artifactItem.addChild("groupId").setText("org.jboss.as");
+        artifactItem.addChild("artifactId").setText("jboss-as-dist");
+        artifactItem.addChild("version").setText("7.1.1.Final");
+        artifactItem.addChild("type").setText("zip");
+        artifactItem.addChild("outputDirectory").setText("target/");
+        try {
+            new Xpp3DomBuilder();
+            execution.setConfiguration(Xpp3DomBuilder.build(new ByteArrayInputStream(configBuilder.toString().getBytes()),
+                    "UTF-8"));
+        } catch (XmlPullParserException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        plugin.addExecution(execution);
+
+        build.addPlugin(plugin);
+        profile.setBuild(build);
+        Model pom = mvn.getPOM();
+        pom.addProfile(profile);
+        mvn.setPOM(pom);
+    }
+
+    /**
+     * Obtain a references to the test class in the provided project. This method is used by the client to obtain a reference to
+     * the test class in the current Maven project, to later add it to the created Maven project.
+     */
+    @Override
+    public JavaClass from(final Project project, final Class<?> clazz) {
+        try {
+            return (JavaClass) project.getFacet(JavaSourceFacet.class).getTestJavaResource(clazz.getName()).getJavaSource();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Adds the specified {@link JavaClass} as a test class to the Maven project. Removes any {@link Ignore} annotation so that
+     * the test will be executed in the Maven build.
+     */
+    @Override
+    public void addAsTestClass(final Project project, final JavaClass clazz) {
+        try {
+            JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
+            clazz.setName(clazz.getName() + "Test");
+
+            if (!clazz.hasAnnotation(RunWith.class)) {
+                Annotation<JavaClass> runWith = clazz.addAnnotation(RunWith.class);
+                runWith.setLiteralValue("Arquillian.class");
             }
-            catch (FileNotFoundException e) {
-               throw new RuntimeException(e);
+
+            if (clazz.hasAnnotation(Ignore.class)) {
+                clazz.removeAnnotation(clazz.getAnnotation(Ignore.class));
             }
-       }
-   }
+
+            clazz.addImport(Arquillian.class);
+            java.saveTestJavaSource(clazz);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Creates a ShrinkWrap {@link Deployment} method that creates a {@link WebArchive} for deployment by Arquillian. Code to
+     * add the provided deployment items to the provided {@link JavaClass}. The contents of src/main/webapp are also added to
+     * the WebArchive.
+     * 
+     * Existing classes imported by the provided test class (especially the test helpers) will be retained. 
+     */
+    @Override
+    public Method<JavaClass> buildDefaultDeploymentMethod(final Project project, final JavaClass clazz,
+            final Collection<String> deploymentItems) {
+        try {
+            JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
+
+            JavaResource root = java.getTestJavaResource(java.getBasePackage() + ".Root");
+            if (!root.exists()) {
+                java.saveTestJavaSource(JavaParser.create(JavaInterface.class).setName("Root")
+                        .setPackage(java.getBasePackage()));
+            }
+            clazz.addImport(root.getJavaSource());
+
+            clazz.addImport(WebArchive.class);
+            clazz.addImport(Deployment.class);
+            clazz.addImport(ShrinkWrap.class);
+
+            Method<JavaClass> method = clazz.getMethod("getDeployment");
+
+            if (method == null)
+                method = clazz.addMethod("public static WebArchive getDeployment() {}");
+
+            if (!method.hasAnnotation(Deployment.class)) {
+                Annotation<JavaClass> deployment = method.addAnnotation(Deployment.class);
+                deployment.setLiteralValue("testable", "false");
+            }
+
+            clazz.addImport(ExplodedImporter.class);
+            clazz.addImport(JavaArchive.class);
+            clazz.addImport(Filters.class);
+            String body = "return ShrinkWrap.create(WebArchive.class, \"test.war\")" + ".addPackages(true, "
+                    + "Root.class.getPackage()" + ")";
+
+            for (String item : deploymentItems) {
+                body = body + item;
+            }
+
+            body = body + ".merge(ShrinkWrap.create(ExplodedImporter.class, \"temp.jar\")"
+                    + ".importDirectory(\"src/main/webapp\") " + ".as(JavaArchive.class),\"/\", Filters.includeAll());";
+
+            method.setBody(body);
+
+            return method;
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Add test helpers to the Maven project.
+     */
+    @Override
+    public void addHelpers(Project project, JavaClass[] classes) {
+        for (JavaClass clazz : classes) {
+            try {
+                JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
+                java.saveTestJavaSource(clazz);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

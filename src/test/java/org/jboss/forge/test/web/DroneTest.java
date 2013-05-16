@@ -1,5 +1,5 @@
-/*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+/**
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Eclipse Public License version 1.0, available at
  * http://www.eclipse.org/legal/epl-v10.html
@@ -16,17 +16,16 @@ import org.jboss.forge.project.Project;
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * 
  */
-public interface DroneTest
-{
+public interface DroneTest {
 
-   void setup(Project project);
+    void setup(Project project);
 
-   JavaClass from(Project project, Class<?> clazz);
+    JavaClass from(Project project, Class<?> clazz);
 
-   void addAsTestClass(Project project, JavaClass clazz);
+    void addAsTestClass(Project project, JavaClass clazz);
 
-   Method<JavaClass> buildDefaultDeploymentMethod(Project project, JavaClass clazz, Collection<String> deploymentItems);
+    Method<JavaClass> buildDefaultDeploymentMethod(Project project, JavaClass clazz, Collection<String> deploymentItems);
 
-   void addHelpers(Project project, JavaClass[] classes);
+    void addHelpers(Project project, JavaClass[] classes);
 
 }
