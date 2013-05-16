@@ -25,7 +25,22 @@
         <!-- Plugins versions -->
         <!-- **************** -->
         <maven.compiler.version>3.0</maven.compiler.version>
+
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>https://issues.jboss.org/browse/FORGEPLUGINS</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git@github.com:forge/angularjs-scaffoldx-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:forge/angularjs-scaffoldx-plugin.git</developerConnection>
+        <url>https://github.com/forge/angularjs-scaffoldx-plugin</url>
+    </scm>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -174,14 +189,15 @@
     </dependencies>
 
     <build>
+        <finalName>angularjs-scaffoldx-plugin</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.version}</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
