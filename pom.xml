@@ -4,7 +4,7 @@
 
     <groupId>org.jboss.forge</groupId>
     <artifactId>angularjs-scaffoldx-plugin</artifactId>
-    <version>1.0.1.Final</version>
+    <version>1.0.2-SNAPSHOT</version>
 
     <properties>
         <!-- ******************* -->
