@@ -37,7 +37,9 @@ import org.jboss.forge.project.facets.MetadataFacet;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.project.facets.events.InstallFacets;
 import org.jboss.forge.resources.DirectoryResource;
+import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
+import org.jboss.forge.resources.ResourceFilter;
 import org.jboss.forge.resources.java.JavaResource;
 import org.jboss.forge.scaffoldx.metawidget.MetawidgetInspectorFacade;
 import org.jboss.forge.scaffoldx.AccessStrategy;
@@ -151,9 +153,35 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
      */
     public List<Resource<?>> generateIndex(List<JavaClass> filteredClasses, String targetDir, boolean overwrite) {
         ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
+        
+        /*
+         * TODO: Revert this change at a later date, if necessary. This is currently done to ensure that entities are picked up
+         * during invocation of the plugin from the Forge wizard in JBDS.
+         */
+        ResourceFilter filter = new ResourceFilter()
+        {
+           @Override
+           public boolean accept(Resource<?> resource)
+           {
+              FileResource<?> file = (FileResource<?>) resource;
+
+              if (!file.isDirectory()
+                       || file.getName().equals("resources")
+                       || file.getName().equals("WEB-INF")
+                       || file.getName().equals("META-INF"))
+              {
+                 return false;
+              }
+
+              return true;
+           }
+        };
+        
+        WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
+        List<Resource<?>> resources = web.getWebResource(targetDir + "/views/").listResources(filter);
         List<String> entityNames = new ArrayList<String>();
-        for (JavaClass klass : filteredClasses) {
-            entityNames.add(klass.getName());
+        for (Resource<?> resource : resources) {
+            entityNames.add(resource.getName());
         }
 
         Map<String, Object> root = new HashMap<String, Object>();
