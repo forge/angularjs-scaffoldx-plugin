@@ -6,6 +6,8 @@
  */
 package org.jboss.forge.scaffold.angularjs;
 
+import static org.jboss.forge.scaffoldx.metawidget.inspector.ForgeInspectionResultConstants.PRIMARY_KEY;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -140,7 +142,17 @@ public class InspectionResultProcessor {
               }
            }
        }
-       return displayableProperties;
+
+        // If no properties were found suitable for display, add the primary key instead
+        if (displayableProperties.size() < 1) {
+            for (Map<String, String> propertyAttributes : inspectionResults) {
+                if (propertyAttributes.get(PRIMARY_KEY) != null) {
+                    displayableProperties.add(propertyAttributes.get("name"));
+                }
+            }
+        }
+
+        return displayableProperties;
     }
     
     private String getSimpleName(String rightHandSideType)
