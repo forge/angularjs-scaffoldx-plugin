@@ -18,23 +18,23 @@ import java.util.List;
  */
 public class ResourceProvider {
 
-    private static final String GLYPHICONS_WHITE_PNG = "/img/glyphicons-halflings-white.png";
+    public static final String GLYPHICONS_WHITE_PNG = "/img/glyphicons-halflings-white.png";
 
-    private static final String GLYPHICONS_PNG = "/img/glyphicons-halflings.png";
+    public static final String GLYPHICONS_PNG = "/img/glyphicons-halflings.png";
 
-    private static final String FORGE_LOGO_PNG = "/img/forge-logo.png";
+    public static final String FORGE_LOGO_PNG = "/img/forge-logo.png";
 
-    private static final String ANGULAR_RESOURCE_JS = "/scripts/vendor/angular-resource.js";
+    public static final String ANGULAR_RESOURCE_JS = "/scripts/vendor/angular-resource.js";
 
-    private static final String ANGULAR_JS = "/scripts/vendor/angular.js";
+    public static final String ANGULAR_JS = "/scripts/vendor/angular.js";
 
-    private static final String JQUERY_JS = "/scripts/vendor/jquery-1.9.1.js";
+    public static final String JQUERY_JS = "/scripts/vendor/jquery-1.9.1.js";
 
-    private static final String BOOTSTRAP_RESPONSIVE_CSS = "/styles/bootstrap-responsive.css";
+    public static final String BOOTSTRAP_RESPONSIVE_CSS = "/styles/bootstrap-responsive.css";
 
-    private static final String MAIN_CSS = "/styles/main.css";
+    public static final String MAIN_CSS = "/styles/main.css";
 
-    private static final String BOOTSTRAP_CSS = "/styles/bootstrap.css";
+    public static final String BOOTSTRAP_CSS = "/styles/bootstrap.css";
 
     /**
      * Provides a list of {@link ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.

@@ -6,9 +6,7 @@
  */
 package org.jboss.forge.scaffold.angularjs;
 
-import static org.jboss.forge.scaffold.angularjs.ResourceProvider.getEntityTemplates;
-import static org.jboss.forge.scaffold.angularjs.ResourceProvider.getGlobalTemplates;
-import static org.jboss.forge.scaffold.angularjs.ResourceProvider.getStatics;
+import static org.jboss.forge.scaffold.angularjs.ResourceProvider.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,9 +29,11 @@ import javax.persistence.Entity;
 import org.jboss.forge.env.Configuration;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.parser.java.JavaSource;
+import org.jboss.forge.parser.java.util.Strings;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.project.facets.DependencyFacet;
 import org.jboss.forge.project.facets.MetadataFacet;
+import org.jboss.forge.project.facets.PackagingFacet;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.project.facets.events.InstallFacets;
 import org.jboss.forge.resources.DirectoryResource;
@@ -49,6 +49,7 @@ import org.jboss.forge.scaffoldx.TemplateStrategy;
 import org.jboss.forge.scaffoldx.facets.ScaffoldTemplateFacet;
 import org.jboss.forge.scaffoldx.freemarker.FreemarkerClient;
 import org.jboss.forge.scaffoldx.freemarker.TemplateLoaderConfig;
+import org.jboss.forge.shell.PromptType;
 import org.jboss.forge.shell.ShellMessages;
 import org.jboss.forge.shell.ShellPrintWriter;
 import org.jboss.forge.shell.ShellPrompt;
@@ -93,13 +94,13 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
 
     @Inject
     private Event<CopyWebResourcesEvent> copyResourcesEvent;
-    
+
     @Inject
     private Event<ProcessWithFreemarkerEvent> processWithFreemarkerEvent;
-    
+
     @Inject
     private ResourceRegistry resourceRegistry;
-    
+
     @Inject
     public AngularScaffold(final ShellPrompt prompt, final ShellPrintWriter writer,
             final MetawidgetInspectorFacade metawidgetInspectorFacade, final InspectionResultProcessor angularResultEnhancer,
@@ -113,14 +114,39 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean install() {
-        // Required facet installation is already handled by the class-level @RequiresFacet annotation.
+        if (!isInstalled()) {
+            this.installTemplatesEvent.fire(new InstallFacets(WebResourceFacet.class, DependencyFacet.class,
+                    PersistenceFacet.class, EJBFacet.class, CDIFacet.class, RestFacet.class));
+            String targetDir = selectTargetDir(this, null);
+            this.setup(targetDir, false , false);
+        }
         return true;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean isInstalled() {
-        return true;
+        if (project.hasAllFacets(WebResourceFacet.class, DependencyFacet.class, PersistenceFacet.class, EJBFacet.class,
+                CDIFacet.class, RestFacet.class)) {
+            String targetDir = configuration.getString(getTargetDirConfigKey(this));
+            if (targetDir == null) {
+                return false;
+            }
+            WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
+            boolean areResourcesInstalled = web.getWebResource(targetDir + GLYPHICONS_WHITE_PNG).exists()
+                    && web.getWebResource(targetDir + GLYPHICONS_PNG).exists()
+                    && web.getWebResource(targetDir + FORGE_LOGO_PNG).exists()
+                    && web.getWebResource(targetDir + ANGULAR_RESOURCE_JS).exists()
+                    && web.getWebResource(targetDir + ANGULAR_JS).exists()
+                    && web.getWebResource(targetDir + JQUERY_JS).exists()
+                    && web.getWebResource(targetDir + BOOTSTRAP_RESPONSIVE_CSS).exists()
+                    && web.getWebResource(targetDir + MAIN_CSS).exists()
+                    && web.getWebResource(targetDir + BOOTSTRAP_CSS).exists();
+            return areResourcesInstalled;
+        }
+        return false;
     }
 
     /**
@@ -145,7 +171,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     /**
      * Generates the application's index aka landing page, among others. All artifacts that are generated once per scaffolding
      * run are generated here.
-     * 
+     *
      * @param filteredClasses The list of {@link JavaClass}es that were scaffolded.
      * @param targetDir The target directory for the generated scaffold artifacts.
      * @param overwrite A flag that indicates whether existing resources should be overwritten or not.
@@ -153,7 +179,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
      */
     public List<Resource<?>> generateIndex(List<JavaClass> filteredClasses, String targetDir, boolean overwrite) {
         ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
-        
+
         /*
          * TODO: Revert this change at a later date, if necessary. This is currently done to ensure that entities are picked up
          * during invocation of the plugin from the Forge wizard in JBDS.
@@ -176,7 +202,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
               return true;
            }
         };
-        
+
         WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
         List<Resource<?>> resources = web.getWebResource(targetDir + "/views/").listResources(filter);
         List<String> entityNames = new ArrayList<String>();
@@ -215,7 +241,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
 
             // TODO: Provide a 'utility' class for allowing transliteration across language naming schemes
             // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
-            
+
             // Prepare the Freemarker data model
             Map<String, Object> root = new HashMap<String, Object>();
             root.put("entityName", klass.getName());
@@ -278,7 +304,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
      * Filters the provided {@link Resource}s to return a list of {@link JavaClass}es that will be inspected and scaffolded.
      * {@link Resource}s that are not {@link JavaResource}s will be ignored. {@link JavaResource}s that are not JPA entities
      * will also be ignored.
-     * 
+     *
      * @param targets The user-provided list of {@link Resource}s to be scaffolded.
      * @return A list of {@link JavaClass}es that will be inspected and scaffolded.
      */
@@ -315,7 +341,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     /**
      * Obtains the root path for REST resources so that the AngularJS resource factory will be generated with the correct REST
      * resource URL.
-     * 
+     *
      * @return The root path of the REST resources generated by the Forge REST plugin.
      */
     private String getRootResourcePath() {
@@ -342,7 +368,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         if (!project.hasFacet(ScaffoldTemplateFacet.class)) {
             installTemplatesEvent.fire(new InstallFacets(ScaffoldTemplateFacet.class));
         }
-        
+
         ScaffoldTemplateFacet templates = project.getFacet(ScaffoldTemplateFacet.class);
         // Obtain a reference to the scaffold directory in the classpath
         URL resource = getClass().getClassLoader().getResource("scaffold");
@@ -369,11 +395,11 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             }
         }
     }
-    
+
     /**
      * Produces a {@link TemplateLoaderConfig} used to configure the {@link FreemarkerClient} instance. If a template directory
      * is present in the current project, it would be used over the provider-supplied templates.
-     * 
+     *
      * @return A {@link TemplateLoaderConfig} instance used to configure the {@link FreemarkerClient} on the locations to load
      *         the Freemarker templates.
      */
@@ -385,10 +411,10 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         File templateBaseDir = getTemplateBaseDir(providerName);
         return new TemplateLoaderConfig(templateBaseDir, getClass(), SCAFFOLD_DIR);
     }
-    
+
     /**
-     * Provides the location of the templates directory for the specified scaffold provider. 
-     * 
+     * Provides the location of the templates directory for the specified scaffold provider.
+     *
      * @param scaffoldProviderName The name of the scaffold provider. Used to distinguish between multiple scaffold providers
      *        installed in the project.
      * @return The location of the templates directory if it is present in the current project. A null value is returned if the
@@ -405,12 +431,12 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
        }
        return null;
     }
-    
+
     /**
      * Provided a target directory, this method calculates the parent directories to re-create the path to the web resource
      * root.
-     * 
-     * @param targetDir The target directory that would be used as the basis for calculating the parent directories. 
+     *
+     * @param targetDir The target directory that would be used as the basis for calculating the parent directories.
      * @return The parent directories to traverse. Represented as a sequence of '..' characters with '/' to denote multiple
      *         parent directories.
      */
@@ -441,6 +467,44 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             }
         }
         return count;
+    }
+
+    private String selectTargetDir(ScaffoldProvider provider, String target)
+    {
+       if (provider == null)
+       {
+          throw new RuntimeException("Selected scaffold provider was null. Re-run with '--scaffoldType ...'");
+       }
+
+       String targetDirKey = getTargetDirConfigKey(provider);
+
+       if (Strings.isNullOrEmpty(target))
+       {
+          target = configuration.getString(targetDirKey);
+          if (Strings.isNullOrEmpty(target))
+          {
+             String finalName = project.getFacet(PackagingFacet.class).getFinalName();
+             target = prompt.promptCommon(
+                      "Create scaffold in which sub-directory of web-root? (e.g. http://localhost:8080/"
+                               + finalName
+                               + "/DIR)", PromptType.FILE_PATH, "/");
+          }
+       }
+
+       if (!Strings.isNullOrEmpty(target))
+       {
+          configuration.setProperty(targetDirKey, target);
+          if (!target.startsWith("/"))
+             target = "/" + target;
+          if (target.endsWith("/"))
+             target = target.substring(0, target.length() - 1);
+       }
+       return target;
+    }
+
+    private String getTargetDirConfigKey(ScaffoldProvider provider)
+    {
+       return provider.getClass().getName() + "_targetDir";
     }
 
 }
