@@ -18,23 +18,25 @@ import java.util.List;
  */
 public class ResourceProvider {
 
-    public static final String GLYPHICONS_WHITE_PNG = "/img/glyphicons-halflings-white.png";
+    static final String INDEX_HTML = "/index.html";
 
-    public static final String GLYPHICONS_PNG = "/img/glyphicons-halflings.png";
+    static final String GLYPHICONS_WHITE_PNG = "/img/glyphicons-halflings-white.png";
 
-    public static final String FORGE_LOGO_PNG = "/img/forge-logo.png";
+    static final String GLYPHICONS_PNG = "/img/glyphicons-halflings.png";
 
-    public static final String ANGULAR_RESOURCE_JS = "/scripts/vendor/angular-resource.js";
+    static final String FORGE_LOGO_PNG = "/img/forge-logo.png";
 
-    public static final String ANGULAR_JS = "/scripts/vendor/angular.js";
+    static final String ANGULAR_RESOURCE_JS = "/scripts/vendor/angular-resource.js";
 
-    public static final String JQUERY_JS = "/scripts/vendor/jquery-1.9.1.js";
+    static final String ANGULAR_JS = "/scripts/vendor/angular.js";
 
-    public static final String BOOTSTRAP_RESPONSIVE_CSS = "/styles/bootstrap-responsive.css";
+    static final String JQUERY_JS = "/scripts/vendor/jquery-1.9.1.js";
 
-    public static final String MAIN_CSS = "/styles/main.css";
+    static final String BOOTSTRAP_RESPONSIVE_CSS = "/styles/bootstrap-responsive.css";
 
-    public static final String BOOTSTRAP_CSS = "/styles/bootstrap.css";
+    static final String MAIN_CSS = "/styles/main.css";
+
+    static final String BOOTSTRAP_CSS = "/styles/bootstrap.css";
 
     /**
      * Provides a list of {@link ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
@@ -68,7 +70,7 @@ public class ResourceProvider {
      */
     public static List<ScaffoldResource> getGlobalTemplates(String targetDir) {
         List<ScaffoldResource> resources = new ArrayList<ScaffoldResource>();
-        resources.add(new ScaffoldResource("index.html.ftl", "/index.html"));
+        resources.add(new ScaffoldResource("index.html.ftl", INDEX_HTML));
         resources.add(new ScaffoldResource("app.html.ftl", targetDir + "/app.html"));
         resources.add(new ScaffoldResource("scripts/app.js.ftl", targetDir + "/scripts/app.js"));
         resources.add(new ScaffoldResource("scripts/services/locationParser.js.ftl", targetDir
