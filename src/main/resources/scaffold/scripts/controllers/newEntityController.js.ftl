@@ -25,11 +25,12 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
         relatedCollection="$scope.${property.name}List"
         modelProperty = "${model}.${property.name}"
         selectCollection="$scope.${property.name}SelectionList"
-        selectedItem="${property.name}Selection">
+        selectedItem="${property.name}Selection"
+        reverseId = property["reverse-primary-key"]!>
     ${relatedCollection} = ${relatedResource}.queryAll(function(items){
         ${selectCollection} = $.map(items, function(item) {
             return ( {
-                value : item,
+                value : item.${reverseId},
                 text : item.${property.optionLabel}
             });
         });
@@ -37,7 +38,8 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
     
     $scope.$watch("${selectedItem}", function(selection) {
         if ( typeof selection != 'undefined') {
-            ${modelProperty} = selection.value;
+            ${modelProperty} = {};
+            ${modelProperty}.${reverseId} = selection.value;
         }
     });
     <#elseif (property["n-to-many"]!) == "true">
@@ -46,11 +48,12 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
         relatedCollection = "$scope.${property.name}List"
         modelProperty = "${model}.${property.name}"
         selectCollection="$scope.${property.name}SelectionList"
-        selectedItem="${property.name}Selection">
+        selectedItem="${property.name}Selection"
+        reverseId = property["reverse-primary-key"]!>
     ${relatedCollection} = ${relatedResource}.queryAll(function(items){
         ${selectCollection} = $.map(items, function(item) {
             return ( {
-                value : item,
+                value : item.${reverseId},
                 text : item.${property.optionLabel}
             });
         });
@@ -60,7 +63,9 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
         if (typeof selection != 'undefined') {
             ${modelProperty} = [];
             $.each(selection, function(idx,selectedItem) {
-                ${modelProperty}.push(selectedItem.value);
+                var collectionItem = {};
+                collectionItem.${reverseId} = selectedItem.value;
+                ${modelProperty}.push(collectionItem);
             });
         }
     });

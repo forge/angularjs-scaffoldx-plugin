@@ -34,30 +34,40 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
             ${relatedResource}.queryAll(function(items) {
                 ${relatedCollection} = $.map(items, function(item) {
                     var wrappedObject = {
-                        value : item,
+                        ${reverseId} : item.${reverseId}
+                    };
+                    var labelObject = {
+                        value : item.${reverseId},
                         text : item.${property.optionLabel}
                     };
                     if(${modelProperty} && item.${reverseId} == ${modelProperty}.${reverseId}) {
-                        $scope.${property.name}Selection = wrappedObject;
+                        $scope.${property.name}Selection = labelObject;
+                        ${modelProperty} = wrappedObject;
+                        ${originalProperty} = ${modelProperty};
                     }
-                    return wrappedObject;
+                    return labelObject;
                 });
             });
             <#elseif (property["n-to-many"]!) == "true">
             ${relatedResource}.queryAll(function(items) {
                 ${relatedCollection} = $.map(items, function(item) {
                     var wrappedObject = {
-                        value : item,
+                        ${reverseId} : item.${reverseId}
+                    };
+                    var labelObject = {
+                        value : item.${reverseId},
                         text : item.${property.optionLabel}
                     };
                     if(${modelProperty}){
                         $.each(${modelProperty}, function(idx, element) {
                             if(item.${reverseId} == element.${reverseId}) {
-                                $scope.${property.name}Selection.push(wrappedObject);
+                                $scope.${property.name}Selection.push(labelObject);
+                                ${modelProperty}.push(wrappedObject);
                             }
                         });
+                        ${originalProperty} = ${modelProperty};
                     }
-                    return wrappedObject;
+                    return labelObject;
                 });
             });
             </#if>
@@ -103,22 +113,27 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
     <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
     <#assign
             modelProperty = "${model}.${property.name}"
-            selectedItem="${property.name}Selection">
+            selectedItem="${property.name}Selection"
+            reverseId = property["reverse-primary-key"]!>
     $scope.$watch("${selectedItem}", function(selection) {
         if (typeof selection != 'undefined') {
-            ${modelProperty} = selection.value;
+            ${modelProperty} = {};
+            ${modelProperty}.${reverseId} = selection.value;
         }
     });
     <#elseif (property["n-to-many"]!"false") == "true">
     <#assign
             modelProperty = "${model}.${property.name}"
-            selectedItem="${property.name}Selection">
+            selectedItem="${property.name}Selection"
+            reverseId = property["reverse-primary-key"]!>
     $scope.${selectedItem} = $scope.${selectedItem} || [];
     $scope.$watch("${selectedItem}", function(selection) {
         if (typeof selection != 'undefined' && ${model}) {
             ${modelProperty} = [];
             $.each(selection, function(idx,selectedItem) {
-                ${modelProperty}.push(selectedItem.value);
+                var collectionItem = {};
+                collectionItem.${reverseId} = selectedItem.value;
+                ${modelProperty}.push(collectionItem);
             });
         }
     });
