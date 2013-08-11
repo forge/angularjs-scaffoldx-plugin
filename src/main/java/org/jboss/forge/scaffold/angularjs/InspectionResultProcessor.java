@@ -7,9 +7,14 @@
 package org.jboss.forge.scaffold.angularjs;
 
 import static org.jboss.forge.scaffoldx.metawidget.inspector.ForgeInspectionResultConstants.PRIMARY_KEY;
+import static org.metawidget.inspector.InspectionResultConstants.DATETIME_TYPE;
+import static org.metawidget.inspector.InspectionResultConstants.LABEL;
+import static org.metawidget.inspector.InspectionResultConstants.NAME;
+import static org.metawidget.inspector.InspectionResultConstants.TYPE;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -29,10 +34,10 @@ import org.metawidget.util.simple.StringUtils;
  * An 'Inspection Result Processor' that enhances the inspection results provided by Metawidget. This class does not implement
  * the {@link org.metawidget.inspectionresultprocessor.iface.InspectionResultProcessor} of Metawidget since it needs access to
  * the injected Forge {@link ShellPrompt} instance.
- * 
+ *
  * This processor enhances the inspection results with HTML form labels for the inspected properties. It canonicalizes all
  * numerical types to the HTML5 'number' form input type.
- * 
+ *
  * It also prompts the user to choose a field to be displayed in the HTML form select fields. Form select fields may display
  * Ids, but this may not be intuitive, especially when other properties would be better suited visually.
  */
@@ -53,6 +58,7 @@ public class InspectionResultProcessor {
         for (Map<String, String> propertyAttributes : inspectionResults) {
             populateLabelStrings(propertyAttributes);
             canonicalizeNumberTypes(propertyAttributes);
+            canonicalizeTemporalTypes(propertyAttributes);
             chooseRelationshipOptionLabels(entity, propertyAttributes);
         }
         return inspectionResults;
@@ -60,38 +66,51 @@ public class InspectionResultProcessor {
 
     /**
      * Provides the Id of the JPA entity as obtained during inspection by Metawidget.
-     * 
-     * @param entity The {@link JavaClass} representing the JPA entity. 
-     * @param inspectionResults A list representing the inspection results for each property of the entity 
-     * @return The name of the property in the entity representing the entity {@link Id} aka the primary key. 
+     *
+     * @param entity The {@link JavaClass} representing the JPA entity.
+     * @param inspectionResults A list representing the inspection results for each property of the entity
+     * @return The name of the property in the entity representing the entity {@link Id} aka the primary key.
      */
     public String fetchEntityId(JavaClass entity, List<Map<String, String>> inspectionResults) {
-        for(Map<String, String> inspectionResult: inspectionResults){
+        for (Map<String, String> inspectionResult : inspectionResults) {
             boolean isPrimaryKey = Boolean.parseBoolean(inspectionResult.get(ForgeInspectionResultConstants.PRIMARY_KEY));
-            if(isPrimaryKey){
-                return inspectionResult.get("name");
+            if (isPrimaryKey) {
+                return inspectionResult.get(NAME);
             }
         }
         throw new IllegalStateException("No Id was found for the class:" + entity.getName());
     }
 
     private void populateLabelStrings(Map<String, String> propertyAttributes) {
-        String propertyName = propertyAttributes.get("name");
-        propertyAttributes.put("label", StringUtils.uncamelCase(propertyName));
+        String propertyName = propertyAttributes.get(NAME);
+        propertyAttributes.put(LABEL, StringUtils.uncamelCase(propertyName));
     }
 
     private void canonicalizeNumberTypes(Map<String, String> propertyAttributes) {
         // Canonicalize all numerical types in Java to "number" for HTML5 form input type support
-        String propertyType = propertyAttributes.get("type");
+        String propertyType = propertyAttributes.get(TYPE);
         if (propertyType.equals(short.class.getName()) || propertyType.equals(int.class.getName())
                 || propertyType.equals(long.class.getName()) || propertyType.equals(float.class.getName())
                 || propertyType.equals(double.class.getName()) || propertyType.equals(Short.class.getName())
                 || propertyType.equals(Integer.class.getName()) || propertyType.equals(Long.class.getName())
                 || propertyType.equals(Float.class.getName()) || propertyType.equals(Double.class.getName())) {
-            propertyAttributes.put("type", "number");
+            propertyAttributes.put(TYPE, "number");
         }
     }
-    
+
+    private void canonicalizeTemporalTypes(Map<String, String> propertyAttributes) {
+        // Canonicalize all temporal types in Java to "temporal" for easier handling of date/time properties
+        String type = propertyAttributes.get(TYPE);
+        String datetimeType = propertyAttributes.get(DATETIME_TYPE);
+        if (type.equals(Date.class.getName()) && datetimeType == null) {
+            propertyAttributes.put("temporal", "true");
+            propertyAttributes.put(DATETIME_TYPE, "both");
+        }
+        if (datetimeType != null && (datetimeType.equals("date") || datetimeType.equals("time") || datetimeType.equals("both"))) {
+            propertyAttributes.put("temporal", "true");
+        }
+    }
+
     private void chooseRelationshipOptionLabels(JavaClass entity, Map<String, String> propertyAttributes) {
         // Extract simple type name of the relationship types
         boolean isManyToOneRel = Boolean.parseBoolean(propertyAttributes.get("many-to-one"));
@@ -99,7 +118,7 @@ public class InspectionResultProcessor {
         boolean isNToManyRel = Boolean.parseBoolean(propertyAttributes.get("n-to-many"));
         if (isManyToOneRel || isNToManyRel || isOneToOneRel) {
             String rightHandSideType;
-            // Obtain the class name of the other/right-hand side of the relationship. 
+            // Obtain the class name of the other/right-hand side of the relationship.
             if (isOneToOneRel || isManyToOneRel) {
                 rightHandSideType = propertyAttributes.get("type");
             } else {
@@ -107,72 +126,96 @@ public class InspectionResultProcessor {
             }
             String rightHandSideSimpleName = getSimpleName(rightHandSideType);
             propertyAttributes.put("simpleType", rightHandSideSimpleName);
-            List<String> fieldsToDisplay = getFieldsToDisplay(rightHandSideType);
-            String defaultField = fieldsToDisplay.size() > 0 ? fieldsToDisplay.get(0) : null;
-            propertyAttributes.put("optionLabel", prompt.promptChoiceTyped("Which property of " + rightHandSideSimpleName
-                    + " do you want to display in the " + entity.getName() + " views ?", fieldsToDisplay, defaultField));
+            JavaClass javaClass = getJavaClass(rightHandSideType);
+            List<Map<String, String>> rhsInspectionResults = metawidgetInspectorFacade.inspect(javaClass);
+            List<InspectedProperty> fieldsToDisplay = getPropertiesToDisplay(getDisplayableProperties(rhsInspectionResults));
+            InspectedProperty defaultField = fieldsToDisplay.size() > 0 ? fieldsToDisplay.get(0) : null;
+            InspectedProperty fieldToDisplay = prompt.promptChoiceTyped("Which property of " + rightHandSideSimpleName
+                    + " do you want to display in the " + entity.getName() + " views ?", fieldsToDisplay, defaultField);
+            propertyAttributes.put("optionLabel", fieldToDisplay.getName());
+            propertyAttributes.put("option-label-temporal-type", fieldToDisplay.getTemporalType());
+        }
+    }
+
+    private List<InspectedProperty> getPropertiesToDisplay(List<Map<String, String>> displayableProperties) {
+        List<InspectedProperty> fieldsToDisplay = new ArrayList<InspectedProperty>();
+        for (Map<String, String> displayableProperty : displayableProperties) {
+            fieldsToDisplay.add(new InspectedProperty(displayableProperty));
+        }
+        return fieldsToDisplay;
+    }
+
+    private class InspectedProperty {
+
+        private Map<String, String> delegate;
+
+        InspectedProperty(Map<String, String> displayableProperty) {
+            this.delegate = displayableProperty;
+        }
+
+        public String getTemporalType() {
+            return delegate.get(DATETIME_TYPE);
+        }
+
+        public String getName() {
+            return delegate.get(NAME);
+        }
+
+        @Override
+        public String toString() {
+            return delegate.get(NAME);
         }
     }
 
     // TODO; Extract this method into it's own class, for unit testing.
-    private List<String> getFieldsToDisplay(String rightHandSideType)
-    {
-       List<String> displayableProperties = new ArrayList<String>();
-       JavaClass javaClass = getJavaClass(rightHandSideType);
-       List<Map<String, String>> inspectionResults = metawidgetInspectorFacade.inspect(javaClass);
-       for (Map<String, String> propertyAttributes : inspectionResults) {
-           boolean isManyToOneRel = Boolean.parseBoolean(propertyAttributes.get("many-to-one"));
-           boolean isOneToOneRel = Boolean.parseBoolean(propertyAttributes.get("one-to-one"));
-           boolean isNToManyRel = Boolean.parseBoolean(propertyAttributes.get("n-to-many"));
-           if (!isManyToOneRel && !isNToManyRel && !isOneToOneRel)
-           {
-              // Display only basic properties
-              String hidden = propertyAttributes.get("hidden");
-              String required = propertyAttributes.get("required");
-              boolean isHidden = Boolean.parseBoolean(hidden);
-              boolean isRequired = Boolean.parseBoolean(required);
-              if (!isHidden)
-              {
-                 displayableProperties.add(propertyAttributes.get("name"));
-              }
-              else if (isRequired)
-              {
-                 // Do nothing if hidden, unless required
-                 displayableProperties.add(propertyAttributes.get("name"));
-              }
-           }
-       }
+    private List<Map<String, String>> getDisplayableProperties(List<Map<String, String>> inspectionResults) {
+        List<Map<String, String>> displayableProperties = new ArrayList<Map<String, String>>();
+        for (Map<String, String> propertyAttributes : inspectionResults) {
+            canonicalizeNumberTypes(propertyAttributes);
+            canonicalizeTemporalTypes(propertyAttributes);
+            boolean isManyToOneRel = Boolean.parseBoolean(propertyAttributes.get("many-to-one"));
+            boolean isOneToOneRel = Boolean.parseBoolean(propertyAttributes.get("one-to-one"));
+            boolean isNToManyRel = Boolean.parseBoolean(propertyAttributes.get("n-to-many"));
+            if (!isManyToOneRel && !isNToManyRel && !isOneToOneRel) {
+                // Display only basic properties.
+                String hidden = propertyAttributes.get("hidden");
+                String required = propertyAttributes.get("required");
+                boolean isHidden = Boolean.parseBoolean(hidden);
+                boolean isRequired = Boolean.parseBoolean(required);
+                if (!isHidden) {
+                    displayableProperties.add(propertyAttributes);
+                } else if (isRequired) {
+                    // Do nothing if hidden, unless required
+                    displayableProperties.add(propertyAttributes);
+                }
+            }
+        }
 
         // If no properties were found suitable for display, add the primary key instead
         if (displayableProperties.size() < 1) {
             for (Map<String, String> propertyAttributes : inspectionResults) {
                 if (propertyAttributes.get(PRIMARY_KEY) != null) {
-                    displayableProperties.add(propertyAttributes.get("name"));
+                    displayableProperties.add(propertyAttributes);
                 }
             }
         }
 
         return displayableProperties;
     }
-    
-    private String getSimpleName(String rightHandSideType)
-    {
-       return getJavaClass(rightHandSideType).getName();
+
+    private String getSimpleName(String rightHandSideType) {
+        return getJavaClass(rightHandSideType).getName();
     }
-    
-    private JavaClass getJavaClass(String qualifiedType)
-    {
-       JavaSourceFacet java = this.project.getFacet(JavaSourceFacet.class);
-       try
-       {
-          JavaResource resource = java.getJavaResource(qualifiedType);
-          JavaClass javaClass = (JavaClass) resource.getJavaSource();
-          return javaClass;
-       }
-       catch (FileNotFoundException fileEx)
-       {
-          throw new RuntimeException(fileEx);
-       }
+
+    private JavaClass getJavaClass(String qualifiedType) {
+        JavaSourceFacet java = this.project.getFacet(JavaSourceFacet.class);
+        try {
+            JavaResource resource = java.getJavaResource(qualifiedType);
+            JavaClass javaClass = (JavaClass) resource.getJavaSource();
+            return javaClass;
+        } catch (FileNotFoundException fileEx) {
+            throw new RuntimeException(fileEx);
+        }
     }
 
 }

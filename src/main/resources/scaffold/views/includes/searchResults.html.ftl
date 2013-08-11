@@ -16,9 +16,23 @@
             <#list properties as property>
             <#if (property.hidden!"false") != "true">
                 <#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
-                <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}.${property.optionLabel}}}</a></td>
+                    <#if (property["option-label-temporal-type"]!"") == "date">
+                    <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}.${property.optionLabel}| date:'mediumDate'}}</a></td>
+                    <#elseif (property["option-label-temporal-type"]!"") == "time">
+                    <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}.${property.optionLabel}| date:'mediumTime'}}</a></td>
+                    <#elseif (property["option-label-temporal-type"]!"") == "both">
+                    <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}.${property.optionLabel}| date:'medium'}}</a></td>
+                    <#else>
+                    <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}.${property.optionLabel}}}</a></td>
+                    </#if>
                 <#elseif (property["n-to-many"]!"false") == "true">
                 <#-- Do nothing. We won't allow for display of collection properties in search results for now. -->
+                <#elseif (property["datetime-type"]!"") == "date">
+                <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}| date:'mediumDate'}}</a></td>
+                <#elseif (property["datetime-type"]!"") == "time">
+                <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}| date:'mediumTime'}}</a></td>
+                <#elseif (property["datetime-type"]!"") == "both">
+                <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}| date:'medium'}}</a></td>
                 <#else>
                 <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}}}</a></td>
                 </#if>

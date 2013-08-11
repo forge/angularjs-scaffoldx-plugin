@@ -1,6 +1,6 @@
 <#assign propertyLabel = "${property.label}">
-<#-- Display only non-hidden singular properties as search criteria. Omit collections -->
-<#if (property.hidden!"false") != "true" && (property["n-to-many"]!"false") != "true">
+<#-- Display only non-hidden singular properties as search criteria. Omit collections and date/time properties -->
+<#if (property.hidden!"false") != "true" && (property["n-to-many"]!"false") != "true" && (property["temporal"]!"false") != "true">
     <div class="control-group">
         <label for="${property.name}" class="control-label">${propertyLabel}</label>
         <div class="controls">
