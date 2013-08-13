@@ -6,6 +6,7 @@
  */
 package org.jboss.forge.scaffold.angularjs;
 
+import static org.jboss.forge.scaffold.angularjs.AngularJSInspectionResultConstants.JS_IDENTIFIER;
 import static org.jboss.forge.scaffoldx.metawidget.inspector.ForgeInspectionResultConstants.PRIMARY_KEY;
 import static org.metawidget.inspector.InspectionResultConstants.DATETIME_TYPE;
 import static org.metawidget.inspector.InspectionResultConstants.LABEL;
@@ -15,6 +16,7 @@ import static org.metawidget.inspector.InspectionResultConstants.TYPE;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +30,7 @@ import org.jboss.forge.resources.java.JavaResource;
 import org.jboss.forge.scaffoldx.metawidget.MetawidgetInspectorFacade;
 import org.jboss.forge.scaffoldx.metawidget.inspector.ForgeInspectionResultConstants;
 import org.jboss.forge.shell.ShellPrompt;
+import org.metawidget.inspector.InspectionResultConstants;
 import org.metawidget.util.simple.StringUtils;
 
 /**
@@ -55,7 +58,20 @@ public class InspectionResultProcessor {
     }
 
     public List<Map<String, String>> enhanceResults(JavaClass entity, List<Map<String, String>> inspectionResults) {
+        Iterator<Map<String, String>> iterInspectionResults = inspectionResults.iterator();
+        List<Map<String, String>> additionalPropertyAttributes = new ArrayList<Map<String, String>>();
+        for (; iterInspectionResults.hasNext();) {
+            Map<String, String> propertyAttributes = iterInspectionResults.next();
+            List<Map<String, String>> expandedPropertyAttributes = expandEmbeddableTypes(propertyAttributes);
+            if (expandedPropertyAttributes != null) {
+                additionalPropertyAttributes.addAll(expandedPropertyAttributes);
+                iterInspectionResults.remove();
+                continue;
+            }
+        }
+        inspectionResults.addAll(additionalPropertyAttributes);
         for (Map<String, String> propertyAttributes : inspectionResults) {
+            createJavaScriptIdentifiers(propertyAttributes);
             populateLabelStrings(propertyAttributes);
             canonicalizeNumberTypes(propertyAttributes);
             canonicalizeTemporalTypes(propertyAttributes);
@@ -81,9 +97,40 @@ public class InspectionResultProcessor {
         throw new IllegalStateException("No Id was found for the class:" + entity.getName());
     }
 
+    private List<Map<String, String>> expandEmbeddableTypes(Map<String, String> propertyAttributes) {
+        String isEmbeddableAttribute = propertyAttributes.get(ForgeInspectionResultConstants.EMBEDDABLE);
+        boolean isEmbeddable = isEmbeddableAttribute != null && isEmbeddableAttribute.equals(InspectionResultConstants.TRUE);
+        if(isEmbeddable)
+        {
+            String embeddedType = propertyAttributes.get(TYPE);
+            JavaClass javaClass = getJavaClass(embeddedType);
+            List<Map<String, String>> embeddedTypeInspectionResults = metawidgetInspectorFacade.inspect(javaClass);
+            List<Map<String,String>> expandedInspectionResults = new ArrayList<Map<String,String>>();
+            for(Map<String,String> embeddedPropertyAttribute : embeddedTypeInspectionResults)
+            {
+                embeddedPropertyAttribute.put(LABEL, StringUtils.uncamelCase(embeddedPropertyAttribute.get(NAME)));
+                embeddedPropertyAttribute.put(TYPE, embeddedPropertyAttribute.get(TYPE));
+                embeddedPropertyAttribute.put(JS_IDENTIFIER, propertyAttributes.get(NAME) + StringUtils.camelCase(embeddedPropertyAttribute.get(NAME)));
+                embeddedPropertyAttribute.put(NAME, propertyAttributes.get(NAME) + "." + embeddedPropertyAttribute.get(NAME));
+                expandedInspectionResults.add(embeddedPropertyAttribute);
+            }
+            return expandedInspectionResults;
+        }
+        return null;
+    }
+    
+    private void createJavaScriptIdentifiers(Map<String, String> propertyAttributes) {
+        String javascriptIdentifier = propertyAttributes.get(JS_IDENTIFIER);
+        if (javascriptIdentifier == null) {
+            propertyAttributes.put(JS_IDENTIFIER, propertyAttributes.get(NAME));
+        }
+    }
+
     private void populateLabelStrings(Map<String, String> propertyAttributes) {
         String propertyName = propertyAttributes.get(NAME);
-        propertyAttributes.put(LABEL, StringUtils.uncamelCase(propertyName));
+        if (propertyAttributes.get(LABEL) == null) {
+            propertyAttributes.put(LABEL, StringUtils.uncamelCase(propertyName));
+        }
     }
 
     private void canonicalizeNumberTypes(Map<String, String> propertyAttributes) {

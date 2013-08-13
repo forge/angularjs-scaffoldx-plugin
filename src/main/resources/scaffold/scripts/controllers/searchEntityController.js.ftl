@@ -34,12 +34,12 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
     <#list properties as property>
     <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
     <#assign
-        relatedCollection = "$scope.${property.name}List"
+        relatedCollection = "$scope.${property.identifier}List"
         relatedResource = "${property.simpleType}Resource">
     ${relatedCollection} = ${relatedResource}.queryAll();
     <#elseif property["lookup"]??>
     <#assign
-        lookupCollection = "$scope.${property.name}List">
+        lookupCollection = "$scope.${property.identifier}List">
     ${lookupCollection} = [
     <#list property["lookup"]?split(",") as option>
         "${option}"<#if option_has_next>,</#if>

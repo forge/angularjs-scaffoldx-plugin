@@ -18,7 +18,7 @@
 angular.module('${angularApp}').controller('${angularController}', function($scope, $routeParams, $location, ${angularResource} ${relatedResources}) {
     var self = this;
     $scope.disabled = false;
-
+    
     $scope.get = function() {
         var successCallback = function(data){
             self.original = data;
@@ -26,7 +26,7 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
             <#list properties as property>
             <#assign
                 relatedResource = "${property.simpleType!}Resource"
-                relatedCollection ="$scope.${property.name}SelectionList"
+                relatedCollection ="$scope.${property.identifier}SelectionList"
                 modelProperty = "${model}.${property.name}"
                 originalProperty = "self.original.${property.name}"
                 reverseId = property["reverse-primary-key"]!>
@@ -41,7 +41,7 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
                         text : item.${property.optionLabel}
                     };
                     if(${modelProperty} && item.${reverseId} == ${modelProperty}.${reverseId}) {
-                        $scope.${property.name}Selection = labelObject;
+                        $scope.${property.identifier}Selection = labelObject;
                         ${modelProperty} = wrappedObject;
                         ${originalProperty} = ${modelProperty};
                     }
@@ -113,7 +113,7 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
     <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
     <#assign
             modelProperty = "${model}.${property.name}"
-            selectedItem="${property.name}Selection"
+            selectedItem="${property.identifier}Selection"
             reverseId = property["reverse-primary-key"]!>
     $scope.$watch("${selectedItem}", function(selection) {
         if (typeof selection != 'undefined') {
@@ -124,7 +124,7 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
     <#elseif (property["n-to-many"]!"false") == "true">
     <#assign
             modelProperty = "${model}.${property.name}"
-            selectedItem="${property.name}Selection"
+            selectedItem="${property.identifier}Selection"
             reverseId = property["reverse-primary-key"]!>
     $scope.${selectedItem} = $scope.${selectedItem} || [];
     $scope.$watch("${selectedItem}", function(selection) {
@@ -139,7 +139,7 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
     });
     <#elseif property["lookup"]??>
     <#assign
-            lookupCollection = "$scope.${property.name}List">
+            lookupCollection = "$scope.${property.identifier}List">
     ${lookupCollection} = [
     <#list property["lookup"]?split(",") as option>
         "${option}"<#if option_has_next>,</#if>  

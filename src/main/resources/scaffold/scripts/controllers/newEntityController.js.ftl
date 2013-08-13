@@ -22,10 +22,10 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
     <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
     <#assign
         relatedResource="${property.simpleType}Resource"
-        relatedCollection="$scope.${property.name}List"
+        relatedCollection="$scope.${property.identifier}List"
         modelProperty = "${model}.${property.name}"
-        selectCollection="$scope.${property.name}SelectionList"
-        selectedItem="${property.name}Selection"
+        selectCollection="$scope.${property.identifier}SelectionList"
+        selectedItem="${property.identifier}Selection"
         reverseId = property["reverse-primary-key"]!>
     ${relatedCollection} = ${relatedResource}.queryAll(function(items){
         ${selectCollection} = $.map(items, function(item) {
@@ -45,10 +45,10 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
     <#elseif (property["n-to-many"]!) == "true">
     <#assign
         relatedResource = "${property.simpleType}Resource"
-        relatedCollection = "$scope.${property.name}List"
+        relatedCollection = "$scope.${property.identifier}List"
         modelProperty = "${model}.${property.name}"
-        selectCollection="$scope.${property.name}SelectionList"
-        selectedItem="${property.name}Selection"
+        selectCollection="$scope.${property.identifier}SelectionList"
+        selectedItem="${property.identifier}Selection"
         reverseId = property["reverse-primary-key"]!>
     ${relatedCollection} = ${relatedResource}.queryAll(function(items){
         ${selectCollection} = $.map(items, function(item) {
@@ -71,7 +71,7 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
     });
     <#elseif property["lookup"]??>
     <#assign
-        lookupCollection ="$scope.${property.name}List">
+        lookupCollection ="$scope.${property.identifier}List">
     ${lookupCollection} = [
     <#list property["lookup"]?split(",") as option>
         "${option}"<#if option_has_next>,</#if>

@@ -3,6 +3,30 @@
 
 angular.module('${projectId}').filter('searchFilter', function() {
 
+    function matchObjectProperties(expectedObject, actualObject) {
+        var flag = true;
+        for(var key in expectedObject) {
+            if(expectedObject.hasOwnProperty(key)) {
+                var expectedProperty = expectedObject[key];
+                if (expectedProperty == null || expectedProperty === "") {
+                    continue;
+                }
+                var actualProperty = actualObject[key];
+                if (angular.isUndefined(actualProperty)) {
+                    continue;
+                }
+                if (actualProperty == null) {
+                    flag = false;
+                } else if (angular.isObject(expectedProperty)) {
+                    flag = flag && matchObjectProperties(expectedProperty, actualProperty);
+                } else {
+                    flag = flag && (actualProperty.toString().indexOf(expectedProperty.toString()) != -1);
+                }
+            }
+        }
+        return flag;
+    }
+
     return function(results) {
 
         this.filteredResults = [];
@@ -20,7 +44,7 @@ angular.module('${projectId}').filter('searchFilter', function() {
                     if (actual == null) {
                         flag = false;
                     } else if (angular.isObject(expected)) {
-                        flag = flag && angular.equals(expected, actual);
+                        flag = flag && matchObjectProperties(expected, actual);
                     } else {
                         flag = flag && (actual.toString().indexOf(expected.toString()) != -1);
                     }
