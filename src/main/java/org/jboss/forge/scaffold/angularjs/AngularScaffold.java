@@ -32,6 +32,7 @@ import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.parser.java.util.Strings;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.project.facets.DependencyFacet;
+import org.jboss.forge.project.facets.JavaSourceFacet;
 import org.jboss.forge.project.facets.MetadataFacet;
 import org.jboss.forge.project.facets.PackagingFacet;
 import org.jboss.forge.project.facets.WebResourceFacet;
@@ -232,6 +233,15 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         List<JavaClass> filteredClasses = filterResources(resources);
         for (JavaClass klass : filteredClasses) {
             ShellMessages.info(writer, "Generating artifacts from Class: [" + klass.getQualifiedName() + "]");
+            
+            String resourceRootPath = getRootResourcePath();
+            String entityResourcePath = parseResourcePath(klass);
+            if (entityResourcePath == null || entityResourcePath.isEmpty()) {
+                entityResourcePath = klass.getName().toLowerCase() + "s";
+            }
+            entityResourcePath = prompt.prompt("What REST URI under /" + resourceRootPath
+                    + " should be used to locate instances of type [" + klass.getQualifiedName() + "] ?", entityResourcePath);
+            entityResourcePath = trimSlashes(entityResourcePath);
 
             // Inspect the JPA entity and obtain a list of inspection results. Every inspected property is represented as a
             // Map<String,String> and all such inspection results are collated into a list.
@@ -249,7 +259,8 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             root.put("properties", inspectionResults);
             root.put("projectId", StringUtils.camelCase(metadata.getProjectName()));
             root.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
-            root.put("resourceRootPath", getRootResourcePath());
+            root.put("resourceRootPath", resourceRootPath);
+            root.put("resourcePath", entityResourcePath);
             root.put("parentDirectories", getParentDirectories(targetDir));
 
             // Process the Freemarker templates with the Freemarker data model and retrieve the generated resources from the
@@ -350,12 +361,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
             throw new RuntimeException(
                     "This project does not have a rootpath for REST resources. You may need to run \"rest setup\" in Forge.");
         }
-        if (resourceRootPath.startsWith("/")) {
-            resourceRootPath = resourceRootPath.substring(1);
-        }
-        if (resourceRootPath.endsWith("/")) {
-            resourceRootPath = resourceRootPath.substring(0, resourceRootPath.length() - 1);
-        }
+        resourceRootPath = trimSlashes(resourceRootPath);
         return resourceRootPath;
     }
 
@@ -444,12 +450,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         if (targetDir == null || targetDir.isEmpty()) {
             return "";
         } else {
-            if (targetDir.startsWith("/")) {
-                targetDir = targetDir.substring(1);
-            }
-            if (targetDir.endsWith("/")) {
-                targetDir = targetDir.substring(0, targetDir.length() - 1);
-            }
+            targetDir = trimSlashes(targetDir);
             int parents = countOccurrences(targetDir, '/') + 1;
             StringBuilder parentDirectories = new StringBuilder();
             for (int ctr = 0; ctr < parents; ctr++) {
@@ -505,6 +506,23 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     private String getTargetDirConfigKey(ScaffoldProvider provider)
     {
        return provider.getClass().getName() + "_targetDir";
+    }
+    
+    private String parseResourcePath(JavaClass klass) {
+        JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
+        ResourcePathVisitor visitor = new ResourcePathVisitor(klass.getName());
+        java.visitJavaSources(visitor);
+        return visitor.getPath();
+    }
+    
+    private String trimSlashes(String aString) {
+        if (aString.startsWith("/")) {
+            aString = aString.substring(1);
+        }
+        if (aString.endsWith("/")) {
+            aString = aString.substring(0, aString.length() - 1);
+        }
+        return aString;
     }
 
 }
