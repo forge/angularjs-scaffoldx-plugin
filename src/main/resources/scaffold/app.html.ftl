@@ -31,8 +31,8 @@
                         </ul>
                     </nav>
                 </div>
-                <div class="span9">
-                    <div id="main" class="well" ng-view>
+                <div class="span9 well">
+                    <div id="main" ng-view>
                     </div>
                 </div>
             </div>
@@ -43,6 +43,7 @@
     
     <div id="footer">
         <div class="container">
+            <p>Powered by <a href="http://jboss.org/forge">Forge</a></p>
             <p><a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
         </div>
     </div>

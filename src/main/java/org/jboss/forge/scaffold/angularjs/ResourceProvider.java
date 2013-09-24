@@ -19,6 +19,8 @@ import java.util.List;
 public class ResourceProvider {
 
     static final String INDEX_HTML = "/index.html";
+    
+    static final String LANDING_VIEW = "/views/landing.html";
 
     static final String GLYPHICONS_WHITE_PNG = "/img/glyphicons-halflings-white.png";
 
@@ -56,6 +58,7 @@ public class ResourceProvider {
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + FORGE_LOGO_PNG, targetDir + FORGE_LOGO_PNG));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_PNG, targetDir + GLYPHICONS_PNG));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_WHITE_PNG, targetDir + GLYPHICONS_WHITE_PNG));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + LANDING_VIEW, targetDir + LANDING_VIEW));
         return statics;
     }
     

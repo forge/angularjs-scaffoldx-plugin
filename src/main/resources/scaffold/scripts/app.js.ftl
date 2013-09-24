@@ -4,6 +4,7 @@
 angular.module('${angularApp}',['ngResource'])
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider
+      .when('/',{templateUrl:'views/landing.html',controller:'LandingPageController'})
       <#list entityNames as entityName>
       <#assign
                 searchEntityController = "Search${entityName}Controller"
@@ -20,6 +21,8 @@ angular.module('${angularApp}',['ngResource'])
         redirectTo: '/'
       });
   }])
+  .controller('LandingPageController', function LandingPageController() {
+  })
   .controller('NavController', function NavController($scope, $location) {
     $scope.matchesRoute = function(route) {
         var path = $location.path();
