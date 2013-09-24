@@ -1,5 +1,5 @@
 <div class="form-horizontal">
-    <h3>Create a new ${entityName}.</h3>
+    <h3>Create a new ${entityName}</h3>
     <div class="control-group">
         <div class="controls">
             <a id="Create" name="Create" class="btn btn-primary" href="#/${entityName}s/new"><i class="icon-plus-sign icon-white"></i> Create</a>
