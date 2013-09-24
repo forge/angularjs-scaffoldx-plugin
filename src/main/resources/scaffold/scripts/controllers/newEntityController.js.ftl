@@ -16,6 +16,7 @@
 
 angular.module('${angularApp}').controller('${angularController}', function ($scope, $location, locationParser, ${angularResource} ${relatedResources}) {
     $scope.disabled = false;
+    $scope.$location = $location;
     ${model} = ${model} || {};
     
     <#list properties as property>

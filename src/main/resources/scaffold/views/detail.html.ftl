@@ -1,5 +1,9 @@
 <#assign formName = "${entityName}Form"
         model = "${entityName?uncap_first}">
+<header ng-switch on="$location.path().endsWith('/${entityName}s/new')">
+    <h3 ng-switch-when="true">Create ${entityName}</h3>
+    <h3 ng-switch-when="false">View or edit ${entityName}</h3>
+</header>
 <form id="${formName}" name="${formName}" class="form-horizontal">
     <div ng-show="displayError" class="alert alert-error">
         <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.

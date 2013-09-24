@@ -18,6 +18,7 @@
 angular.module('${angularApp}').controller('${angularController}', function($scope, $routeParams, $location, ${angularResource} ${relatedResources}) {
     var self = this;
     $scope.disabled = false;
+    $scope.$location = $location;
     
     $scope.get = function() {
         var successCallback = function(data){
