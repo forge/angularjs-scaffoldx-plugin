@@ -32,7 +32,7 @@
                 <#elseif (property["datetime-type"]!"") == "time">
                 <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}| date:'mediumTime'}}</a></td>
                 <#elseif (property["datetime-type"]!"") == "both">
-                <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}| date:'medium'}}</a></td>
+                <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}| date:'yyyy-MM-dd HH:mm:ss Z'}}</a></td>
                 <#else>
                 <td><a href="#/${entityName}s/edit/{{result.${entityId}}}">{{result.${property.name}}}</a></td>
                 </#if>
