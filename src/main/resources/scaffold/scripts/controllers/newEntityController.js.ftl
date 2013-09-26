@@ -14,13 +14,23 @@
 </#list>
 </#assign>
 
-angular.module('${angularApp}').controller('${angularController}', function ($scope, $location, locationParser, ${angularResource} ${relatedResources}) {
+angular.module('${angularApp}').controller('${angularController}', function ($scope, $location, locationParser, $filter, ${angularResource} ${relatedResources}) {
     $scope.disabled = false;
     $scope.$location = $location;
     ${model} = ${model} || {};
     
     <#list properties as property>
-    <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
+    <#if (property["datetime-type"]!"") == "both">
+    <#assign
+        modelProperty = "${model}.${property.name}"
+        dateWrapper = "${property.name}Wrapper">
+    $scope.${dateWrapper} = $filter('date')(new Date(),'yyyy-MM-ddTHH:mm');
+    $scope.$watch("${dateWrapper}", function(value) {
+        if (value) {
+            ${modelProperty} = new Date(Date.parse(value) + new Date().getTimezoneOffset()*60*1000);
+        }
+    });
+    <#elseif (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
     <#assign
         relatedResource="${property.simpleType}Resource"
         relatedCollection="$scope.${property.identifier}List"
@@ -36,13 +46,13 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
             });
         });
     });
-    
     $scope.$watch("${selectedItem}", function(selection) {
         if ( typeof selection != 'undefined') {
             ${modelProperty} = {};
             ${modelProperty}.${reverseId} = selection.value;
         }
     });
+    
     <#elseif (property["n-to-many"]!) == "true">
     <#assign
         relatedResource = "${property.simpleType}Resource"
@@ -59,7 +69,6 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
             });
         });
     });
-    
     $scope.$watch("${selectedItem}", function(selection) {
         if (typeof selection != 'undefined') {
             ${modelProperty} = [];
@@ -70,6 +79,7 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
             });
         }
     });
+    
     <#elseif property["lookup"]??>
     <#assign
         lookupCollection ="$scope.${property.identifier}List">
@@ -78,6 +88,7 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
         "${option}"<#if option_has_next>,</#if>
     </#list>
     ];
+    
     </#if>
     </#list>
 

@@ -12,11 +12,11 @@
                     <#if property["maximum-value"]??> max="${property["maximum-value"]}"</#if><#t/>
                 <#elseif (property["datetime-type"]!"") == "date"> type="date"<#t/>
                 <#elseif (property["datetime-type"]!"") == "time"> type="time"<#t/>
-                <#elseif (property["datetime-type"]!"") == "both"> type="datetime"<#t/>
+                <#elseif (property["datetime-type"]!"") == "both"> type="datetime-local"<#t/>
                 <#elseif property.type == "boolean"> type="checkbox"<#t/>
                 <#else> type="text"</#if><#t/>
                 <#if (property.required!"false") == "true"> required</#if><#t/>
-                <#if property["maximum-length"]??> ng-maxlength="${property["maximum-length"]}"</#if><#if property["minimum-length"]??> ng-minlength="${property["minimum-length"]}"</#if><#lt/> ng-model="${modelProperty}" placeholder="Enter the ${entityName} ${propertyLabel}"></input>
+                <#if property["maximum-length"]??> ng-maxlength="${property["maximum-length"]}"</#if><#if property["minimum-length"]??> ng-minlength="${property["minimum-length"]}"</#if><#lt/> <#if (property["datetime-type"]!"") == "both">ng-model="${property.name}Wrapper"<#else>ng-model="${modelProperty}"</#if> placeholder="Enter the ${entityName} ${propertyLabel}"></input>
             <#if (property.required!) == "true">
             <span class="help-inline" ng-show="${formProperty}.$error.required">required</span> 
             </#if>
