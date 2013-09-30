@@ -31,13 +31,15 @@ public class ResourceProvider {
     static final String ANGULAR_RESOURCE_JS = "/scripts/vendor/angular-resource.js";
 
     static final String ANGULAR_JS = "/scripts/vendor/angular.js";
+    
+    static final String MODERNIZR_JS = "/scripts/vendor/modernizr-2.6.2.min.js";
 
     static final String JQUERY_JS = "/scripts/vendor/jquery-1.9.1.js";
 
     static final String BOOTSTRAP_RESPONSIVE_CSS = "/styles/bootstrap-responsive.css";
 
     static final String MAIN_CSS = "/styles/main.css";
-
+    
     static final String BOOTSTRAP_CSS = "/styles/bootstrap.css";
 
     /**
@@ -55,6 +57,7 @@ public class ResourceProvider {
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + JQUERY_JS, targetDir + JQUERY_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_JS, targetDir + ANGULAR_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_RESOURCE_JS, targetDir + ANGULAR_RESOURCE_JS));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + MODERNIZR_JS, targetDir + MODERNIZR_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + FORGE_LOGO_PNG, targetDir + FORGE_LOGO_PNG));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_PNG, targetDir + GLYPHICONS_PNG));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_WHITE_PNG, targetDir + GLYPHICONS_WHITE_PNG));
@@ -76,6 +79,8 @@ public class ResourceProvider {
         resources.add(new ScaffoldResource("index.html.ftl", targetDir+ INDEX_HTML));
         resources.add(new ScaffoldResource("app.html.ftl", targetDir + "/app.html"));
         resources.add(new ScaffoldResource("scripts/app.js.ftl", targetDir + "/scripts/app.js"));
+        resources.add(new ScaffoldResource("scripts/directives/datetimepicker.js.ftl", targetDir
+                + "/scripts/directives/datetimepicker.js"));
         resources.add(new ScaffoldResource("scripts/services/locationParser.js.ftl", targetDir
                 + "/scripts/services/locationParser.js"));
         resources.add(new ScaffoldResource("scripts/filters/genericSearchFilter.js.ftl", targetDir

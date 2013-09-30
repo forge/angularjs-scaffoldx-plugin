@@ -15,7 +15,7 @@
 </#list>
 </#assign>
 
-angular.module('${angularApp}').controller('${angularController}', function($scope, $routeParams, $location, $filter, ${angularResource} ${relatedResources}) {
+angular.module('${angularApp}').controller('${angularController}', function($scope, $routeParams, $location, ${angularResource} ${relatedResources}) {
     var self = this;
     $scope.disabled = false;
     $scope.$location = $location;
@@ -30,15 +30,8 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
                 relatedCollection ="$scope.${property.identifier}SelectionList"
                 modelProperty = "${model}.${property.name}"
                 originalProperty = "self.original.${property.name}"
-                dateWrapper = "$scope.${property.name}Wrapper"
                 reverseId = property["reverse-primary-key"]!>
-            <#if (property["datetime-type"]!"") == "both">
-            if(${modelProperty}) {
-                ${dateWrapper} = $filter('date')(${modelProperty},'yyyy-MM-ddTHH:mm');
-                ${modelProperty} = new Date(Date.parse(${dateWrapper}) + new Date().getTimezoneOffset()*60*1000);
-                ${originalProperty} = ${modelProperty};
-            }
-            <#elseif (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
+            <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
             ${relatedResource}.queryAll(function(items) {
                 ${relatedCollection} = $.map(items, function(item) {
                     var wrappedObject = {
@@ -118,16 +111,7 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
     };
     
     <#list properties as property>
-    <#if (property["datetime-type"]!"") == "both">
-        <#assign
-            modelProperty = "${model}.${property.name}"
-            dateWrapper = "${property.name}Wrapper">
-    $scope.$watch("${dateWrapper}", function(value) {
-        if (value) {
-            ${modelProperty} = new Date(Date.parse(value) + new Date().getTimezoneOffset()*60*1000);
-        }
-    });
-    <#elseif (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
+    <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
     <#assign
             modelProperty = "${model}.${property.name}"
             selectedItem="${property.identifier}Selection"

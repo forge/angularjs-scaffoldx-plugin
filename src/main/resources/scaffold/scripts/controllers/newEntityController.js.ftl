@@ -14,23 +14,13 @@
 </#list>
 </#assign>
 
-angular.module('${angularApp}').controller('${angularController}', function ($scope, $location, locationParser, $filter, ${angularResource} ${relatedResources}) {
+angular.module('${angularApp}').controller('${angularController}', function ($scope, $location, locationParser, ${angularResource} ${relatedResources}) {
     $scope.disabled = false;
     $scope.$location = $location;
     ${model} = ${model} || {};
     
     <#list properties as property>
-    <#if (property["datetime-type"]!"") == "both">
-    <#assign
-        modelProperty = "${model}.${property.name}"
-        dateWrapper = "${property.name}Wrapper">
-    $scope.${dateWrapper} = $filter('date')(new Date(),'yyyy-MM-ddTHH:mm');
-    $scope.$watch("${dateWrapper}", function(value) {
-        if (value) {
-            ${modelProperty} = new Date(Date.parse(value) + new Date().getTimezoneOffset()*60*1000);
-        }
-    });
-    <#elseif (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
+    <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
     <#assign
         relatedResource="${property.simpleType}Resource"
         relatedCollection="$scope.${property.identifier}List"
