@@ -225,7 +225,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         Elements resultCells = resultRows.select(" > td");
         assertThat(resultCells.size(), equalTo(1));
         assertThat(resultCells.select("a").attr("href"), equalTo("#/"+"SampleEntitys"+ "/edit/{{result.dateOfBirth}}"));
-        assertThat(resultCells.select("a").text(), equalTo("{{result.dateOfBirth}}"));
+        assertThat(resultCells.select("a").text(), equalTo("{{result.dateOfBirth| date:'mediumDate'}}"));
     }
     
     @Test

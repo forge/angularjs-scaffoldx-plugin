@@ -1,22 +1,24 @@
 
 angular.module('test').controller('NewStoreOrderController', function ($scope, $location, locationParser, StoreOrderResource , CustomerResource) {
     $scope.disabled = false;
+    $scope.$location = $location;
     $scope.storeOrder = $scope.storeOrder || {};
     
     $scope.customerList = CustomerResource.queryAll(function(items){
         $scope.customerSelectionList = $.map(items, function(item) {
             return ( {
-                value : item,
+                value : item.id,
                 text : item.id
             });
         });
     });
-    
     $scope.$watch("customerSelection", function(selection) {
         if ( typeof selection != 'undefined') {
-            $scope.storeOrder.customer = selection.value;
+            $scope.storeOrder.customer = {};
+            $scope.storeOrder.customer.id = selection.value;
         }
     });
+    
 
     $scope.save = function() {
         var successCallback = function(data,responseHeaders){

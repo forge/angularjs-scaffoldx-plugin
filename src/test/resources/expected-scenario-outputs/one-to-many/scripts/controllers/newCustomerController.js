@@ -1,25 +1,28 @@
 
 angular.module('test').controller('NewCustomerController', function ($scope, $location, locationParser, CustomerResource , StoreOrderResource) {
     $scope.disabled = false;
+    $scope.$location = $location;
     $scope.customer = $scope.customer || {};
     
     $scope.ordersList = StoreOrderResource.queryAll(function(items){
         $scope.ordersSelectionList = $.map(items, function(item) {
             return ( {
-                value : item,
+                value : item.id,
                 text : item.id
             });
         });
     });
-    
     $scope.$watch("ordersSelection", function(selection) {
         if (typeof selection != 'undefined') {
             $scope.customer.orders = [];
             $.each(selection, function(idx,selectedItem) {
-                $scope.customer.orders.push(selectedItem.value);
+                var collectionItem = {};
+                collectionItem.id = selectedItem.value;
+                $scope.customer.orders.push(collectionItem);
             });
         }
     });
+    
 
     $scope.save = function() {
         var successCallback = function(data,responseHeaders){

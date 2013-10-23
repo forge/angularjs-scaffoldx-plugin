@@ -3,7 +3,8 @@
 angular.module('test').controller('EditCustomerController', function($scope, $routeParams, $location, CustomerResource , StoreOrderResource) {
     var self = this;
     $scope.disabled = false;
-
+    $scope.$location = $location;
+    
     $scope.get = function() {
         var successCallback = function(data){
             self.original = data;
@@ -11,17 +12,22 @@ angular.module('test').controller('EditCustomerController', function($scope, $ro
             StoreOrderResource.queryAll(function(items) {
                 $scope.ordersSelectionList = $.map(items, function(item) {
                     var wrappedObject = {
-                        value : item,
+                        id : item.id
+                    };
+                    var labelObject = {
+                        value : item.id,
                         text : item.id
                     };
                     if($scope.customer.orders){
                         $.each($scope.customer.orders, function(idx, element) {
                             if(item.id == element.id) {
-                                $scope.ordersSelection.push(wrappedObject);
+                                $scope.ordersSelection.push(labelObject);
+                                $scope.customer.orders.push(wrappedObject);
                             }
                         });
+                        self.original.orders = $scope.customer.orders;
                     }
-                    return wrappedObject;
+                    return labelObject;
                 });
             });
         };
@@ -66,7 +72,9 @@ angular.module('test').controller('EditCustomerController', function($scope, $ro
         if (typeof selection != 'undefined' && $scope.customer) {
             $scope.customer.orders = [];
             $.each(selection, function(idx,selectedItem) {
-                $scope.customer.orders.push(selectedItem.value);
+                var collectionItem = {};
+                collectionItem.id = selectedItem.value;
+                $scope.customer.orders.push(collectionItem);
             });
         }
     });

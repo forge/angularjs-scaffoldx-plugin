@@ -25,6 +25,11 @@ class PropertyBuilder {
         properties.put("name", name);
         return this;
     }
+    
+    public PropertyBuilder withIdentifier(String identifier) {
+        properties.put("identifier", identifier);
+        return this;
+    }
 
     public PropertyBuilder withLabel(String label) {
         properties.put("label", label);

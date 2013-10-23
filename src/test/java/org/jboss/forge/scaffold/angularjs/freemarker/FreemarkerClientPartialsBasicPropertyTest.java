@@ -212,9 +212,8 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
         
-        Elements formInputElement = html.select("div.control-group input");
+        Elements formInputElement = html.select("div.control-group datetime");
         assertThat(formInputElement.attr("id"), equalTo("auditTimestamp"));
-        assertThat(formInputElement.attr("type"), equalTo("datetime"));
         assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"auditTimestamp"));
     }
     

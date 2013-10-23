@@ -1,6 +1,7 @@
 
 angular.module('test').controller('NewUserIdentityController', function ($scope, $location, locationParser, UserIdentityResource ) {
     $scope.disabled = false;
+    $scope.$location = $location;
     $scope.userIdentity = $scope.userIdentity || {};
     
 

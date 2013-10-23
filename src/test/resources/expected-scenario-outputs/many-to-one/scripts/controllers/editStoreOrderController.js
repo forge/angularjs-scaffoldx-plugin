@@ -3,7 +3,8 @@
 angular.module('test').controller('EditStoreOrderController', function($scope, $routeParams, $location, StoreOrderResource , CustomerResource) {
     var self = this;
     $scope.disabled = false;
-
+    $scope.$location = $location;
+    
     $scope.get = function() {
         var successCallback = function(data){
             self.original = data;
@@ -11,13 +12,18 @@ angular.module('test').controller('EditStoreOrderController', function($scope, $
             CustomerResource.queryAll(function(items) {
                 $scope.customerSelectionList = $.map(items, function(item) {
                     var wrappedObject = {
-                        value : item,
+                        id : item.id
+                    };
+                    var labelObject = {
+                        value : item.id,
                         text : item.id
                     };
                     if($scope.storeOrder.customer && item.id == $scope.storeOrder.customer.id) {
-                        $scope.customerSelection = wrappedObject;
+                        $scope.customerSelection = labelObject;
+                        $scope.storeOrder.customer = wrappedObject;
+                        self.original.customer = $scope.storeOrder.customer;
                     }
-                    return wrappedObject;
+                    return labelObject;
                 });
             });
         };
@@ -59,7 +65,8 @@ angular.module('test').controller('EditStoreOrderController', function($scope, $
     
     $scope.$watch("customerSelection", function(selection) {
         if (typeof selection != 'undefined') {
-            $scope.storeOrder.customer = selection.value;
+            $scope.storeOrder.customer = {};
+            $scope.storeOrder.customer.id = selection.value;
         }
     });
     

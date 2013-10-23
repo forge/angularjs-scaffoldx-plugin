@@ -1,6 +1,7 @@
 
 angular.module('test').controller('NewStoreOrderController', function ($scope, $location, locationParser, StoreOrderResource ) {
     $scope.disabled = false;
+    $scope.$location = $location;
     $scope.storeOrder = $scope.storeOrder || {};
     
 

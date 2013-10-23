@@ -3,7 +3,8 @@
 angular.module('test').controller('EditGroupIdentityController', function($scope, $routeParams, $location, GroupIdentityResource , UserIdentityResource) {
     var self = this;
     $scope.disabled = false;
-
+    $scope.$location = $location;
+    
     $scope.get = function() {
         var successCallback = function(data){
             self.original = data;
@@ -11,17 +12,22 @@ angular.module('test').controller('EditGroupIdentityController', function($scope
             UserIdentityResource.queryAll(function(items) {
                 $scope.usersSelectionList = $.map(items, function(item) {
                     var wrappedObject = {
-                        value : item,
+                        id : item.id
+                    };
+                    var labelObject = {
+                        value : item.id,
                         text : item.id
                     };
                     if($scope.groupIdentity.users){
                         $.each($scope.groupIdentity.users, function(idx, element) {
                             if(item.id == element.id) {
-                                $scope.usersSelection.push(wrappedObject);
+                                $scope.usersSelection.push(labelObject);
+                                $scope.groupIdentity.users.push(wrappedObject);
                             }
                         });
+                        self.original.users = $scope.groupIdentity.users;
                     }
-                    return wrappedObject;
+                    return labelObject;
                 });
             });
         };
@@ -66,7 +72,9 @@ angular.module('test').controller('EditGroupIdentityController', function($scope
         if (typeof selection != 'undefined' && $scope.groupIdentity) {
             $scope.groupIdentity.users = [];
             $.each(selection, function(idx,selectedItem) {
-                $scope.groupIdentity.users.push(selectedItem.value);
+                var collectionItem = {};
+                collectionItem.id = selectedItem.value;
+                $scope.groupIdentity.users.push(collectionItem);
             });
         }
     });

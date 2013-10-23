@@ -40,6 +40,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
     public void testGenerateHiddenProperty() throws Exception {
         Map<String, String> idProperties = new HashMap<String, String>();
         idProperties.put("name", "id");
+        idProperties.put("identifier", "id");
         idProperties.put("label", "Id");
         idProperties.put("hidden", "true");
         idProperties.put("type", "number");
@@ -55,6 +56,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
     public void testGenerateHiddenAndRequiredProperty() throws Exception {
         Map<String, String> idProperties = new HashMap<String, String>();
         idProperties.put("name", "id");
+        idProperties.put("identifier", "id");
         idProperties.put("label", "Id");
         idProperties.put("hidden", "true");
         idProperties.put("required", "true");
@@ -72,6 +74,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         Map<String, String> voucherProperties = new HashMap<String, String>();
         String oneToOneProperty = "voucher";
         voucherProperties.put("name", oneToOneProperty);
+        voucherProperties.put("identifier", oneToOneProperty);
         voucherProperties.put("label", "Voucher");
         voucherProperties.put("type", "com.example.scaffoldtester.model.DiscountVoucher");
         voucherProperties.put("one-to-one", "true");
@@ -108,6 +111,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         Map<String, String> customerProperties = new HashMap<String, String>();
         String oneToOneProperty = "customer";
         customerProperties.put("name", oneToOneProperty);
+        customerProperties.put("identifier", oneToOneProperty);
         customerProperties.put("label", "Customer");
         customerProperties.put("type", "com.example.scaffoldtester.model.Customer");
         customerProperties.put("many-to-one", "true");

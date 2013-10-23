@@ -3,6 +3,7 @@
 angular.module('test',['ngResource'])
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider
+      .when('/',{templateUrl:'views/landing.html',controller:'LandingPageController'})
       .when('/Addresss',{templateUrl:'views/Address/search.html',controller:'SearchAddressController'})
       .when('/Addresss/new',{templateUrl:'views/Address/detail.html',controller:'NewAddressController'})
       .when('/Addresss/edit/:AddressId',{templateUrl:'views/Address/detail.html',controller:'EditAddressController'})
@@ -13,6 +14,8 @@ angular.module('test',['ngResource'])
         redirectTo: '/'
       });
   }])
+  .controller('LandingPageController', function LandingPageController() {
+  })
   .controller('NavController', function NavController($scope, $location) {
     $scope.matchesRoute = function(route) {
         var path = $location.path();

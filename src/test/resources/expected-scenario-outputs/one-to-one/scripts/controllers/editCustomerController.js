@@ -3,7 +3,8 @@
 angular.module('test').controller('EditCustomerController', function($scope, $routeParams, $location, CustomerResource , AddressResource) {
     var self = this;
     $scope.disabled = false;
-
+    $scope.$location = $location;
+    
     $scope.get = function() {
         var successCallback = function(data){
             self.original = data;
@@ -11,13 +12,18 @@ angular.module('test').controller('EditCustomerController', function($scope, $ro
             AddressResource.queryAll(function(items) {
                 $scope.shippingAddressSelectionList = $.map(items, function(item) {
                     var wrappedObject = {
-                        value : item,
+                        id : item.id
+                    };
+                    var labelObject = {
+                        value : item.id,
                         text : item.id
                     };
                     if($scope.customer.shippingAddress && item.id == $scope.customer.shippingAddress.id) {
-                        $scope.shippingAddressSelection = wrappedObject;
+                        $scope.shippingAddressSelection = labelObject;
+                        $scope.customer.shippingAddress = wrappedObject;
+                        self.original.shippingAddress = $scope.customer.shippingAddress;
                     }
-                    return wrappedObject;
+                    return labelObject;
                 });
             });
         };
@@ -59,7 +65,8 @@ angular.module('test').controller('EditCustomerController', function($scope, $ro
     
     $scope.$watch("shippingAddressSelection", function(selection) {
         if (typeof selection != 'undefined') {
-            $scope.customer.shippingAddress = selection.value;
+            $scope.customer.shippingAddress = {};
+            $scope.customer.shippingAddress.id = selection.value;
         }
     });
     

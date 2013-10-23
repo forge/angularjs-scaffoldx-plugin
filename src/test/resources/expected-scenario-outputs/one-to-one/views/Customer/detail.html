@@ -1,3 +1,7 @@
+<header ng-switch on="$location.path().indexOf('/Customers/new') > -1">
+    <h3 ng-switch-when="true">Create Customer</h3>
+    <h3 ng-switch-when="false">View or edit Customer</h3>
+</header>
 <form id="CustomerForm" name="CustomerForm" class="form-horizontal">
     <div ng-show="displayError" class="alert alert-error">
         <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.

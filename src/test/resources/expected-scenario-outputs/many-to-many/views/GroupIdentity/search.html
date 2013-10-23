@@ -1,18 +1,28 @@
-<h2>Search for GroupIdentitys</h2>
-<form id="GroupIdentitySearch" class="form-horizontal">
+<div class="form-horizontal">
+    <h3>Create a new GroupIdentity</h3>
+    <div class="control-group">
+        <div class="controls">
+            <a id="Create" name="Create" class="btn btn-primary" href="#/GroupIdentitys/new"><i class="icon-plus-sign icon-white"></i> Create</a>
+        </div>
+    </div>
+</div>
+<hr/>
+<div>
+    <h3>Search for GroupIdentitys</h3>
+    <form id="GroupIdentitySearch" class="form-horizontal">
     <div class="control-group">
         <label for="groupName" class="control-label">Group Name</label>
         <div class="controls">
             <input id="groupName" name="groupName" type="text" ng-model="search.groupName" placeholder="Enter the GroupIdentity Group Name"></input>
         </div>
     </div>
-    <div class="control-group">
-        <div class="controls">
-            <a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()"><i class="icon-search icon-white"></i> Search</a>
-            <a id="Create" name="Create" class="btn" href="#/GroupIdentitys/new"><i class="icon-plus-sign"></i> Create New</a>
+        <div class="control-group">
+            <div class="controls">
+                <a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()"><i class="icon-search icon-white"></i> Search</a>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
 <div id="search-results">
     <table class="table table-bordered table-striped clearfix">
         <thead>

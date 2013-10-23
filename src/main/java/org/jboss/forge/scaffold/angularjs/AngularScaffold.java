@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -107,8 +108,6 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     @Inject
     private ConfigurationFactory configurationFactory;
 
-    private String targetDir;
-
     // Do not refer this field directly. Use the getProjectConfiguration() method instead.
     private Configuration configuration;
     
@@ -125,7 +124,8 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
     @Override
     @SuppressWarnings("unchecked")
     public boolean isInstalled() {
-        this.targetDir = getProjectConfiguration().getString(getTargetDirConfigKey(this));
+        String targetDir = getProjectConfiguration().getString(getTargetDirConfigKey(this));
+		targetDir = targetDir == null ? "" : targetDir;
         if (project.hasAllFacets(WebResourceFacet.class, DependencyFacet.class, PersistenceFacet.class, EJBFacet.class,
                 CDIFacet.class, RestFacet.class)) {
             // If the facet installation is in progress due to an InstallFacet event being fired, then the files would not

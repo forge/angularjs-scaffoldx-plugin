@@ -3,7 +3,8 @@
 angular.module('test').controller('EditUserIdentityController', function($scope, $routeParams, $location, UserIdentityResource ) {
     var self = this;
     $scope.disabled = false;
-
+    $scope.$location = $location;
+    
     $scope.get = function() {
         var successCallback = function(data){
             self.original = data;

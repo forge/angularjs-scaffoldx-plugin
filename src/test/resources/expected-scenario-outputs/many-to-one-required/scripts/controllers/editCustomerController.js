@@ -3,7 +3,8 @@
 angular.module('test').controller('EditCustomerController', function($scope, $routeParams, $location, CustomerResource ) {
     var self = this;
     $scope.disabled = false;
-
+    $scope.$location = $location;
+    
     $scope.get = function() {
         var successCallback = function(data){
             self.original = data;

@@ -1,3 +1,7 @@
+<header ng-switch on="$location.path().indexOf('/UserIdentitys/new') > -1">
+    <h3 ng-switch-when="true">Create UserIdentity</h3>
+    <h3 ng-switch-when="false">View or edit UserIdentity</h3>
+</header>
 <form id="UserIdentityForm" name="UserIdentityForm" class="form-horizontal">
     <div ng-show="displayError" class="alert alert-error">
         <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.

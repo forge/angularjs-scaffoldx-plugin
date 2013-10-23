@@ -1,18 +1,28 @@
-<h2>Search for UserIdentitys</h2>
-<form id="UserIdentitySearch" class="form-horizontal">
+<div class="form-horizontal">
+    <h3>Create a new UserIdentity</h3>
+    <div class="control-group">
+        <div class="controls">
+            <a id="Create" name="Create" class="btn btn-primary" href="#/UserIdentitys/new"><i class="icon-plus-sign icon-white"></i> Create</a>
+        </div>
+    </div>
+</div>
+<hr/>
+<div>
+    <h3>Search for UserIdentitys</h3>
+    <form id="UserIdentitySearch" class="form-horizontal">
     <div class="control-group">
         <label for="userName" class="control-label">User Name</label>
         <div class="controls">
             <input id="userName" name="userName" type="text" ng-model="search.userName" placeholder="Enter the UserIdentity User Name"></input>
         </div>
     </div>
-    <div class="control-group">
-        <div class="controls">
-            <a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()"><i class="icon-search icon-white"></i> Search</a>
-            <a id="Create" name="Create" class="btn" href="#/UserIdentitys/new"><i class="icon-plus-sign"></i> Create New</a>
+        <div class="control-group">
+            <div class="controls">
+                <a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()"><i class="icon-search icon-white"></i> Search</a>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
 <div id="search-results">
     <table class="table table-bordered table-striped clearfix">
         <thead>

@@ -92,6 +92,7 @@ public class TestHelpers {
         root.put("entityName", ENTITY_NAME);
         root.put("entityId", "id");
         root.put("resourceRootPath", "rest");
+        root.put("resourcePath", ENTITY_NAME + "s");
         root.put("parentDirectories", "");
         root.put("properties", entityAttributeProperties);
         return Collections.unmodifiableMap(root);
@@ -107,21 +108,21 @@ public class TestHelpers {
 
     private static Map<String, String> createVersionProperty() {
         String propertyName = "version";
-        Map<String, String> properties = new PropertyBuilder().withName(propertyName)
+        Map<String, String> properties = new PropertyBuilder().withName(propertyName).withIdentifier(propertyName)
                 .withLabel(StringUtils.uncamelCase(propertyName)).asHidden().withType(NUMBER).create();
         return properties;
     }
 
     private static Map<String, String> createIdProperty() {
         String propertyName = "id";
-        Map<String, String> properties = new PropertyBuilder().withName(propertyName)
+        Map<String, String> properties = new PropertyBuilder().withName(propertyName).withIdentifier(propertyName)
                 .withLabel(StringUtils.uncamelCase(propertyName)).asHidden().asRequired().withType(NUMBER).create();
         return properties;
     }
 
     private static Map<String, String> createBasicStringProperty() {
         String propertyName = "fullName";
-        Map<String, String> properties = new PropertyBuilder().withName(propertyName)
+        Map<String, String> properties = new PropertyBuilder().withName(propertyName).withIdentifier(propertyName)
                 .withLabel(StringUtils.uncamelCase(propertyName)).withType(STRING_CLASS).create();
         return properties;
     }
@@ -129,7 +130,7 @@ public class TestHelpers {
     private static Map<String, String> createStringPropertyWithMinLen() {
         String propertyName = "fullName";
         String minimumLength = "5";
-        Map<String, String> properties = new PropertyBuilder().withName(propertyName)
+        Map<String, String> properties = new PropertyBuilder().withName(propertyName).withIdentifier(propertyName)
                 .withLabel(StringUtils.uncamelCase(propertyName)).withType(STRING_CLASS).withMinLen(minimumLength).create();
         return properties;
     }
@@ -137,14 +138,14 @@ public class TestHelpers {
     private static Map<String, String> createStringPropertyWithMaxLen() {
         String propertyName = "fullName";
         String maximumLength = "100";
-        Map<String, String> properties = new PropertyBuilder().withName(propertyName)
+        Map<String, String> properties = new PropertyBuilder().withName(propertyName).withIdentifier(propertyName)
                 .withLabel(StringUtils.uncamelCase(propertyName)).withType(STRING_CLASS).withMaxLen(maximumLength).create();
         return properties;
     }
 
     private static Map<String, String> createNumberProperty() {
         String propertyName = "score";
-        Map<String, String> properties = new PropertyBuilder().withName(propertyName)
+        Map<String, String> properties = new PropertyBuilder().withName(propertyName).withIdentifier(propertyName)
                 .withLabel(StringUtils.uncamelCase(propertyName)).withType(NUMBER).create();
         return properties;
     }
@@ -152,7 +153,7 @@ public class TestHelpers {
     private static Map<String, String> createNumberPropertyWithMinVal() {
         String propertyName = "score";
         String min = "0";
-        Map<String, String> properties = new PropertyBuilder().withName(propertyName)
+        Map<String, String> properties = new PropertyBuilder().withName(propertyName).withIdentifier(propertyName)
                 .withLabel(StringUtils.uncamelCase(propertyName)).withType(NUMBER).withMinVal(min).create();
         return properties;
     }
@@ -160,35 +161,35 @@ public class TestHelpers {
     private static Map<String, String> createNumberPropertyWithMaxVal() {
         String propertyName = "score";
         String max = "100";
-        Map<String, String> properties = new PropertyBuilder().withName(propertyName)
+        Map<String, String> properties = new PropertyBuilder().withName(propertyName).withIdentifier(propertyName)
                 .withLabel(StringUtils.uncamelCase(propertyName)).withType(NUMBER).withMaxVal(max).create();
         return properties;
     }
 
     private static Map<String, String> createDateProperty() {
         String propertyName = "dateOfBirth";
-        Map<String, String> properties = new PropertyBuilder().withName(propertyName)
+        Map<String, String> properties = new PropertyBuilder().withName(propertyName).withIdentifier(propertyName)
                 .withLabel(StringUtils.uncamelCase(propertyName)).withType(DATE_CLASS).asDate().create();
         return properties;
     }
 
     private static Map<String, String> createTimeProperty() {
         String propertyName = "alarmTime";
-        Map<String, String> properties = new PropertyBuilder().withName(propertyName)
+        Map<String, String> properties = new PropertyBuilder().withName(propertyName).withIdentifier(propertyName)
                 .withLabel(StringUtils.uncamelCase(propertyName)).withType(DATE_CLASS).asTime().create();
         return properties;
     }
 
     private static Map<String, String> createDateTimeProperty() {
         String propertyName = "auditTimestamp";
-        Map<String, String> properties = new PropertyBuilder().withName(propertyName)
+        Map<String, String> properties = new PropertyBuilder().withName(propertyName).withIdentifier(propertyName)
                 .withLabel(StringUtils.uncamelCase(propertyName)).withType(DATE_CLASS).asDateTime().create();
         return properties;
     }
 
     private static Map<String, String> createBooleanProperty() {
         String propertyName = "optForMail";
-        Map<String, String> properties = new PropertyBuilder().withName(propertyName)
+        Map<String, String> properties = new PropertyBuilder().withName(propertyName).withIdentifier(propertyName)
                 .withLabel(StringUtils.uncamelCase(propertyName)).withType(BOOLEAN).create();
         return properties;
     }
@@ -198,7 +199,7 @@ public class TestHelpers {
         String rhsType = "com.example.scaffoldtester.model.StoreOrder";
         String rhsSimpleType = "StoreOrder";
         String rhsOptionLabel = "id";
-        Map<String, String> properties = new PropertyBuilder().withName(lhsProperty)
+        Map<String, String> properties = new PropertyBuilder().withName(lhsProperty).withIdentifier(lhsProperty)
                 .withLabel(StringUtils.uncamelCase(lhsProperty)).withType(SET_CLASS).asNToMany().withParameterizedType(rhsType)
                 .withSimpleType(rhsSimpleType).withOptionLabel(rhsOptionLabel).create();
         return properties;
@@ -209,7 +210,7 @@ public class TestHelpers {
         String rhsType = "com.example.scaffoldtester.model.UserIdentity";
         String rhsSimpleType = "UserIdentity";
         String rhsOptionLabel = "id";
-        Map<String, String> properties = new PropertyBuilder().withName(lhsProperty)
+        Map<String, String> properties = new PropertyBuilder().withName(lhsProperty).withIdentifier(lhsProperty)
                 .withLabel(StringUtils.uncamelCase(lhsProperty)).withType(SET_CLASS).asNToMany().withParameterizedType(rhsType)
                 .withSimpleType(rhsSimpleType).withOptionLabel(rhsOptionLabel).create();
         return properties;
@@ -220,7 +221,7 @@ public class TestHelpers {
         String rhsType = "com.example.scaffoldtester.model.DiscountVoucher";
         String rhsSimpleType = "DiscountVoucher";
         String rhsOptionLabel = "id";
-        Map<String, String> properties = new PropertyBuilder().withName(lhsProperty)
+        Map<String, String> properties = new PropertyBuilder().withName(lhsProperty).withIdentifier(lhsProperty)
                 .withLabel(StringUtils.uncamelCase(lhsProperty)).withType(rhsType).as1To1().withSimpleType(rhsSimpleType)
                 .withOptionLabel(rhsOptionLabel).create();
         return properties;
@@ -231,7 +232,7 @@ public class TestHelpers {
         String rhsType = "com.example.scaffoldtester.model.Customer";
         String rhsSimpleType = "Customer";
         String rhsOptionLabel = "id";
-        Map<String, String> properties = new PropertyBuilder().withName(lhsProperty)
+        Map<String, String> properties = new PropertyBuilder().withName(lhsProperty).withIdentifier(lhsProperty)
                 .withLabel(StringUtils.uncamelCase(lhsProperty)).withType(rhsType).asMTo1().withSimpleType(rhsSimpleType)
                 .withOptionLabel(rhsOptionLabel).create();
         return properties;
@@ -241,7 +242,7 @@ public class TestHelpers {
         String propertyName = "paymentType";
         String lookupValues = "CASH,CREDIT_CARD,DEBIT_CARD";
         String propertyType = "com.example.scaffoldtester.model.DeliveryType";
-        Map<String, String> properties = new PropertyBuilder().withName(propertyName)
+        Map<String, String> properties = new PropertyBuilder().withName(propertyName).withIdentifier(propertyName)
                 .withLabel(StringUtils.uncamelCase(propertyName)).withType(propertyType).withLookupValues(lookupValues).create();
         return properties;
     }
