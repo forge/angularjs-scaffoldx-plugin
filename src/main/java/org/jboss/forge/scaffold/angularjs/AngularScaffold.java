@@ -32,6 +32,7 @@ import org.jboss.forge.env.Configuration;
 import org.jboss.forge.env.ConfigurationFactory;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.parser.java.JavaSource;
+import org.jboss.forge.parser.java.util.Strings;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.project.facets.DependencyFacet;
 import org.jboss.forge.project.facets.JavaSourceFacet;
@@ -169,6 +170,22 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
         // Setup static resources.
         copyResourcesEvent.fire(new CopyWebResourcesEvent(getStatics(targetDir), overwrite));
         result.addAll(resourceRegistry.getCreatedResources());
+        
+        // FORGE-1280. This is done since reads and writes to XMLConfiguration instances are not reflected immediately.
+		if (!Strings.isNullOrEmpty(targetDir)) {
+			// Busy wait until the configuration is updated (sigh).
+			while(true) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					break;
+				}
+				String configTargetDir = getProjectConfiguration().getString(getTargetDirConfigKey(this));
+				if(targetDir.equals("/" + configTargetDir)) {
+					break;
+				}
+			}
+		}
         return result;
     }
 
