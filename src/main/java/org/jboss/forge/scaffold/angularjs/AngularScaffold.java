@@ -33,6 +33,7 @@ import org.jboss.forge.env.ConfigurationFactory;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.parser.java.util.Strings;
+import org.jboss.forge.project.Project;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.project.facets.DependencyFacet;
 import org.jboss.forge.project.facets.JavaSourceFacet;
@@ -52,6 +53,7 @@ import org.jboss.forge.scaffoldx.TemplateStrategy;
 import org.jboss.forge.scaffoldx.facets.ScaffoldTemplateFacet;
 import org.jboss.forge.scaffoldx.freemarker.FreemarkerClient;
 import org.jboss.forge.scaffoldx.freemarker.TemplateLoaderConfig;
+import org.jboss.forge.shell.Shell;
 import org.jboss.forge.shell.ShellMessages;
 import org.jboss.forge.shell.ShellPrintWriter;
 import org.jboss.forge.shell.ShellPrompt;
@@ -426,9 +428,10 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
      */
     @Produces
     @ScaffoldQualifier
-    public TemplateLoaderConfig createTemplateLoaderConfig() {
+    public TemplateLoaderConfig createTemplateLoaderConfig(Shell shell) {
+    	Project project = shell.getCurrentProject();
         String providerName = ConstraintInspector.getName(AngularScaffold.class);
-        File templateBaseDir = getTemplateBaseDir(providerName);
+        File templateBaseDir = getTemplateBaseDir(project, providerName);
         return new TemplateLoaderConfig(templateBaseDir, getClass(), SCAFFOLD_DIR);
     }
 
@@ -440,7 +443,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
      * @return The location of the templates directory if it is present in the current project. A null value is returned if the
      *         project doesnt have a template directory.
      */
-    private File getTemplateBaseDir(String scaffoldProviderName) {
+    private File getTemplateBaseDir(Project project, String scaffoldProviderName) {
         if (project != null && project.hasFacet(ScaffoldTemplateFacet.class)) {
             ScaffoldTemplateFacet templateFacet = project.getFacet(ScaffoldTemplateFacet.class);
             DirectoryResource templateDirectory = templateFacet.getTemplateDirectory(scaffoldProviderName);
