@@ -30,19 +30,17 @@ public class FreemarkerClientPartialsSearchResultsPaginatorTest {
                 FreemarkerClientPartialsSearchResultsPaginatorTest.class, "/scaffold"));
     }
     
-    private static String PAGINATOR_OUTPUT = "    <div class=\"pagination pagination-centered\">\n" + 
-    		"        <ul>\n" + 
-    	    "            <li ng-class=\"{disabled:currentPage == 0}\">\n" + 
-    		"                <a id=\"prev\" href ng-click=\"previous()\">«</a>\n" + 
-    		"            </li>\n" + 
-    		"            <li ng-repeat=\"n in pageRange\" ng-class=\"{active:currentPage == n}\" ng-click=\"setPage(n)\">\n" + 
-    		"                <a href ng-bind=\"n + 1\">1</a>\n" + 
-    		"            </li>\n" + 
-    		"            <li ng-class=\"{disabled: currentPage == (numberOfPages() - 1)}\">\n" + 
-    		"                <a id=\"next\" href ng-click=\"next()\">»</a>\n" + 
-    		"            </li>\n" + 
-    		"        </ul>\n" + 
-    		"    </div>\n";
+    private static String PAGINATOR_OUTPUT = "    <ul class=\"pagination pagination-centered\">\n" + 
+    	    "        <li ng-class=\"{disabled:currentPage == 0}\">\n" + 
+    		"            <a id=\"prev\" href ng-click=\"previous()\">«</a>\n" + 
+    		"        </li>\n" + 
+    		"        <li ng-repeat=\"n in pageRange\" ng-class=\"{active:currentPage == n}\" ng-click=\"setPage(n)\">\n" + 
+    		"            <a href ng-bind=\"n + 1\">1</a>\n" + 
+    		"        </li>\n" + 
+    		"        <li ng-class=\"{disabled: currentPage == (numberOfPages() - 1)}\">\n" + 
+    		"            <a id=\"next\" href ng-click=\"next()\">»</a>\n" + 
+    		"        </li>\n" + 
+    		"    </ul>\n";
     
     @Test
     public void testGenerateSearchResultsPaginator() throws Exception {

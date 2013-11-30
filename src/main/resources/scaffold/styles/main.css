@@ -14,11 +14,11 @@ html, body {
     height: auto !important;
     height: 100%;
     /* Negative indent footer by it's height */
-    margin: 0 auto -60px;
+    margin: 0 auto -61px;
 }
 
-#wrap > .container-fluid {
-    padding-top: 40px;
+#wrap > .container {
+    padding-top: 50px;
 }
 
 /* Set the fixed height of the footer here */
@@ -35,88 +35,14 @@ h2 i.icon-check {
     vertical-align: middle;
 }
 
-/* Lastly, apply responsive CSS fixes as necessary */
-@media (max-width: 767px) {
-    #footer {
-        margin-left: -20px;
-        margin-right: -20px;
-        padding-left: 20px;
-        padding-right: 20px;
-    }
+table {
+    table-layout: fixed;
+    word-wrap: break-word;
 }
 
-/* Flip-scroll from http://elvery.net/demo/responsive-tables/ */
-
-@media only screen and (max-width: 767px) {
-    /* Not necessary, since Bootstrap provides .clearfix
-     #main .cf:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
-     #main * html .cf { zoom: 1; }
-     #main *:first-child+html .cf { zoom: 1; }
-     */
-    #main table {
-        width: 100%;
-        border-collapse: collapse;
-        border-spacing: 0;
-    }
-
-    #main th, #main td {
-        margin: 0;
-        vertical-align: top;
-        border-top: 1px solid #DDDDDD;
-    }
-    #main th {
-        text-align: left;
-    }
-    #main table {
-        display: block;
-        position: relative;
-        width: 100%;
-    }
-    #main thead {
-        display: block;
-        float: left;
-    }
-    #main tbody {
-        display: block;
-        width: auto;
-        position: relative;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-    #main thead tr {
-        display: block;
-    }
-    #main th {
-        display: block;
-        text-align: right;
-    }
-    #main tbody tr {
-        display: inline-block;
-        vertical-align: top;
-    }
-    #main td {
-        display: block;
-        min-height: 1.4em;
-        text-align: left;
-    }
-
-    /* sort out borders */
-
-    #main th {
-        border-bottom: 0;
-    }/*border-left: 0;*/ /* Note: Left border need not be cleared with Bootstrap 2.2*/
-    #main td {
-        border-left: 0;
-        border-right: 0;
-        border-bottom: 0;
-    }
-    #main tbody tr {
-        border-left: 1px solid #babcbf;
-    }
-    #main th:last-child, #main td:last-child {
-        border-bottom: 1px solid #babcbf;
-    }
-    #main tbody> tr:last-child {
-        border-right: 1px solid #BABCBF;
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 767px) {
+    table {
+        table-layout: auto;
     }
 }

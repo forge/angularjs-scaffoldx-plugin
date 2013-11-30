@@ -85,7 +85,7 @@ public class TestHelpers {
         FileResource<?> bootstrapCss = web.getWebResource("/styles/bootstrap.css");
         Assert.assertTrue(bootstrapCss.exists());
 
-        FileResource<?> bootstrapResponsiveCss = web.getWebResource("/styles/bootstrap-responsive.css");
+        FileResource<?> bootstrapResponsiveCss = web.getWebResource("/styles/bootstrap-theme.css");
         Assert.assertTrue(bootstrapResponsiveCss.exists());
 
         // Application

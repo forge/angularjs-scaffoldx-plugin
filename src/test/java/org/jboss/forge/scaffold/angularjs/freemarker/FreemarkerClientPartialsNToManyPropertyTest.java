@@ -61,11 +61,11 @@ public class FreemarkerClientPartialsNToManyPropertyTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
         
-        Elements nToManyWidgetElement = html.select("div.control-group > div.controls");
+        Elements nToManyWidgetElement = html.select("div.form-group > div.col-sm-10");
         assertThat(nToManyWidgetElement, notNullValue());
 
         Elements selectElement = nToManyWidgetElement.select(" > select");
@@ -86,11 +86,11 @@ public class FreemarkerClientPartialsNToManyPropertyTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
         
-        Elements nToManyWidgetElement = html.select("div.control-group > div.controls");
+        Elements nToManyWidgetElement = html.select("div.form-group > div.col-sm-10");
         assertThat(nToManyWidgetElement, notNullValue());
 
         Elements selectElement = nToManyWidgetElement.select(" > select");

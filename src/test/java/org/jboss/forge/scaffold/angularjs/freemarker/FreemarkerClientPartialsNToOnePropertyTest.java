@@ -89,11 +89,11 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
 
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
 
-        Elements oneToOneWidgetElement = html.select("div.control-group > div.controls");
+        Elements oneToOneWidgetElement = html.select("div.form-group > div.col-sm-10");
         assertThat(oneToOneWidgetElement, notNullValue());
 
         Elements selectElement = oneToOneWidgetElement.select(" > select");
@@ -126,11 +126,11 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
 
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
 
-        Elements oneToOneWidgetElement = html.select("div.control-group > div.controls");
+        Elements oneToOneWidgetElement = html.select("div.form-group > div.col-sm-10");
         assertThat(oneToOneWidgetElement, notNullValue());
 
         Elements selectElement = oneToOneWidgetElement.select(" > select");

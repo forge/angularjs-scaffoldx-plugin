@@ -61,11 +61,11 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
         
-        Elements formInputElement = html.select("div.control-group input");
+        Elements formInputElement = html.select("div.form-group input");
         assertThat(formInputElement.attr("id"), equalTo("fullName"));
         assertThat(formInputElement.attr("type"), equalTo("text"));
         assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"fullName"));
@@ -79,11 +79,11 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
         
-        Elements formInputElement = html.select("div.control-group input");
+        Elements formInputElement = html.select("div.form-group input");
         assertThat(formInputElement.attr("id"), equalTo("fullName"));
         assertThat(formInputElement.attr("type"), equalTo("text"));
         assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"fullName"));
@@ -98,11 +98,11 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
         
-        Elements formInputElement = html.select("div.control-group input");
+        Elements formInputElement = html.select("div.form-group input");
         assertThat(formInputElement.attr("id"), equalTo("fullName"));
         assertThat(formInputElement.attr("type"), equalTo("text"));
         assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"fullName"));
@@ -117,11 +117,11 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
         
-        Elements formInputElement = html.select("div.control-group input");
+        Elements formInputElement = html.select("div.form-group input");
         assertThat(formInputElement.attr("id"), equalTo("score"));
         assertThat(formInputElement.attr("type"), equalTo("number"));
         assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"score"));
@@ -135,11 +135,11 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
         
-        Elements formInputElement = html.select("div.control-group input");
+        Elements formInputElement = html.select("div.form-group input");
         assertThat(formInputElement.attr("id"), equalTo("score"));
         assertThat(formInputElement.attr("type"), equalTo("number"));
         assertThat(formInputElement.attr("min"), equalTo("0"));
@@ -154,11 +154,11 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
         
-        Elements formInputElement = html.select("div.control-group input");
+        Elements formInputElement = html.select("div.form-group input");
         assertThat(formInputElement.attr("id"), equalTo("score"));
         assertThat(formInputElement.attr("type"), equalTo("number"));
         assertThat(formInputElement.attr("max"), equalTo("100"));
@@ -173,11 +173,11 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
         
-        Elements formInputElement = html.select("div.control-group input");
+        Elements formInputElement = html.select("div.form-group input");
         assertThat(formInputElement.attr("id"), equalTo("dateOfBirth"));
         assertThat(formInputElement.attr("type"), equalTo("date"));
         assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"dateOfBirth"));
@@ -191,11 +191,11 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
         
-        Elements formInputElement = html.select("div.control-group input");
+        Elements formInputElement = html.select("div.form-group input");
         assertThat(formInputElement.attr("id"), equalTo("alarmTime"));
         assertThat(formInputElement.attr("type"), equalTo("time"));
         assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"alarmTime"));
@@ -208,11 +208,11 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
         
-        Elements formInputElement = html.select("div.control-group datetime");
+        Elements formInputElement = html.select("div.form-group datetime");
         assertThat(formInputElement.attr("id"), equalTo("auditTimestamp"));
         assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"auditTimestamp"));
     }
@@ -225,11 +225,11 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
         assertThat(container.attr("ng-class"), not(equalTo("")));
         
-        Elements formInputElement = html.select("div.control-group input");
+        Elements formInputElement = html.select("div.form-group input");
         assertThat(formInputElement.attr("id"), equalTo("optForMail"));
         assertThat(formInputElement.attr("type"), equalTo("checkbox"));
         assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"optForMail"));

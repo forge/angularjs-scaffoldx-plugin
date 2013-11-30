@@ -1,30 +1,30 @@
 <header ng-switch on="$location.path().indexOf('/GroupIdentitys/new') > -1">
-    <h3 ng-switch-when="true">Create GroupIdentity</h3>
+    <h3 ng-switch-when="true">Create a new GroupIdentity</h3>
     <h3 ng-switch-when="false">View or edit GroupIdentity</h3>
 </header>
-<form id="GroupIdentityForm" name="GroupIdentityForm" class="form-horizontal">
-    <div ng-show="displayError" class="alert alert-error">
+<form id="GroupIdentityForm" name="GroupIdentityForm" class="form-horizontal" role="form">
+    <div ng-show="displayError" class="alert alert-danger">
         <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
     </div>
-    <div class="control-group" ng-class="{error: GroupIdentityForm.groupName.$invalid}">
-        <label for="groupName" class="control-label">Group Name</label>
-        <div id="groupNameControls" class="controls">
-            <input id="groupName" name="groupName" type="text" ng-model="groupIdentity.groupName" placeholder="Enter the GroupIdentity Group Name"></input>
+    <div class="form-group" ng-class="{'has-error': GroupIdentityForm.groupName.$invalid}">
+        <label for="groupName" class="col-sm-2 control-label">Group Name</label>
+        <div id="groupNameControls" class="col-sm-10">
+            <input id="groupName" name="groupName" type="text" class="form-control" ng-model="groupIdentity.groupName" placeholder="Enter the GroupIdentity Group Name"></input>
         </div>
     </div>
-    <div class="control-group" ng-class="{error: GroupIdentityForm.users.$invalid}">
-        <label for="users" class="control-label">Users</label>
-        <div id="usersControls" class="controls">
-            <select id="users" name="users" multiple ng-model="usersSelection" ng-options="u.text for u in usersSelectionList">
+    <div class="form-group" ng-class="{'has-error': GroupIdentityForm.users.$invalid}">
+        <label for="users" class="col-sm-2 control-label">Users</label>
+        <div id="usersControls" class="col-sm-10">
+            <select id="users" name="users" multiple class="form-control" ng-model="usersSelection" ng-options="u.text for u in usersSelectionList">
                 <option value="">Choose a Users</option>
             </select>
         </div>
     </div>
-    <div class="control-group">
-        <div class="controls">
-            <button id="saveGroupIdentity" name="saveGroupIdentity" class="btn btn-primary" ng-disabled="isClean() || GroupIdentityForm.$invalid" ng-click="save()"><i class="icon-ok-sign icon-white"></i> Save</button>
-            <button id="cancel" name="cancel" class="btn" ng-click="cancel()"><i class="icon-remove-sign"></i> Cancel</button>
-            <button id="deleteGroupIdentity" name="deleteGroupIdentity" class="btn btn-danger" ng-show="groupIdentity.id" ng-click="remove()"><i class="icon-trash icon-white"></i> Delete</button>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button id="saveGroupIdentity" name="saveGroupIdentity" class="btn btn-primary" ng-disabled="isClean() || GroupIdentityForm.$invalid" ng-click="save()"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
+            <button id="cancel" name="cancel" class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove-sign"></span> Cancel</button>
+            <button id="deleteGroupIdentity" name="deleteGroupIdentity" class="btn btn-danger" ng-show="groupIdentity.id" ng-click="remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
         </div>
     <div>
 </form>

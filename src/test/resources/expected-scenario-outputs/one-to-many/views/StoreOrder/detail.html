@@ -1,29 +1,29 @@
 <header ng-switch on="$location.path().indexOf('/StoreOrders/new') > -1">
-    <h3 ng-switch-when="true">Create StoreOrder</h3>
+    <h3 ng-switch-when="true">Create a new StoreOrder</h3>
     <h3 ng-switch-when="false">View or edit StoreOrder</h3>
 </header>
-<form id="StoreOrderForm" name="StoreOrderForm" class="form-horizontal">
-    <div ng-show="displayError" class="alert alert-error">
+<form id="StoreOrderForm" name="StoreOrderForm" class="form-horizontal" role="form">
+    <div ng-show="displayError" class="alert alert-danger">
         <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
     </div>
-    <div class="control-group" ng-class="{error: StoreOrderForm.product.$invalid}">
-        <label for="product" class="control-label">Product</label>
-        <div id="productControls" class="controls">
-            <input id="product" name="product" type="text" required ng-model="storeOrder.product" placeholder="Enter the StoreOrder Product"></input>
-            <span class="help-inline" ng-show="StoreOrderForm.product.$error.required">required</span> 
+    <div class="form-group" ng-class="{'has-error': StoreOrderForm.product.$invalid}">
+        <label for="product" class="col-sm-2 control-label">Product</label>
+        <div id="productControls" class="col-sm-10">
+            <input id="product" name="product" type="text" required class="form-control" ng-model="storeOrder.product" placeholder="Enter the StoreOrder Product"></input>
+            <span class="help-block error" ng-show="StoreOrderForm.product.$error.required">required</span> 
         </div>
     </div>
-    <div class="control-group" ng-class="{error: StoreOrderForm.orderDate.$invalid}">
-        <label for="orderDate" class="control-label">Order Date</label>
-        <div id="orderDateControls" class="controls">
-            <input id="orderDate" name="orderDate" type="date" ng-model="storeOrder.orderDate" placeholder="Enter the StoreOrder Order Date"></input>
+    <div class="form-group" ng-class="{'has-error': StoreOrderForm.orderDate.$invalid}">
+        <label for="orderDate" class="col-sm-2 control-label">Order Date</label>
+        <div id="orderDateControls" class="col-sm-10">
+            <input id="orderDate" name="orderDate" type="date" class="form-control" ng-model="storeOrder.orderDate" placeholder="Enter the StoreOrder Order Date"></input>
         </div>
     </div>
-    <div class="control-group">
-        <div class="controls">
-            <button id="saveStoreOrder" name="saveStoreOrder" class="btn btn-primary" ng-disabled="isClean() || StoreOrderForm.$invalid" ng-click="save()"><i class="icon-ok-sign icon-white"></i> Save</button>
-            <button id="cancel" name="cancel" class="btn" ng-click="cancel()"><i class="icon-remove-sign"></i> Cancel</button>
-            <button id="deleteStoreOrder" name="deleteStoreOrder" class="btn btn-danger" ng-show="storeOrder.id" ng-click="remove()"><i class="icon-trash icon-white"></i> Delete</button>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button id="saveStoreOrder" name="saveStoreOrder" class="btn btn-primary" ng-disabled="isClean() || StoreOrderForm.$invalid" ng-click="save()"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
+            <button id="cancel" name="cancel" class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove-sign"></span> Cancel</button>
+            <button id="deleteStoreOrder" name="deleteStoreOrder" class="btn btn-danger" ng-show="storeOrder.id" ng-click="remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
         </div>
     <div>
 </form>

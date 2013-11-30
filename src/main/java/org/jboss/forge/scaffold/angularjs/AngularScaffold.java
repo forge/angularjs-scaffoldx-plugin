@@ -140,16 +140,20 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
                return true;
             }
             WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
-            boolean areResourcesInstalled = web.getWebResource(targetDir + GLYPHICONS_WHITE_PNG).exists()
-                    && web.getWebResource(targetDir + GLYPHICONS_PNG).exists()
+            boolean areResourcesInstalled = web.getWebResource(targetDir + GLYPHICONS_SVG).exists()
+                    && web.getWebResource(targetDir + GLYPHICONS_EOT).exists()
+                    && web.getWebResource(targetDir + GLYPHICONS_SVG).exists()
+                    && web.getWebResource(targetDir + GLYPHICONS_TTF).exists()
+                    && web.getWebResource(targetDir + GLYPHICONS_WOFF).exists()
                     && web.getWebResource(targetDir + FORGE_LOGO_PNG).exists()
                     && web.getWebResource(targetDir + ANGULAR_RESOURCE_JS).exists()
                     && web.getWebResource(targetDir + ANGULAR_JS).exists()
                     && web.getWebResource(targetDir + MODERNIZR_JS).exists()
                     && web.getWebResource(targetDir + JQUERY_JS).exists()
-                    && web.getWebResource(targetDir + BOOTSTRAP_RESPONSIVE_CSS).exists()
+                    && web.getWebResource(targetDir + BOOTSTRAP_JS).exists()
                     && web.getWebResource(targetDir + MAIN_CSS).exists()
                     && web.getWebResource(targetDir + BOOTSTRAP_CSS).exists()
+                    && web.getWebResource(targetDir + BOOTSTRAP_THEME_CSS).exists()
                     && web.getWebResource(targetDir + LANDING_VIEW).exists();
             return areResourcesInstalled;
         }

@@ -1,8 +1,8 @@
 <div class="form-horizontal">
     <h3>Create a new Address</h3>
-    <div class="control-group">
-        <div class="controls">
-            <a id="Create" name="Create" class="btn btn-primary" href="#/Addresss/new"><i class="icon-plus-sign icon-white"></i> Create</a>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-sm-2">
+            <a id="Create" name="Create" class="btn btn-primary" href="#/Addresss/new"><span class="glyphicon glyphicon-plus-sign"></span> Create</a>
         </div>
     </div>
 </div>
@@ -10,75 +10,75 @@
 <div>
     <h3>Search for Addresss</h3>
     <form id="AddressSearch" class="form-horizontal">
-    <div class="control-group">
-        <label for="street" class="control-label">Street</label>
-        <div class="controls">
-            <input id="street" name="street" type="text" ng-model="search.street" placeholder="Enter the Address Street"></input>
+    <div class="form-group">
+        <label for="street" class="col-sm-2 control-label">Street</label>
+        <div class="col-sm-10">
+            <input id="street" name="street" class="form-control" type="text" ng-model="search.street" placeholder="Enter the Address Street"></input>
         </div>
     </div>
-    <div class="control-group">
-        <label for="city" class="control-label">City</label>
-        <div class="controls">
-            <input id="city" name="city" type="text" ng-model="search.city" placeholder="Enter the Address City"></input>
+    <div class="form-group">
+        <label for="city" class="col-sm-2 control-label">City</label>
+        <div class="col-sm-10">
+            <input id="city" name="city" class="form-control" type="text" ng-model="search.city" placeholder="Enter the Address City"></input>
         </div>
     </div>
-    <div class="control-group">
-        <label for="state" class="control-label">State</label>
-        <div class="controls">
-            <input id="state" name="state" type="text" ng-model="search.state" placeholder="Enter the Address State"></input>
+    <div class="form-group">
+        <label for="state" class="col-sm-2 control-label">State</label>
+        <div class="col-sm-10">
+            <input id="state" name="state" class="form-control" type="text" ng-model="search.state" placeholder="Enter the Address State"></input>
         </div>
     </div>
-    <div class="control-group">
-        <label for="country" class="control-label">Country</label>
-        <div class="controls">
-            <input id="country" name="country" type="text" ng-model="search.country" placeholder="Enter the Address Country"></input>
+    <div class="form-group">
+        <label for="country" class="col-sm-2 control-label">Country</label>
+        <div class="col-sm-10">
+            <input id="country" name="country" class="form-control" type="text" ng-model="search.country" placeholder="Enter the Address Country"></input>
         </div>
     </div>
-    <div class="control-group">
-        <label for="postalcode" class="control-label">Postalcode</label>
-        <div class="controls">
-            <input id="postalcode" name="postalcode" type="text" ng-model="search.postalcode" placeholder="Enter the Address Postalcode"></input>
+    <div class="form-group">
+        <label for="postalcode" class="col-sm-2 control-label">Postalcode</label>
+        <div class="col-sm-10">
+            <input id="postalcode" name="postalcode" class="form-control" type="text" ng-model="search.postalcode" placeholder="Enter the Address Postalcode"></input>
         </div>
     </div>
-        <div class="control-group">
-            <div class="controls">
-                <a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()"><i class="icon-search icon-white"></i> Search</a>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-sm-10">
+                <a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()"><span class="glyphicon glyphicon-search"></span> Search</a>
             </div>
         </div>
     </form>
 </div>
 <div id="search-results">
-    <table class="table table-bordered table-striped clearfix">
-        <thead>
-            <tr>
-                <th>Street</th>
-                <th>City</th>
-                <th>State</th>
-                <th>Country</th>
-                <th>Postalcode</th>
-            </tr>
-        </thead>
-        <tbody id="search-results-body">
-            <tr ng-repeat="result in searchResults | searchFilter:searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
-                <td><a href="#/Addresss/edit/{{result.id}}">{{result.street}}</a></td>
-                <td><a href="#/Addresss/edit/{{result.id}}">{{result.city}}</a></td>
-                <td><a href="#/Addresss/edit/{{result.id}}">{{result.state}}</a></td>
-                <td><a href="#/Addresss/edit/{{result.id}}">{{result.country}}</a></td>
-                <td><a href="#/Addresss/edit/{{result.id}}">{{result.postalcode}}</a></td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="pagination pagination-centered">
-        <ul>
-            <li ng-class="{disabled:currentPage == 0}">
-                <a id="prev" href ng-click="previous()">«</a>
-            </li>
-            <li ng-repeat="n in pageRange" ng-class="{active:currentPage == n}" ng-click="setPage(n)">
-                <a href ng-bind="n + 1">1</a>
-            </li>
-            <li ng-class="{disabled: currentPage == (numberOfPages() - 1)}">
-                <a id="next" href ng-click="next()">»</a>
-            </li>
-        </ul>
+    <div class="table-responsive">
+        <table class="table table-responsive table-bordered table-striped clearfix">
+            <thead>
+                <tr>
+                    <th>Street</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Country</th>
+                    <th>Postalcode</th>
+                </tr>
+            </thead>
+            <tbody id="search-results-body">
+                <tr ng-repeat="result in searchResults | searchFilter:searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+                    <td><a href="#/Addresss/edit/{{result.id}}">{{result.street}}</a></td>
+                    <td><a href="#/Addresss/edit/{{result.id}}">{{result.city}}</a></td>
+                    <td><a href="#/Addresss/edit/{{result.id}}">{{result.state}}</a></td>
+                    <td><a href="#/Addresss/edit/{{result.id}}">{{result.country}}</a></td>
+                    <td><a href="#/Addresss/edit/{{result.id}}">{{result.postalcode}}</a></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
+    <ul class="pagination pagination-centered">
+        <li ng-class="{disabled:currentPage == 0}">
+            <a id="prev" href ng-click="previous()">«</a>
+        </li>
+        <li ng-repeat="n in pageRange" ng-class="{active:currentPage == n}" ng-click="setPage(n)">
+            <a href ng-bind="n + 1">1</a>
+        </li>
+        <li ng-class="{disabled: currentPage == (numberOfPages() - 1)}">
+            <a id="next" href ng-click="next()">»</a>
+        </li>
+    </ul>
 </div>

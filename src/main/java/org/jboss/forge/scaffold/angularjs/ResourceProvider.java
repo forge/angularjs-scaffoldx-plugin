@@ -22,10 +22,14 @@ public class ResourceProvider {
     
     static final String LANDING_VIEW = "/views/landing.html";
 
-    static final String GLYPHICONS_WHITE_PNG = "/img/glyphicons-halflings-white.png";
+    static final String GLYPHICONS_EOT = "/fonts/glyphicons-halflings-regular.eot";
 
-    static final String GLYPHICONS_PNG = "/img/glyphicons-halflings.png";
-
+    static final String GLYPHICONS_SVG = "/fonts/glyphicons-halflings-regular.svg";
+    
+    static final String GLYPHICONS_TTF = "/fonts/glyphicons-halflings-regular.ttf";
+    
+    static final String GLYPHICONS_WOFF = "/fonts/glyphicons-halflings-regular.woff";
+    
     static final String FORGE_LOGO_PNG = "/img/forge-logo.png";
 
     static final String ANGULAR_RESOURCE_JS = "/scripts/vendor/angular-resource.js";
@@ -35,12 +39,14 @@ public class ResourceProvider {
     static final String MODERNIZR_JS = "/scripts/vendor/modernizr-2.6.2.min.js";
 
     static final String JQUERY_JS = "/scripts/vendor/jquery-1.9.1.js";
-
-    static final String BOOTSTRAP_RESPONSIVE_CSS = "/styles/bootstrap-responsive.css";
+    
+    static final String BOOTSTRAP_JS = "/scripts/vendor/bootstrap.js";
 
     static final String MAIN_CSS = "/styles/main.css";
     
     static final String BOOTSTRAP_CSS = "/styles/bootstrap.css";
+    
+    static final String BOOTSTRAP_THEME_CSS = "/styles/bootstrap-theme.css";
 
     /**
      * Provides a list of {@link ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
@@ -53,14 +59,17 @@ public class ResourceProvider {
         List<ScaffoldResource> statics = new ArrayList<ScaffoldResource>();
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_CSS, targetDir + BOOTSTRAP_CSS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + MAIN_CSS, targetDir + MAIN_CSS));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_RESPONSIVE_CSS, targetDir + BOOTSTRAP_RESPONSIVE_CSS));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_THEME_CSS, targetDir + BOOTSTRAP_THEME_CSS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + JQUERY_JS, targetDir + JQUERY_JS));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_JS, targetDir + BOOTSTRAP_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_JS, targetDir + ANGULAR_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_RESOURCE_JS, targetDir + ANGULAR_RESOURCE_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + MODERNIZR_JS, targetDir + MODERNIZR_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + FORGE_LOGO_PNG, targetDir + FORGE_LOGO_PNG));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_PNG, targetDir + GLYPHICONS_PNG));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_WHITE_PNG, targetDir + GLYPHICONS_WHITE_PNG));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_EOT, targetDir + GLYPHICONS_EOT));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_SVG, targetDir + GLYPHICONS_SVG));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_TTF, targetDir + GLYPHICONS_TTF));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_WOFF, targetDir + GLYPHICONS_WOFF));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + LANDING_VIEW, targetDir + LANDING_VIEW));
         return statics;
     }

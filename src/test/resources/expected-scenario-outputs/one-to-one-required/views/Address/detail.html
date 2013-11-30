@@ -1,46 +1,46 @@
 <header ng-switch on="$location.path().indexOf('/Addresss/new') > -1">
-    <h3 ng-switch-when="true">Create Address</h3>
+    <h3 ng-switch-when="true">Create a new Address</h3>
     <h3 ng-switch-when="false">View or edit Address</h3>
 </header>
-<form id="AddressForm" name="AddressForm" class="form-horizontal">
-    <div ng-show="displayError" class="alert alert-error">
+<form id="AddressForm" name="AddressForm" class="form-horizontal" role="form">
+    <div ng-show="displayError" class="alert alert-danger">
         <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
     </div>
-    <div class="control-group" ng-class="{error: AddressForm.street.$invalid}">
-        <label for="street" class="control-label">Street</label>
-        <div id="streetControls" class="controls">
-            <input id="street" name="street" type="text" ng-model="address.street" placeholder="Enter the Address Street"></input>
+    <div class="form-group" ng-class="{'has-error': AddressForm.street.$invalid}">
+        <label for="street" class="col-sm-2 control-label">Street</label>
+        <div id="streetControls" class="col-sm-10">
+            <input id="street" name="street" type="text" class="form-control" ng-model="address.street" placeholder="Enter the Address Street"></input>
         </div>
     </div>
-    <div class="control-group" ng-class="{error: AddressForm.city.$invalid}">
-        <label for="city" class="control-label">City</label>
-        <div id="cityControls" class="controls">
-            <input id="city" name="city" type="text" ng-model="address.city" placeholder="Enter the Address City"></input>
+    <div class="form-group" ng-class="{'has-error': AddressForm.city.$invalid}">
+        <label for="city" class="col-sm-2 control-label">City</label>
+        <div id="cityControls" class="col-sm-10">
+            <input id="city" name="city" type="text" class="form-control" ng-model="address.city" placeholder="Enter the Address City"></input>
         </div>
     </div>
-    <div class="control-group" ng-class="{error: AddressForm.state.$invalid}">
-        <label for="state" class="control-label">State</label>
-        <div id="stateControls" class="controls">
-            <input id="state" name="state" type="text" ng-model="address.state" placeholder="Enter the Address State"></input>
+    <div class="form-group" ng-class="{'has-error': AddressForm.state.$invalid}">
+        <label for="state" class="col-sm-2 control-label">State</label>
+        <div id="stateControls" class="col-sm-10">
+            <input id="state" name="state" type="text" class="form-control" ng-model="address.state" placeholder="Enter the Address State"></input>
         </div>
     </div>
-    <div class="control-group" ng-class="{error: AddressForm.country.$invalid}">
-        <label for="country" class="control-label">Country</label>
-        <div id="countryControls" class="controls">
-            <input id="country" name="country" type="text" ng-model="address.country" placeholder="Enter the Address Country"></input>
+    <div class="form-group" ng-class="{'has-error': AddressForm.country.$invalid}">
+        <label for="country" class="col-sm-2 control-label">Country</label>
+        <div id="countryControls" class="col-sm-10">
+            <input id="country" name="country" type="text" class="form-control" ng-model="address.country" placeholder="Enter the Address Country"></input>
         </div>
     </div>
-    <div class="control-group" ng-class="{error: AddressForm.postalcode.$invalid}">
-        <label for="postalcode" class="control-label">Postalcode</label>
-        <div id="postalcodeControls" class="controls">
-            <input id="postalcode" name="postalcode" type="text" ng-model="address.postalcode" placeholder="Enter the Address Postalcode"></input>
+    <div class="form-group" ng-class="{'has-error': AddressForm.postalcode.$invalid}">
+        <label for="postalcode" class="col-sm-2 control-label">Postalcode</label>
+        <div id="postalcodeControls" class="col-sm-10">
+            <input id="postalcode" name="postalcode" type="text" class="form-control" ng-model="address.postalcode" placeholder="Enter the Address Postalcode"></input>
         </div>
     </div>
-    <div class="control-group">
-        <div class="controls">
-            <button id="saveAddress" name="saveAddress" class="btn btn-primary" ng-disabled="isClean() || AddressForm.$invalid" ng-click="save()"><i class="icon-ok-sign icon-white"></i> Save</button>
-            <button id="cancel" name="cancel" class="btn" ng-click="cancel()"><i class="icon-remove-sign"></i> Cancel</button>
-            <button id="deleteAddress" name="deleteAddress" class="btn btn-danger" ng-show="address.id" ng-click="remove()"><i class="icon-trash icon-white"></i> Delete</button>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button id="saveAddress" name="saveAddress" class="btn btn-primary" ng-disabled="isClean() || AddressForm.$invalid" ng-click="save()"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
+            <button id="cancel" name="cancel" class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove-sign"></span> Cancel</button>
+            <button id="deleteAddress" name="deleteAddress" class="btn btn-danger" ng-show="address.id" ng-click="remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
         </div>
     <div>
 </form>

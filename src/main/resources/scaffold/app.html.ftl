@@ -1,37 +1,54 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" ng-app="${projectId}">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>${projectTitle}</title>
     <link href="styles/bootstrap.css" rel="stylesheet" media="screen">
+    <link href="styles/bootstrap-theme.css" rel="stylesheet" media="screen">
     <link href="styles/main.css" rel="stylesheet" media="screen">
-    <link href="styles/bootstrap-responsive.css" rel="stylesheet" media="screen">
 </head>
 <body>
     <div id="wrap">
     	
     	<div class="navbar navbar-inverse navbar-fixed-top">
-    		<div class="navbar-inner">
-    			<div class="container">
-    				<a class="brand" href="#">${projectTitle}</a>
-    			</div>
-    		</div>
-    	</div>
-        
-        <div class="container-fluid">
-            <div class="row-fluid">
-                <div class="span3 well">
-                    <img class="hidden-phone" src="img/forge-logo.png" alt="JBoss Forge"></img>
-                    <nav class="sidebar-nav" ng-controller="NavController">
-                        <ul id="sidebar-entries" class="nav nav-list">
+			<div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+                      <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                    </button>
+				    <a class="navbar-brand" href="#">${projectTitle}</a>
+			    </div>
+			    <div id="navbar-collapse" class="collapse">
+                    <nav class="sidebar-nav" ng-controller="NavController" role="navigation">
+                        <div id="navbar-entries" class="list-group">
                             <#list entityNames as entityName>
-                        	<li ng-class="{active: matchesRoute('${entityName}s')}"><a href="#/${entityName}s">${entityName}s</a></li>
-                        	</#list>
-                        </ul>
+                            <a class="list-group-item" data-toggle="collapse" data-target="#navbar-collapse" ng-class="{active: matchesRoute('${entityName}s')}" href="#/${entityName}s">${entityName}s</a>
+                            </#list>
+                        </div>
                     </nav>
                 </div>
-                <div class="span9 well">
+			</div>
+    	</div>
+        
+        <div class="container">
+            <div class="row">
+                <div class="hidden-xs col-sm-3 well">
+                    <a href="app.html">
+                        <img class="hidden-xs img-responsive" src="img/forge-logo.png" alt="JBoss Forge"></img>
+                    </a>
+                    <nav class="sidebar-nav" ng-controller="NavController" role="navigation">
+                        <div id="sidebar-entries" class="list-group">
+                            <#list entityNames as entityName>
+                        	<a class="list-group-item" ng-class="{active: matchesRoute('${entityName}s')}" href="#/${entityName}s">${entityName}s</a>
+                        	</#list>
+                        </div>
+                    </nav>
+                </div>
+                <div class="col-sm-offset-1 col-sm-8 well">
                     <div id="main" ng-view>
                     </div>
                 </div>
@@ -50,6 +67,7 @@
     
     <script src="scripts/vendor/modernizr-2.6.2.min.js"></script>
     <script src="scripts/vendor/jquery-1.9.1.js"></script>
+    <script src="scripts/vendor/bootstrap.js"></script>
     <script src="scripts/vendor/angular.js"></script>
     <script src="scripts/vendor/angular-resource.js"></script>
     <script src="scripts/app.js"></script>

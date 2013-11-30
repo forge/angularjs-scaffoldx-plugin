@@ -1,37 +1,37 @@
 <header ng-switch on="$location.path().indexOf('/Customers/new') > -1">
-    <h3 ng-switch-when="true">Create Customer</h3>
+    <h3 ng-switch-when="true">Create a new Customer</h3>
     <h3 ng-switch-when="false">View or edit Customer</h3>
 </header>
-<form id="CustomerForm" name="CustomerForm" class="form-horizontal">
-    <div ng-show="displayError" class="alert alert-error">
+<form id="CustomerForm" name="CustomerForm" class="form-horizontal" role="form">
+    <div ng-show="displayError" class="alert alert-danger">
         <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
     </div>
-    <div class="control-group" ng-class="{error: CustomerForm.firstName.$invalid}">
-        <label for="firstName" class="control-label">First Name</label>
-        <div id="firstNameControls" class="controls">
-            <input id="firstName" name="firstName" type="text" required ng-model="customer.firstName" placeholder="Enter the Customer First Name"></input>
-            <span class="help-inline" ng-show="CustomerForm.firstName.$error.required">required</span> 
+    <div class="form-group" ng-class="{'has-error': CustomerForm.firstName.$invalid}">
+        <label for="firstName" class="col-sm-2 control-label">First Name</label>
+        <div id="firstNameControls" class="col-sm-10">
+            <input id="firstName" name="firstName" type="text" required class="form-control" ng-model="customer.firstName" placeholder="Enter the Customer First Name"></input>
+            <span class="help-block error" ng-show="CustomerForm.firstName.$error.required">required</span> 
         </div>
     </div>
-    <div class="control-group" ng-class="{error: CustomerForm.dateOfBirth.$invalid}">
-        <label for="dateOfBirth" class="control-label">Date Of Birth</label>
-        <div id="dateOfBirthControls" class="controls">
-            <input id="dateOfBirth" name="dateOfBirth" type="date" ng-model="customer.dateOfBirth" placeholder="Enter the Customer Date Of Birth"></input>
+    <div class="form-group" ng-class="{'has-error': CustomerForm.dateOfBirth.$invalid}">
+        <label for="dateOfBirth" class="col-sm-2 control-label">Date Of Birth</label>
+        <div id="dateOfBirthControls" class="col-sm-10">
+            <input id="dateOfBirth" name="dateOfBirth" type="date" class="form-control" ng-model="customer.dateOfBirth" placeholder="Enter the Customer Date Of Birth"></input>
         </div>
     </div>
-    <div class="control-group" ng-class="{error: CustomerForm.shippingAddress.$invalid}">
-        <label for="shippingAddress" class="control-label">Shipping Address</label>
-        <div id="shippingAddressControls" class="controls">
-        <select id="shippingAddress" name="shippingAddress" ng-model="shippingAddressSelection" ng-options="s.text for s in shippingAddressSelectionList"  >
+    <div class="form-group" ng-class="{'has-error': CustomerForm.shippingAddress.$invalid}">
+        <label for="shippingAddress" class="col-sm-2 control-label">Shipping Address</label>
+        <div id="shippingAddressControls" class="col-sm-10">
+        <select id="shippingAddress" name="shippingAddress" class="form-control" ng-model="shippingAddressSelection" ng-options="s.text for s in shippingAddressSelectionList"  >
             <option value="">Choose a Shipping Address</option>
         </select>
         </div>
     </div>
-    <div class="control-group">
-        <div class="controls">
-            <button id="saveCustomer" name="saveCustomer" class="btn btn-primary" ng-disabled="isClean() || CustomerForm.$invalid" ng-click="save()"><i class="icon-ok-sign icon-white"></i> Save</button>
-            <button id="cancel" name="cancel" class="btn" ng-click="cancel()"><i class="icon-remove-sign"></i> Cancel</button>
-            <button id="deleteCustomer" name="deleteCustomer" class="btn btn-danger" ng-show="customer.id" ng-click="remove()"><i class="icon-trash icon-white"></i> Delete</button>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button id="saveCustomer" name="saveCustomer" class="btn btn-primary" ng-disabled="isClean() || CustomerForm.$invalid" ng-click="save()"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
+            <button id="cancel" name="cancel" class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove-sign"></span> Cancel</button>
+            <button id="deleteCustomer" name="deleteCustomer" class="btn btn-danger" ng-show="customer.id" ng-click="remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
         </div>
     <div>
 </form>

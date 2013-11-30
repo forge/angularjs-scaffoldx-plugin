@@ -77,10 +77,10 @@ public class FreemarkerClientPartialsSearchInputTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
 
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
 
-        Elements formInputElement = container.select("div.controls > input");
+        Elements formInputElement = container.select("div.col-sm-10 > input");
         assertThat(formInputElement.attr("id"), equalTo("fullName"));
         assertThat(formInputElement.attr("type"), equalTo("text"));
         assertThat(formInputElement.attr("ng-model"), equalTo("search" + "." + "fullName"));
@@ -94,10 +94,10 @@ public class FreemarkerClientPartialsSearchInputTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
 
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
 
-        Elements formInputElement = container.select("div.controls > input");
+        Elements formInputElement = container.select("div.col-sm-10 > input");
         assertThat(formInputElement.attr("id"), equalTo("score"));
         assertThat(formInputElement.attr("type"), equalTo("text"));
         assertThat(formInputElement.attr("ng-model"), equalTo("search" + "." + "score"));
@@ -111,10 +111,10 @@ public class FreemarkerClientPartialsSearchInputTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
 
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
 
-        Elements formInputElement = container.select("div.controls > input");
+        Elements formInputElement = container.select("div.col-sm-10 > input");
         assertThat(formInputElement.attr("id"), equalTo("dateOfBirth"));
         assertThat(formInputElement.attr("type"), equalTo("text"));
         assertThat(formInputElement.attr("ng-model"), equalTo("search" + "." + "dateOfBirth"));
@@ -128,10 +128,10 @@ public class FreemarkerClientPartialsSearchInputTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
 
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
 
-        Elements formInputElement = container.select("div.controls > select");
+        Elements formInputElement = container.select("div.col-sm-10 > select");
         assertThat(formInputElement.attr("id"), equalTo("voucher"));
         assertThat(formInputElement.attr("ng-model"), equalTo("search" + "." + "voucher"));
     }
@@ -144,10 +144,10 @@ public class FreemarkerClientPartialsSearchInputTest {
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
 
-        Elements container = html.select("div.control-group");
+        Elements container = html.select("div.form-group");
         assertThat(container, notNullValue());
 
-        Elements formInputElement = container.select("div.controls > select");
+        Elements formInputElement = container.select("div.col-sm-10 > select");
         assertThat(formInputElement.attr("id"), equalTo("customer"));
         assertThat(formInputElement.attr("ng-model"), equalTo("search" + "." + "customer"));
     }
