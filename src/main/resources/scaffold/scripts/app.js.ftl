@@ -1,7 +1,7 @@
 <#assign angularApp = "${projectId}">
 'use strict';
 
-angular.module('${angularApp}',['ngResource'])
+angular.module('${angularApp}',['ngRoute','ngResource'])
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider
       .when('/',{templateUrl:'views/landing.html',controller:'LandingPageController'})

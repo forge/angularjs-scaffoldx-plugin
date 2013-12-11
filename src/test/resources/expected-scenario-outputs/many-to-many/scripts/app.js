@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('test',['ngResource'])
+angular.module('test',['ngRoute','ngResource'])
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider
       .when('/',{templateUrl:'views/landing.html',controller:'LandingPageController'})

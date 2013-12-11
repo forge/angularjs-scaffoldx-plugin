@@ -33,6 +33,8 @@ public class ResourceProvider {
     static final String FORGE_LOGO_PNG = "/img/forge-logo.png";
 
     static final String ANGULAR_RESOURCE_JS = "/scripts/vendor/angular-resource.js";
+    
+    static final String ANGULAR_ROUTE_JS = "/scripts/vendor/angular-route.js";
 
     static final String ANGULAR_JS = "/scripts/vendor/angular.js";
     
@@ -63,6 +65,7 @@ public class ResourceProvider {
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + JQUERY_JS, targetDir + JQUERY_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_JS, targetDir + BOOTSTRAP_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_JS, targetDir + ANGULAR_JS));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_ROUTE_JS, targetDir + ANGULAR_ROUTE_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_RESOURCE_JS, targetDir + ANGULAR_RESOURCE_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + MODERNIZR_JS, targetDir + MODERNIZR_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + FORGE_LOGO_PNG, targetDir + FORGE_LOGO_PNG));

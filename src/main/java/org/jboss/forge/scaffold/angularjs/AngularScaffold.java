@@ -147,6 +147,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
                     && web.getWebResource(targetDir + GLYPHICONS_WOFF).exists()
                     && web.getWebResource(targetDir + FORGE_LOGO_PNG).exists()
                     && web.getWebResource(targetDir + ANGULAR_RESOURCE_JS).exists()
+                    && web.getWebResource(targetDir + ANGULAR_ROUTE_JS).exists()
                     && web.getWebResource(targetDir + ANGULAR_JS).exists()
                     && web.getWebResource(targetDir + MODERNIZR_JS).exists()
                     && web.getWebResource(targetDir + JQUERY_JS).exists()
