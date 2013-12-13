@@ -49,6 +49,8 @@ public class ResourceProvider {
     static final String BOOTSTRAP_CSS = "/styles/bootstrap.css";
     
     static final String BOOTSTRAP_THEME_CSS = "/styles/bootstrap-theme.css";
+    
+    static final String OFFCANVAS_JS = "/scripts/offcanvas.js";
 
     /**
      * Provides a list of {@link ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
@@ -62,6 +64,7 @@ public class ResourceProvider {
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_CSS, targetDir + BOOTSTRAP_CSS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + MAIN_CSS, targetDir + MAIN_CSS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_THEME_CSS, targetDir + BOOTSTRAP_THEME_CSS));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + OFFCANVAS_JS, targetDir + OFFCANVAS_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + JQUERY_JS, targetDir + JQUERY_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_JS, targetDir + BOOTSTRAP_JS));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_JS, targetDir + ANGULAR_JS));

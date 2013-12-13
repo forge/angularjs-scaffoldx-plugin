@@ -14,7 +14,7 @@
     	<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+                    <button type="button" class="navbar-toggle" data-toggle="offcanvas">
                       <span class="sr-only">Toggle navigation</span>
                       <span class="icon-bar"></span>
                       <span class="icon-bar"></span>
@@ -22,40 +22,31 @@
                     </button>
 				    <a class="navbar-brand" href="#">${projectTitle}</a>
 			    </div>
-			    <div id="navbar-collapse" class="collapse">
-                    <nav class="sidebar-nav" ng-controller="NavController" role="navigation">
-                        <div id="navbar-entries" class="list-group">
-                            <#list entityNames as entityName>
-                            <a class="list-group-item" data-toggle="collapse" data-target="#navbar-collapse" ng-class="{active: matchesRoute('${entityName}s')}" href="#/${entityName}s">${entityName}s</a>
-                            </#list>
-                        </div>
-                    </nav>
-                </div>
 			</div>
     	</div>
         
         <div class="container">
-            <div class="row">
-                <div class="hidden-xs col-sm-3 well">
+            <div class="row row-offcanvas row-offcanvas-left">
+                <!-- sidebar -->
+                <div class="col-xs-6 col-sm-3 well sidebar-offcanvas">
                     <a href="app.html">
                         <img class="hidden-xs img-responsive" src="img/forge-logo.png" alt="JBoss Forge"></img>
                     </a>
                     <nav class="sidebar-nav" ng-controller="NavController" role="navigation">
                         <div id="sidebar-entries" class="list-group">
                             <#list entityNames as entityName>
-                        	<a class="list-group-item" ng-class="{active: matchesRoute('${entityName}s')}" href="#/${entityName}s">${entityName}s</a>
+                        	<a class="list-group-item" ng-class="{active: matchesRoute('${entityName}s')}" href="#/${entityName}s" data-toggle="offcanvas">${entityName}s</a>
                         	</#list>
                         </div>
                     </nav>
                 </div>
-                <div class="col-sm-offset-1 col-sm-8 well">
+                <!-- main area-->
+                <div class="col-sm-offset-1 col-xs-12 col-sm-8 well mainarea">
                     <div id="main" ng-view>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div id="push"></div>
     </div>
     
     <div id="footer">
@@ -72,6 +63,7 @@
     <script src="scripts/vendor/angular-route.js"></script>
     <script src="scripts/vendor/angular-resource.js"></script>
     <script src="scripts/app.js"></script>
+    <script src="scripts/offcanvas.js"></script>
     <script src="scripts/directives/datetimepicker.js"></script>
     <script src="scripts/filters/startFromFilter.js"></script>
     <script src="scripts/filters/genericSearchFilter.js"></script>

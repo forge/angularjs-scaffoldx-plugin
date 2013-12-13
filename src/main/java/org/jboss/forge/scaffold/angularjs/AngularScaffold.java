@@ -152,6 +152,7 @@ public class AngularScaffold extends BaseFacet implements ScaffoldProvider {
                     && web.getWebResource(targetDir + MODERNIZR_JS).exists()
                     && web.getWebResource(targetDir + JQUERY_JS).exists()
                     && web.getWebResource(targetDir + BOOTSTRAP_JS).exists()
+                    && web.getWebResource(targetDir + OFFCANVAS_JS).exists()
                     && web.getWebResource(targetDir + MAIN_CSS).exists()
                     && web.getWebResource(targetDir + BOOTSTRAP_CSS).exists()
                     && web.getWebResource(targetDir + BOOTSTRAP_THEME_CSS).exists()
