@@ -10,13 +10,19 @@
             <datetime id="${property.name}" name="${property.name}"<#rt/>
                 <#if (property.required!"false") == "true"> required</#if><#t/>
                 <#lt/> ng-model="${modelProperty}" placeholder="Enter the ${entityName} ${propertyLabel}"></datetime>
+            <#elseif (property["datetime-type"]!"") == "date">
+            <date id="${property.name}" name="${property.name}"<#rt/>
+                <#if (property.required!"false") == "true"> required</#if><#t/>
+                <#lt/> ng-model="${modelProperty}" placeholder="Enter the ${entityName} ${propertyLabel}"></date>
+            <#elseif (property["datetime-type"]!"") == "time">
+            <time id="${property.name}" name="${property.name}"<#rt/>
+                <#if (property.required!"false") == "true"> required</#if><#t/>
+                <#lt/> ng-model="${modelProperty}" placeholder="Enter the ${entityName} ${propertyLabel}"></time>
             <#else>
             <input id="${property.name}" name="${property.name}"<#rt/>
                 <#if property.type == "number"> type="number"<#t/>
                     <#if property["minimum-value"]??> min="${property["minimum-value"]}"</#if><#t/>
                     <#if property["maximum-value"]??> max="${property["maximum-value"]}"</#if><#t/>
-                <#elseif (property["datetime-type"]!"") == "date"> type="date"<#t/>
-                <#elseif (property["datetime-type"]!"") == "time"> type="time"<#t/>
                 <#elseif property.type == "boolean"> type="checkbox"<#t/>
                 <#else> type="text"</#if><#t/>
                 <#if (property.required!"false") == "true"> required</#if><#t/>
@@ -41,7 +47,13 @@
             <span class="help-block error" ng-show="${formProperty}.$error.maxlength">maximum length is ${property["maximum-length"]}</span>
             </#if>
             <#if (property["datetime-type"]!"") == "both">
-            <span class="help-block error" ng-show="${formProperty}.$error.dateFormat">does not match format "yyyy-MM-dd hh:mm:ss"</span>
+            <span class="help-block error" ng-show="${formProperty}.$error.datetimeFormat">does not match format "yyyy-MM-dd hh:mm:ss" (e.g. 2013-12-01 22:00:00)</span>
+            </#if>
+            <#if (property["datetime-type"]!"") == "date">
+            <span class="help-block error" ng-show="${formProperty}.$error.dateFormat">does not match format "yyyy-MM-dd" (e.g. 2013-12-01)</span>
+            </#if>
+            <#if (property["datetime-type"]!"") == "time">
+            <span class="help-block error" ng-show="${formProperty}.$error.timeFormat">does not match format "hh:mm" or "hh:mm:ss" (e.g. 05:00 or 22:00:00)</span>
             </#if>
         </div>
     </div>

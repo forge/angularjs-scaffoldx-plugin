@@ -94,6 +94,10 @@ public class ResourceProvider {
         resources.add(new ScaffoldResource("index.html.ftl", targetDir+ INDEX_HTML));
         resources.add(new ScaffoldResource("app.html.ftl", targetDir + "/app.html"));
         resources.add(new ScaffoldResource("scripts/app.js.ftl", targetDir + "/scripts/app.js"));
+        resources.add(new ScaffoldResource("scripts/directives/datepicker.js.ftl", targetDir
+                + "/scripts/directives/datepicker.js"));
+        resources.add(new ScaffoldResource("scripts/directives/timepicker.js.ftl", targetDir
+                + "/scripts/directives/timepicker.js"));
         resources.add(new ScaffoldResource("scripts/directives/datetimepicker.js.ftl", targetDir
                 + "/scripts/directives/datetimepicker.js"));
         resources.add(new ScaffoldResource("scripts/services/locationParser.js.ftl", targetDir

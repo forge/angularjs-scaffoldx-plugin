@@ -64,6 +64,8 @@
     <script src="scripts/vendor/angular-resource.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/offcanvas.js"></script>
+    <script src="scripts/directives/datepicker.js"></script>
+    <script src="scripts/directives/timepicker.js"></script>
     <script src="scripts/directives/datetimepicker.js"></script>
     <script src="scripts/filters/startFromFilter.js"></script>
     <script src="scripts/filters/genericSearchFilter.js"></script>

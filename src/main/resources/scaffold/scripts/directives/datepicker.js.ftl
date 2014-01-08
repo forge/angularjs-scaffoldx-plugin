@@ -1,8 +1,8 @@
 <#assign angularApp = "${projectId}">
 'use strict';
 
-var LOCAL_DATETIME_REGEX = /^([0-2][0-9]{3})\-([0-1][0-9])\-([0-3][0-9])\ ([0-5][0-9])\:([0-5][0-9])\:([0-5][0-9])$/;
-angular.module('${angularApp}').directive('datetime', function($parse, dateFilter) {
+var DATE_REGEX = /^([0-2][0-9]{3})\-([0-1][0-9])\-([0-3][0-9])$/;
+angular.module('${angularApp}').directive('date', function($parse, dateFilter) {
     return {
         restrict : "E",
         replace : true,
@@ -15,7 +15,7 @@ angular.module('${angularApp}').directive('datetime', function($parse, dateFilte
             if(attrs.required) {
                 isRequired = "required";
             }
-            var html = "<input id='" + attrs.id + "' name='" + attrs.name + "' type='datetime-local' " + isRequired + " class='form-control' placeholder='"+attrs.placeholder+"'></input>";
+            var html = "<input id='" + attrs.id + "' name='" + attrs.name + "' type='date' " + isRequired + " class='form-control' placeholder='"+attrs.placeholder+"'></input>";
 
             var $newElem = $(html);
             element.replaceWith($newElem);
@@ -23,26 +23,25 @@ angular.module('${angularApp}').directive('datetime', function($parse, dateFilte
             var nativeLinker = function(scope, element, attrs, ngModelCtrl) {
                 if(!ngModelCtrl) return;
 
-                var localDateTimeParser = function(value) {
+                var dateParser = function(value) {
                     var date;
                     if(value) {
                         date = new Date(Date.parse(value));
-                        date.setTime(date.getTime() + date.getTimezoneOffset()*60000);
                     } else {
                         date = value;
                     }
                     return date;
                 }
-                var localDateTimeFormatter = function(value) {
+                var dateFormatter = function(value) {
                     if(value) {
-                        var date = dateFilter(value,"yyyy-MM-ddTHH:mm:ss");
+                        var date = dateFilter(value,"yyyy-MM-dd");
                         return date;
                     }
                     return;
                 }
 
-                ngModelCtrl.$parsers.unshift(localDateTimeParser);
-                ngModelCtrl.$formatters.unshift(localDateTimeFormatter);
+                ngModelCtrl.$parsers.unshift(dateParser);
+                ngModelCtrl.$formatters.unshift(dateFormatter);
 
                 element.bind("blur keyup change", function() {
                     scope.$apply(function() {
@@ -58,32 +57,31 @@ angular.module('${angularApp}').directive('datetime', function($parse, dateFilte
             var enhancedLinker = function(scope, element, attrs, ngModelCtrl) {
                 if(!ngModelCtrl) return;
                 
-                var localDateTimeParser = function(value) {
+                var dateParser = function(value) {
                     if(value) {
-                        var d = value.match(LOCAL_DATETIME_REGEX);
+                        var d = value.match(DATE_REGEX);
                         if(d) {
-                            var formattedDate = d[1] + "-" + d[2] + "-" + d[3] + "T"
-                                            + d[4] + ":" + d[5] + ":" + d[6];
+                            var formattedDate = d[1] + "-" + d[2] + "-" + d[3];
                             var date = new Date(Date.parse(formattedDate));
-                            ngModelCtrl.$setValidity("datetimeFormat", true);
+                            ngModelCtrl.$setValidity("dateFormat", true);
                             return date;
                         } else {
-                            ngModelCtrl.$setValidity("datetimeFormat", false);
+                            ngModelCtrl.$setValidity("dateFormat", false);
                             return;
                         }
                     }
                     return;
                 }
-                var localDateTimeFormatter = function(value) {
+                var dateFormatter = function(value) {
                     if(value) {
-                        var date = dateFilter(value,"yyyy-MM-dd HH:mm:ss");
+                        var date = dateFilter(value,"yyyy-MM-dd");
                         return date;
                     }
                     return;
                 }
                 
-                ngModelCtrl.$parsers.unshift(localDateTimeParser);
-                ngModelCtrl.$formatters.unshift(localDateTimeFormatter);
+                ngModelCtrl.$parsers.unshift(dateParser);
+                ngModelCtrl.$formatters.unshift(dateFormatter);
 
                 element.bind("blur keyup change", function() {
                     scope.$apply(function() {
@@ -96,7 +94,7 @@ angular.module('${angularApp}').directive('datetime', function($parse, dateFilte
                 }
             }
 
-            if(Modernizr.inputtypes["datetime-local"]) {
+            if(Modernizr.inputtypes["date"]) {
                 return nativeLinker;
             } else {
                 return enhancedLinker;
