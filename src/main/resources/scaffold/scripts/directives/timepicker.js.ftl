@@ -28,7 +28,7 @@ angular.module('${angularApp}').directive('time', function($parse, dateFilter) {
                     if(value) {
                     	var d = value.match(TIME_REGEX);
                         if(d) {
-                        	date = new Date();
+                        	date = new Date(0);
                         	if(!d[3]) {
                             	d[3] = "0";
                             }
@@ -70,7 +70,7 @@ angular.module('${angularApp}').directive('time', function($parse, dateFilter) {
                     if(value) {
                         var d = value.match(TIME_REGEX);
                         if(d) {
-                            var date = new Date();
+                            var date = new Date(0);
                             if(!d[3]) {
                             	d[3] = "0";
                             }
