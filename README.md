@@ -3,6 +3,8 @@ angularjs-scaffoldx-plugin
 
 The AngularJS scaffold provider for the scaffold-x plugin in Forge 1.x. It creates AngularJS web-apps from JPA entities.
 
+> If you're looking at using this in **Forge 2**, head over to [the Forge 2 AngularJS addon project](https://github.com/forge/angularjs-addon).
+
 # Prerequisites
 
 * [Forge 1.4.3](https://repository.jboss.org/nexus/service/local/repositories/releases/content/org/jboss/forge/forge-distribution/1.4.3.Final/forge-distribution-1.4.3.Final.zip)
